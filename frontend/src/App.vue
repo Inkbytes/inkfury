@@ -1,9 +1,21 @@
 <template>
-  <div id="nav">
+  <!-- <div id="nav">
     <router-link to="/">Home</router-link>
-  </div>
-  <router-view/>
+  </div> -->
+  <Home />
+  <!-- <router-view/> -->
 </template>
+
+<script lang="ts">
+
+  import { defineComponent } from 'vue';
+  import Home from "./views/Home.vue"
+  export default defineComponent({
+    name: 'app',
+    components: { Home }
+  });
+</script>
+
 
 <style>
 #app {

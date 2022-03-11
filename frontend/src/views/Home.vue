@@ -1,14 +1,13 @@
 <template>
-  <div class="home">
-    <h1 id="hello">Hello InkFury</h1>
-  </div>
+  <Header/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import Header from "../components/Header.vue";
 
 export default defineComponent({
   name: 'Home',
-  components: { },
+  components: { Header }
 });
 </script>
