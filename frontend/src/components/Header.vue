@@ -5,9 +5,9 @@
         <h1>InkFury</h1>
       </div>
       <ul>
-          <li v-if="!loged"><a href="">Core team</a></li>
+          <li v-if="!loged"><a href="#education">Core team</a></li>
           <li v-else><a href="">Game</a></li>
-          <li v-if="!loged"><a href="">About</a></li>
+          <li v-if="!loged"><a href="#about">About</a></li>
           <li v-else><a href="">Profil</a></li>
           <li v-if="!loged" id="login"><a href="">Login</a></li>
           <li v-else id="logOut"><a href="">Log out</a></li>
@@ -22,7 +22,7 @@ export default defineComponent({
   name: 'Header',
   data(){
       return {
-          loged: true
+          loged: false
       }
   }
 });
@@ -37,7 +37,8 @@ export default defineComponent({
     }
     #logo {
         float: left;
-        display: inline-block
+        display: inline-block;
+        cursor: pointer;
     }
     #logo h1{
         display: inline-block;
