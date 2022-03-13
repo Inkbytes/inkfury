@@ -1,14 +1,17 @@
 <template>
   <div class="nav">
+      <router-link :to="{ name: 'Home' }">
       <div id="logo">
         <img src="../assets/logo.svg">
         <h1>InkFury</h1>
       </div>
+      </router-link>
       <ul>
           <li v-if="!loged"><a href="#education">Core team</a></li>
           <li v-else><a href="">Game</a></li>
           <li v-if="!loged"><a href="#about">About</a></li>
-          <li v-else><a href="">Profil</a></li>
+          <li v-else-if="profil"><a href="">Chat</a></li>
+          <li v-else><router-link :to="{ name: 'Profile'}">Profile</router-link></li>
           <li v-if="!loged" id="login"><a href="">Login</a></li>
           <li v-else id="logOut"><a href="">Log out</a></li>
       </ul>
@@ -19,10 +22,11 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+  props: [ 'profil' ],
   name: 'Header',
   data(){
       return {
-          loged: false
+          loged: true,
       }
   }
 });
@@ -31,7 +35,7 @@ export default defineComponent({
 <style>
     .nav {
         margin:  auto;
-        max-width: 800px;
+        max-width: 900px;
         overflow: hidden;
         margin-bottom: 30px;
     }
@@ -58,7 +62,7 @@ export default defineComponent({
         height: 62.16px !important;
         margin: 0;
     }
-    .nav ul a {
+    .nav ul a , router-link{
         padding: 0 10px;
         font-family: 'Inter';
         font-style: normal;

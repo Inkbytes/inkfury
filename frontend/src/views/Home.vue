@@ -153,7 +153,8 @@ button {
   text-align: center;
 }
 #education {
-  margin-bottom: 100px;
+  max-width: 1200px;
+  margin: 0 auto 100px;
 }
 #education h3 {
   color: #0069FF;

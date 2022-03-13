@@ -1,0 +1,10 @@
+{
+    "users": [
+        {"name": "Oussama El ouarti", "login": "oel-ouar"},
+        {"name": "Ali Biari", "login": "abiari"},
+        {"name": "Ayoub Abounakif", "login": "aabounak"},
+        {"name": "Zakaria Taouuil", "login": "ztaouil"},
+        {"name": "Mohmed Ashad", "login": "mashad"},
+        {"name": "Oumaima El youssefi", "login": "oel-yous"}
+    ]
+}
