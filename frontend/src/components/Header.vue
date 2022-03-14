@@ -13,7 +13,7 @@
           <li v-else-if="profil"><a href="">Chat</a></li>
           <li v-else><router-link :to="{ name: 'Profile'}">Profile</router-link></li>
           <li v-if="!loged" id="login"><a href="">Login</a></li>
-          <li v-else id="logOut"><a href="">Log out</a></li>
+          <li v-else id="logOut"><a href="" >Log out</a></li>
       </ul>
   </div>
 </template>
@@ -75,14 +75,14 @@ export default defineComponent({
     }
     #login a{
         color: white;
-        padding: 10px;
+        padding: 8px;
         background: #42b983;
-        border-radius: 20px;
+        border-radius: 10px;
     }
     #logOut a{
         color: white;
-        padding: 10px;
+        padding: 8px;
         background: salmon;
-        border-radius: 20px;
+        border-radius: 10px;
     }
 </style>
