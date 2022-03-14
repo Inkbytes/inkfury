@@ -4,9 +4,10 @@
   "main": "index.ts",
   "license": "MIT",
   "dependencies": {
-    "matter": "^0.2.0",
     "p5": "^1.4.1",
-    "parcel-bundler": "^1.12.5"
+    "parcel-bundler": "^1.12.5",
+    "socketio": "^1.0.0",
+    "tsc": "^2.0.4"
   },
   "devDependencies": {
     "typescript": "^4.6.2"

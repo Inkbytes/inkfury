@@ -1,1 +1,1 @@
-yarn run parcel index.html
+npx parcel index.html
