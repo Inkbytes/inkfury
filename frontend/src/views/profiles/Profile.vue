@@ -1,10 +1,10 @@
 <template>
   <Header :profil="profil"/>
-
+    <Modal v-if="settings" :nickname="user.login" @close="switchSet"/>
     <div class="profile">
         <input type="text" v-model="search" onfocus="this.value=''">
+        <span id="settings" @click="switchSet"></span>
         <div v-if="search">
-
             <div id="search" >
                     <p v-for="user in matchingLogin" :key="user.login">{{ user.login }}</p>
             </div>
@@ -192,11 +192,13 @@
 import { defineComponent } from 'vue';
 import Header from '../../components/Header.vue'
 import Footer from '../../components/Footer.vue'
+import Modal from '../../components/Modal.vue'
 
 export default defineComponent({
     name: 'Profile',
-    components: { Header, Footer },
+    components: { Header, Footer , Modal},
     data() {
+    
         return {
             profil: true,
             user: {
@@ -204,21 +206,30 @@ export default defineComponent({
                 login: "oel-ouar"
             },
             users: [],
-            search: "search.."
+            search: "search..",
+            settings: false
         }
     },
-    mounted()
+   async mounted()
     {
         fetch("http://localhost:3000/users")
             .then(res => res.json())
-            .then(data => this.users = data)
+            .then(data =>  this.users = data )
             .catch(err => console.log(err.message))
-        console.log(this.users)
     },
-    computed: {
-       matchingLogin: function () {
-           return this.users.filter((user)=> user.login.includes(this.search)) 
-       } 
+    computed :{
+
+        matchingLogin() {
+            if (this.users.length == 0)
+                return ;
+            const l : any = this.users.filter((user : any) => user.login.includes(this.search))
+            return (l)
+        },
+    },
+    methods: {
+        switchSet(){
+            this.settings = !this.settings
+        }
     }
 });
 </script>
@@ -287,10 +298,12 @@ export default defineComponent({
   background-color: #eeeeee;  
 }
 #content {
+    padding: 6px;
     max-width: 790px;
     margin: 0 auto 50px;
     text-align: left;
     display: flex;
+    overflow: hidden;
 }
 #friends_achiv{
     height: 100%;
@@ -478,5 +491,17 @@ export default defineComponent({
     line-height: 16px;
     text-align: center;
     color: #FFFFFF;
+}
+#settings {
+    width: 41px;
+    height: 41px;
+    background: url("../../assets/settings.svg"), rgb(190, 187, 187);
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    box-sizing: border-box;
+    cursor: pointer;
 }
 </style>

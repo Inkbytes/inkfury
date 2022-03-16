@@ -8,7 +8,8 @@
       </router-link>
       <ul>
           <li v-if="!loged"><a href="#education">Core team</a></li>
-          <li v-else><a href="">Game</a></li>
+          <li v-else-if="!game"><router-link to="/game">Game</router-link></li>
+          <li v-else><a href="">Chat</a></li>
           <li v-if="!loged"><a href="#about">About</a></li>
           <li v-else-if="profil"><a href="">Chat</a></li>
           <li v-else><router-link :to="{ name: 'Profile'}">Profile</router-link></li>
@@ -22,7 +23,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  props: [ 'profil' ],
+  props: [ 'profil' , 'game'],
   name: 'Header',
   data(){
       return {
