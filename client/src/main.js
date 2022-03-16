@@ -24,8 +24,8 @@ socket.on("initiation", (nb) => {
 const sketch = function(p){
 	const maxWIDTH = 1200;
 	const maxHEIGHT = 800;
-	var HEIGHT = 800;
 	var WIDTH = 1200;
+	var HEIGHT = 800;
 
 	var list = [-4, -3, 3, 4];
 	var xpos = WIDTH / 2;
@@ -147,11 +147,11 @@ const sketch = function(p){
 			dy = -dy;
 		}
 
+
 		if (player == 1){
 			xpos = xpos + dx;
 			ypos = ypos + dy;
 		}
-
 		p.textSize(100);
 		p.stroke('white');
 		p.text(p1score, (WIDTH / 2) - 150, HEIGHT / 2 - 150);
@@ -215,22 +215,14 @@ const sketch = function(p){
 			socket.emit("game", {player: 2,paddle: p2pos/HEIGHT});
 		}
 		socket.on("game", (obj) => {
-			if (player == 1){
-				p2pos = obj.paddle * HEIGHT;	
-			}else if (player == 2){
+			if (obj.player == 1)
+			{
 				p1pos = obj.paddle * HEIGHT;
 				xpos = obj.ball.x * WIDTH;
 				ypos = obj.ball.y * HEIGHT;
-			}else{
-				if (obj.player == 1)
-				{
-					p1pos = obj.paddle * HEIGHT;
-					xpos = obj.ball.x * WIDTH;
-					ypos = obj.ball.y * HEIGHT;
-				}
-				else{
-					p2pos = obj.paddle * HEIGHT;
-				}
+			}
+			else{
+				p2pos = obj.paddle * HEIGHT;
 			}
 		});
 	}
@@ -257,11 +249,8 @@ const sketch = function(p){
 	}
 
 	p.windowResized = () => {
-		console.log("window resized");
 		HEIGHT = (window.innerHeight < maxHEIGHT) ? window.innerHeight : maxHEIGHT;
 		WIDTH = (window.innerWidth < maxWIDTH) ? window.innerWidth : maxWIDTH;
-		HEIGHT -= 10;
-		WIDTH -= 10;
 		p.resizeCanvas(WIDTH, HEIGHT);
 		p.background(0);
 	};
@@ -278,8 +267,8 @@ const sketch = function(p){
 		if (gameison){
 			key_event();
 			map1();
-			move_ball();
 			comunicate_coord();
+			move_ball();
 		}else{
 			welcome_page(game_status);
 			start_game();
@@ -289,3 +278,5 @@ const sketch = function(p){
 
 const myp5 = new p5(sketch);
 
+// responsive feature is introduction the score bug 
+// the mf is small
