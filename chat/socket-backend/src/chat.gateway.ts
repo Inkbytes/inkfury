@@ -2,7 +2,7 @@ import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessa
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway()
+@WebSocketGateway({ cors: true })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
   @WebSocketServer() wss: Server;
@@ -22,8 +22,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('msgToServer')
-  handleMessage(client: Socket, text: string): void {
-    this.wss.emit('msgToClient', text); // To Broadcast for example
-    // client.emit('msgToClient', text);
+  handleMessage(client: any, data: string): void {
+    this.wss.emit(client.id)
+    this.wss.emit('msgToClient', `${client.id} -> ${data}`); // To Broadcast for example
+    // client.emit('msgToClient', data);
   }
 }
