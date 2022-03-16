@@ -1,5 +1,5 @@
 
-const socket = io("http://localhost:1337");
+const socket = io("http://10.12.1.4:1337");
 
 var player = 0;
 
