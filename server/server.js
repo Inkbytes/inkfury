@@ -5,6 +5,8 @@ const path = require('path');
 const absolute_path = '/Users/ztaouil/Projects/inkfury/client/src/';
 const { Server } = require("socket.io");
 
+var arr = [];
+
 const io = new Server(1337, {
 	cors: {
 		origin: '*',
@@ -12,12 +14,34 @@ const io = new Server(1337, {
 });
 
 io.on("connection", (socket) => {
+	arr.push(socket.id);
 	console.log(`new connection with id: ${socket.id}`);
+	socket.emit("client-event", "hello from server!");
 
-	io.emit("client-event", "hello world!");
+	console.log("number of connections " + arr.length);
+	if (arr.length === 1){
+		socket.emit("initiation", 1);
+	}else if (arr.length === 2){
+		socket.emit("initiation", 2);
+	}
+
+	socket.on("number-of-players", (msg) => {
+		socket.emit("number-of-players", arr.length);
+	});
+
 	socket.on("game", (data)=>{
-		console.log(data);
+		socket.broadcast.emit("game", data);
 	})
+
+	socket.on("start-game", (data) => {
+		socket.broadcast.emit("start-game", data);
+	});
+	socket.on("disconnect", () => {
+		console.log("socket id" + socket.id + " disconnected");
+		arr.splice(arr.indexOf(socket.id), 1);
+		console.log("number of connections " + arr.length);
+	});
+	console.log(arr.length + "  <++++++++");
 });
 
 
@@ -33,6 +57,6 @@ app.get('/game', (req, res) => {
 	res.send('get request to route /game');
 });
 
-app.listen(3000, () => {
-	console.log('app listening on port 3000');
+app.listen(1339, () => {
+	console.log('app listening on port 1339');
 });

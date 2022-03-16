@@ -1,22 +1,32 @@
-const p5 = require('p5');
-const { io } = require("socket.io-client");
 
-const socket = io("http://localhost:1337");
+const socket = io("http://10.12.1.4:1337");
 
-// client-side
-socket.on("connect", () => {
-  console.log("egegegegße");
+var player = 0;
+
+socket.on("connect", ()=>{
+	console.log(`connected with id ${socket.id}`);
+})
+
+socket.on("client-event", (payload) =>{
+	console.log(payload);
 });
 
-socket.on("client-event", message => {
-	console.log(message);
+socket.on("initiation", (nb) => {
+	if (nb === 1){
+		player = 1;
+	}else if (nb === 2){
+		player = 2;
+	}
 });
 
-socket.emit("game", "66666666");
+
 
 const sketch = function(p){
-	const WIDTH = 800;
-	const HEIGHT = 600;
+	const maxWIDTH = 1200;
+	const maxHEIGHT = 800;
+	var HEIGHT = 800;
+	var WIDTH = 1200;
+
 	var list = [-4, -3, 3, 4];
 	var xpos = WIDTH / 2;
 	var ypos = HEIGHT / 2;
@@ -28,34 +38,71 @@ const sketch = function(p){
 	var p2score = 0;
 	var	gameison = false;
 	var game_status = 0;
+	var connected_players = 0;
 
 	var paddle_width = 10;
 	var paddle_height = WIDTH / 10;
+	let bg;
+
 	p.setup = () => {
 		p.createCanvas(WIDTH, HEIGHT);
 		p.background(0);
 	};
 
 	var key_event = () => {
-		if (p.keyIsDown(p.UP_ARROW)){
+		if (player == 1 && p.keyIsDown(p.UP_ARROW)){
 			if (p1pos > 0)
 				p1pos -= 10;
 		}
-		if (p.keyIsDown(p.DOWN_ARROW)){
+		if (player == 1 && p.keyIsDown(p.DOWN_ARROW)){
 			if (p1pos < HEIGHT - paddle_height)
 				p1pos += 10;
 		}
-		if (p.keyIsDown(87)){
+		if (player == 2 && p.keyIsDown(p.UP_ARROW)){
 			if (p2pos > 0)
 				p2pos -= 10;
 		}
-		if (p.keyIsDown(83)){
+		if (player == 2 && p.keyIsDown(p.DOWN_ARROW)){
 			if (p2pos < HEIGHT - paddle_height)
 				p2pos += 10;
 		}
 	}
 
-	var	draw_objects = () => {
+	var map3 = () => {
+		p.background('red');
+		p.strokeWeight(4);
+		p.stroke(1000);
+		p.line(WIDTH / 2, 0, WIDTH / 2, HEIGHT);
+		p.noFill();
+		p.circle(WIDTH / 2, HEIGHT / 2, 70);
+		p.fill('red');
+		p.rect(10, p1pos, paddle_width, paddle_height);
+		p.rect(WIDTH - 20, p2pos, paddle_width, paddle_height);
+		p.ellipse(xpos, ypos, 20, 20);
+		p.stroke(1);
+		p.textSize(12);
+		p.text('PONG GAME', WIDTH / 2 - 37, 20);
+		p.fill('white');
+	}
+
+	var map2 = () => {
+		p.background('blue');
+		p.strokeWeight(4);
+		p.stroke(1000);
+		p.line(WIDTH / 2, 0, WIDTH / 2, HEIGHT);
+		p.noFill();
+		p.circle(WIDTH / 2, HEIGHT / 2, 70);
+		p.fill('blue');
+		p.rect(10, p1pos, paddle_width, paddle_height);
+		p.rect(WIDTH - 20, p2pos, paddle_width, paddle_height);
+		p.ellipse(xpos, ypos, 20, 20);
+		p.stroke(1);
+		p.textSize(12);
+		p.text('PONG GAME', WIDTH / 2 - 37, 20);
+		p.fill('white');
+	}
+
+	var	map1 = () => {
 		p.background(0);
 		p.strokeWeight(4);
 		p.stroke(1000);
@@ -100,8 +147,10 @@ const sketch = function(p){
 			dy = -dy;
 		}
 
-		xpos = xpos + dx;
-		ypos = ypos + dy;
+		if (player == 1){
+			xpos = xpos + dx;
+			ypos = ypos + dy;
+		}
 
 		p.textSize(100);
 		p.stroke('white');
@@ -122,7 +171,7 @@ const sketch = function(p){
 	}
 
 // welcome page
-	var press_to_play = (n) => {
+	var welcome_page = (n) => {
 		p.stroke(1);
 		p.fill('white');
 		if (n === 0){
@@ -136,17 +185,89 @@ const sketch = function(p){
 			p.textSize(40);
 			p.text('player 2 won', WIDTH / 2, 200);
 		}
-		p.text('press space to play', WIDTH / 2 - 150, 300);
-		if (p.keyIsDown(32)){
-			reset_game();
-			gameison = true;
+		if (player != 0){
+			socket.emit("number-of-players", "G");
+			socket.on("number-of-players", (msg) => {
+				connected_players = msg;
+			});
+			if (connected_players >= 2){
+				p.text('player connected press space to play', WIDTH / 2 - 150, 300);
+				if (p.keyIsDown(32)){
+					reset_game();
+					gameison = true;
+				}
+			}else{
+				p.text('waiting for another player', WIDTH / 2 - 150, 300);
+
+			}
 		}
 	}
 
 //
 
+	var comunicate_coord = () => {
+		if (player == 1)
+		{
+			socket.emit("game", {player: 1,paddle: p1pos/HEIGHT, ball: {x: xpos/WIDTH, y: ypos/HEIGHT}});
+		}
+		else if (player == 2)
+		{
+			socket.emit("game", {player: 2,paddle: p2pos/HEIGHT});
+		}
+		socket.on("game", (obj) => {
+			if (player == 1){
+				p2pos = obj.paddle * HEIGHT;	
+			}else if (player == 2){
+				p1pos = obj.paddle * HEIGHT;
+				xpos = obj.ball.x * WIDTH;
+				ypos = obj.ball.y * HEIGHT;
+			}else{
+				if (obj.player == 1)
+				{
+					p1pos = obj.paddle * HEIGHT;
+					xpos = obj.ball.x * WIDTH;
+					ypos = obj.ball.y * HEIGHT;
+				}
+				else{
+					p2pos = obj.paddle * HEIGHT;
+				}
+			}
+		});
+	}
+
+	var debug_player = () => {
+		if (player == 1)
+			console.log("you are player number 1")
+		else if (player == 2)
+			console.log("you are player number 2")
+		else
+			console.log("you are a watcher");
+	}
+
+	var start_game = () => {
+		if (gameison){
+			socket.emit("start-game", "yalah");
+			reset_game();
+		}else{
+		socket.on("start-game", (data) => {
+			gameison = true;
+			reset_game();
+		});
+		}
+	}
+
+	p.windowResized = () => {
+		console.log("window resized");
+		HEIGHT = (window.innerHeight < maxHEIGHT) ? window.innerHeight : maxHEIGHT;
+		WIDTH = (window.innerWidth < maxWIDTH) ? window.innerWidth : maxWIDTH;
+		HEIGHT -= 10;
+		WIDTH -= 10;
+		p.resizeCanvas(WIDTH, HEIGHT);
+		p.background(0);
+	};
 
 	p.draw = function (){
+		debug_player();
 		if (p1score === 5){
 			gameison = false;
 			game_status = 1;
@@ -156,12 +277,15 @@ const sketch = function(p){
 		}
 		if (gameison){
 			key_event();
-			draw_objects();
+			map1();
 			move_ball();
+			comunicate_coord();
 		}else{
-			press_to_play(game_status);
+			welcome_page(game_status);
+			start_game();
 		}
 	};
 };
 
 const myp5 = new p5(sketch);
+
