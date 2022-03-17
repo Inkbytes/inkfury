@@ -6,7 +6,7 @@
       <h3>InkFury</h3>
       <p class="bold">Play Ping-Pong with your friends</p>
       <p class="normal">Makers is a Figma Plugin to help you build and publish sites directly in Figma. No code required.</p>
-      <button>Play online</button>
+      <router-link :to="{name : 'Game'}"><button>Play online</button></router-link>
     </aside>
     <aside id="pic">
       <img src="../assets/pong.webp" alt="" width="515" height="500">
@@ -151,6 +151,7 @@ button {
   font-size: 18px;
   line-height: 40px;
   text-align: center;
+  cursor: pointer;
 }
 #education {
   max-width: 1200px;

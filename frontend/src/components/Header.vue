@@ -8,7 +8,7 @@
       </router-link>
       <ul>
           <li v-if="!loged"><a href="#education">Core team</a></li>
-          <li v-else-if="!game"><router-link to="/game">Game</router-link></li>
+          <li v-else-if="!game"><router-link :to="{ name : 'Game' }">Game</router-link></li>
           <li v-else><a href="">Chat</a></li>
           <li v-if="!loged"><a href="#about">About</a></li>
           <li v-else-if="profil"><a href="">Chat</a></li>
