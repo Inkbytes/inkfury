@@ -27,11 +27,11 @@ class Game{
 	}
 }
 
-let connections = [];
-let numberOfGames = 0;
+let connections1 = [];
+let gameNumber = 0;
 let GameArray: any [] = [];
-
 // client.id1,client.id2,room
+
 
 @WebSocketGateway({ cors: true })
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
@@ -41,43 +41,47 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	afterInit(server: Server){
 		this.logger.log('Server intialized..');
+		// console.log(server.sockets);		
 	}
 
-	handleConnection(client: Socket, ...args: any[]){
+	handleConnection(client: Socket|any, ...args: any[]){
 		this.logger.log(`Client connected ${client.id}`);
-		connections.push(client.id);
+		connections1.push(client.id);
 
-		if (connections.length == 1){
+
+		if (connections1.length == 1){
 			client.emit('initiation', 1);
-		}else if (connections.length == 2){
+			client.join('room-'+gameNumber);
+			client.gameId = gameNumber;
+		}else if (connections1.length == 2){
 			client.emit('initiation', 2);
-			// let currentGame = new Game(connections[0], connections[1], 'room' + numberOfGames);
-			// GameArray.push(currentGame);
-			// connections.splice(0, 2);
-			// currentGame.player1Id.join(currentGame.roomId);
-			// currentGame.player2Id.join(currentGame.roomId);
+			client.join('room-'+gameNumber);
+			client.gameId = gameNumber;
+			gameNumber++;
 		}
 	}
 
 	handleDisconnect(client: Socket){
 		this.logger.log(`Client disconnected ${client.id}`);
-		connections.splice(connections.indexOf(client.id), 1);
+		connections1.splice(connections1.indexOf(client.id), 1);
 	}
 
 
 	@SubscribeMessage('game')
-	handleGame(client: Socket, data: any): void {
-		client.broadcast.emit('game', data);
+	handleGame(client: Socket|any, data: any): void {
+		client.broadcast.to('room-'+client.gameId).emit('game', data);
 	}
 
 	@SubscribeMessage('start-game')
-	handleStartGame(client: Socket, data: any): void {
-		client.broadcast.emit('start-game', data);
+	handleStartGame(client: Socket|any, data: any): void {
+		connections1.splice(0, connections1.length);
+		client.broadcast.to('room-'+client.gameId).emit('start-game', data);
 	}
 
 	@SubscribeMessage('number-of-players')
-	handlePlayers(client: Socket, data: any): void {
-		client.emit('number-of-players', connections.length);
+	handlePlayers(client: Socket|any, data: any): void {
+		// console.log(connections1.length);
+		client.to('room-'+client.gameId).emit('number-of-players', connections1.length);
 	}
 
 }

@@ -186,10 +186,12 @@ const sketch = function(p){
 			p.text('player 2 won', WIDTH / 2, 200);
 		}
 		if (player != 0){
+			if (connected_players != 2){
 			socket.emit("number-of-players", "G");
 			socket.on("number-of-players", (msg) => {
 				connected_players = msg;
 			});
+			}
 			if (connected_players >= 2){
 				p.text('player connected press space to play', WIDTH / 2 - 150, 300);
 				if (p.keyIsDown(32)){
