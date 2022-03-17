@@ -1,15 +1,11 @@
 
-const socket = io("http://10.12.1.4:1337");
+const socket = io("http://localhost:3000");
 
 var player = 0;
 
 socket.on("connect", ()=>{
 	console.log(`connected with id ${socket.id}`);
 })
-
-socket.on("client-event", (payload) =>{
-	console.log(payload);
-});
 
 socket.on("initiation", (nb) => {
 	if (nb === 1){
@@ -46,7 +42,6 @@ const sketch = function(p){
 	let img;
 
 	p.preload = () => {
-		img = p.loadImage('../assets/ball1.png');
 	}
 
 	p.setup = () => {
@@ -278,7 +273,6 @@ const sketch = function(p){
 			welcome_page(game_status);
 			start_game();
 		}
-		p.image(img, 0, 0);
 	};
 };
 
