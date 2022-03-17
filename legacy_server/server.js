@@ -2,7 +2,6 @@ const { on } = require('events');
 const express = require('express');
 const app = express();
 const path = require('path');
-const absolute_path = '/Users/ztaouil/Projects/inkfury/client/src/';
 const { Server } = require("socket.io");
 
 var arr = [];
@@ -45,9 +44,9 @@ io.on("connection", (socket) => {
 });
 
 
+let absolute_path = '/Users/ztaouil/Projects/inkfury/client/';
 
-
-app.use(express.static(path.join(absolute_path)));
+app.use(express.static(absolute_path));
 
 app.get('/', (req, res) => {
 	res.sendFile(path.join(absolute_path, 'index.html'));

@@ -43,6 +43,11 @@ const sketch = function(p){
 	var paddle_width = 10;
 	var paddle_height = WIDTH / 10;
 	let bg;
+	let img;
+
+	p.preload = () => {
+		img = p.loadImage('../assets/ball1.png');
+	}
 
 	p.setup = () => {
 		p.createCanvas(WIDTH, HEIGHT);
@@ -273,6 +278,7 @@ const sketch = function(p){
 			welcome_page(game_status);
 			start_game();
 		}
+		p.image(img, 0, 0);
 	};
 };
 
