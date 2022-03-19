@@ -1,0 +1,12 @@
+#messages {
+    height: 300px;
+    overflow-y: scroll;
+}
+
+.text-center {
+    margin-top: 20px;
+}
+
+#app {
+    margin-top: 10rem;
+}
