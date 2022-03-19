@@ -1,10 +1,12 @@
 
-const socket = io("http://localhost:3000");
+const socket = io("http://10.12.1.4:3000");
 
-var player = 0;
+let player = 0;
+let hamid = false;
 
 socket.on("connect", ()=>{
 	console.log(`connected with id ${socket.id}`);
+	console.log(socket);
 })
 
 socket.on("initiation", (nb) => {
@@ -12,6 +14,7 @@ socket.on("initiation", (nb) => {
 		player = 1;
 	}else if (nb === 2){
 		player = 2;
+		socket.emit('player2-connected', 1);
 	}
 });
 
@@ -20,28 +23,31 @@ socket.on("initiation", (nb) => {
 const sketch = function(p){
 	const maxWIDTH = 1200;
 	const maxHEIGHT = 800;
-	var WIDTH = 1200;
-	var HEIGHT = 800;
+	let WIDTH = 1200;
+	let HEIGHT = 800;
 
-	var list = [-4, -3, 3, 4];
-	var xpos = WIDTH / 2;
-	var ypos = HEIGHT / 2;
-	var dx = list[Math.floor(Math.random() * 4)];
-	var dy = list[Math.floor(Math.random() * 4)];
-	var	p1pos = HEIGHT / 2;
-	var p2pos = HEIGHT / 2;
-	var p1score = 0;
-	var p2score = 0;
-	var	gameison = false;
-	var game_status = 0;
-	var connected_players = 0;
+	let list = [-4, -3, 3, 4];
+	let xpos = WIDTH / 2;
+	let ypos = HEIGHT / 2;
+	let dx = list[Math.floor(Math.random() * 4)];
+	let dy = list[Math.floor(Math.random() * 4)];
+	let	p1pos = HEIGHT / 2;
+	let p2pos = HEIGHT / 2;
+	let p1score = 0;
+	let p2score = 0;
+	let	gameison = false;
+	let game_status = 0;
+	let connected_players = 0;
 
-	var paddle_width = 10;
-	var paddle_height = WIDTH / 10;
+	let paddle_width = 10;
+	let paddle_height = WIDTH / 10;
 	let bg;
-	let img;
+	let wait_lobby_peppe;
+	let welcome_tortoise;
 
 	p.preload = () => {
+		wait_lobby_peppe = p.loadImage('https://i.imgur.com/YVFcaI0.jpeg');
+		welcome_tortoise = p.loadImage('https://i.imgur.com/XCPkpZT.jpeg');
 	}
 
 	p.setup = () => {
@@ -49,7 +55,7 @@ const sketch = function(p){
 		p.background(0);
 	};
 
-	var key_event = () => {
+	let key_event = () => {
 		if (player == 1 && p.keyIsDown(p.UP_ARROW)){
 			if (p1pos > 0)
 				p1pos -= 10;
@@ -68,42 +74,11 @@ const sketch = function(p){
 		}
 	}
 
-	var map3 = () => {
-		p.background('red');
-		p.strokeWeight(4);
-		p.stroke(1000);
-		p.line(WIDTH / 2, 0, WIDTH / 2, HEIGHT);
-		p.noFill();
-		p.circle(WIDTH / 2, HEIGHT / 2, 70);
-		p.fill('red');
-		p.rect(10, p1pos, paddle_width, paddle_height);
-		p.rect(WIDTH - 20, p2pos, paddle_width, paddle_height);
-		p.ellipse(xpos, ypos, 20, 20);
-		p.stroke(1);
-		p.textSize(12);
-		p.text('PONG GAME', WIDTH / 2 - 37, 20);
-		p.fill('white');
-	}
-
-	var map2 = () => {
-		p.background('blue');
-		p.strokeWeight(4);
-		p.stroke(1000);
-		p.line(WIDTH / 2, 0, WIDTH / 2, HEIGHT);
-		p.noFill();
-		p.circle(WIDTH / 2, HEIGHT / 2, 70);
-		p.fill('blue');
-		p.rect(10, p1pos, paddle_width, paddle_height);
-		p.rect(WIDTH - 20, p2pos, paddle_width, paddle_height);
-		p.ellipse(xpos, ypos, 20, 20);
-		p.stroke(1);
-		p.textSize(12);
-		p.text('PONG GAME', WIDTH / 2 - 37, 20);
-		p.fill('white');
-	}
-
-	var	map1 = () => {
+	let	draw_objects = () => {
 		p.background(0);
+		p.stroke(1);
+		p.textSize(10);
+		p.text(player, 10, 10);
 		p.strokeWeight(4);
 		p.stroke(1000);
 		p.line(WIDTH / 2, 0, WIDTH / 2, HEIGHT);
@@ -117,13 +92,9 @@ const sketch = function(p){
 		p.textSize(12);
 		p.text('PONG GAME', WIDTH / 2 - 37, 20);
 		p.fill('white');
-
-		// p.stroke('red');
-		// p.line(10 + paddle_width, 0, 10 + paddle_width, HEIGHT);
-		// p.line(WIDTH - paddle_width - 10, 0, WIDTH - paddle_width - 10, HEIGHT);
 	}
 
-	var move_ball = () => {
+	let move_ball = () => {
 		if (xpos + 10 >= WIDTH - paddle_width - 10 && ypos >= p2pos - 5 && ypos <= p2pos + paddle_height + 5)
 		{
 			dx > 0 ? dx += 1: dx -= 1;
@@ -157,21 +128,22 @@ const sketch = function(p){
 		p.text(p1score, (WIDTH / 2) - 150, HEIGHT / 2 - 150);
 		p.text(p2score, (WIDTH / 2) + 100, HEIGHT / 2 - 150);
 	}
-
-	var	reset_ball = () => {
-		xpos = WIDTH / 2;
+	let	reset_ball = () => { xpos = WIDTH / 2;
 		ypos = HEIGHT / 2;
 		dx = list[Math.floor(Math.random() * 4)];
 		dy = list[Math.floor(Math.random() * 4)];
 	}
 
-	var reset_game = () => {
+	let reset_game = () => {
 		p1score = 0;
 		p2score = 0;
 	}
 
 // welcome page
-	var welcome_page = (n) => {
+	let welcome_page = (n) => {
+		p.stroke(1);
+		p.textSize(10);
+		p.text(player, 10, 10);
 		p.stroke(1);
 		p.fill('white');
 		if (n === 0){
@@ -186,28 +158,30 @@ const sketch = function(p){
 			p.text('player 2 won', WIDTH / 2, 200);
 		}
 		if (player != 0){
-			if (connected_players != 2){
-			socket.emit("number-of-players", "G");
-			socket.on("number-of-players", (msg) => {
-				connected_players = msg;
-			});
+			if (player == 1){
+				socket.on("player2-connected", (msg) => {
+					connected_players = msg;
+					hamid = true;
+					socket.emit('ready', 1);
+				});
 			}
-			if (connected_players >= 2){
-				p.text('player connected press space to play', WIDTH / 2 - 150, 300);
+			if (player === 2 || hamid === true){
+//				p.text('player connected press space to play', WIDTH / 2 - 150, 300);
+				p.image(welcome_tortoise, WIDTH / 2, HEIGHT / 2, 100, 100);
 				if (p.keyIsDown(32)){
 					reset_game();
 					gameison = true;
 				}
-			}else{
-				p.text('waiting for another player', WIDTH / 2 - 150, 300);
-
+			}
+			else{
+				p.image(wait_lobby_peppe, WIDTH / 2, HEIGHT / 2, 100, 100);
 			}
 		}
 	}
 
 //
 
-	var comunicate_coord = () => {
+	let comunicate_coord = () => {
 		if (player == 1)
 		{
 			socket.emit("game", {player: 1,paddle: p1pos/HEIGHT, ball: {x: xpos/WIDTH, y: ypos/HEIGHT}});
@@ -229,7 +203,7 @@ const sketch = function(p){
 		});
 	}
 
-	var debug_player = () => {
+	let debug_player = () => {
 		if (player == 1)
 			console.log("you are player number 1")
 		else if (player == 2)
@@ -238,7 +212,7 @@ const sketch = function(p){
 			console.log("you are a watcher");
 	}
 
-	var start_game = () => {
+	let start_game = () => {
 		if (gameison){
 			socket.emit("start-game", "yalah");
 			reset_game();
@@ -258,7 +232,6 @@ const sketch = function(p){
 	};
 
 	p.draw = function (){
-		debug_player();
 		if (p1score === 5){
 			gameison = false;
 			game_status = 1;
@@ -268,7 +241,7 @@ const sketch = function(p){
 		}
 		if (gameison){
 			key_event();
-			map1();
+			draw_objects();
 			comunicate_coord();
 			move_ball();
 		}else{
@@ -280,5 +253,4 @@ const sketch = function(p){
 
 const myp5 = new p5(sketch);
 
-// responsive feature is introduction the score bug 
-// the mf is small
+// responsive feature is introduction the score bug

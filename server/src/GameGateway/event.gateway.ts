@@ -30,8 +30,6 @@ class Game{
 let connections1 = [];
 let gameNumber = 0;
 let GameArray: any [] = [];
-// client.id1,client.id2,room
-
 
 @WebSocketGateway({ cors: true })
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
@@ -41,14 +39,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	afterInit(server: Server){
 		this.logger.log('Server intialized..');
-		// console.log(server.sockets);		
+		// console.log(server.sockets);
 	}
 
 	handleConnection(client: Socket|any, ...args: any[]){
 		this.logger.log(`Client connected ${client.id}`);
 		connections1.push(client.id);
-
-
 		if (connections1.length == 1){
 			client.emit('initiation', 1);
 			client.join('room-'+gameNumber);
@@ -63,7 +59,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	handleDisconnect(client: Socket){
 		this.logger.log(`Client disconnected ${client.id}`);
-		connections1.splice(connections1.indexOf(client.id), 1);
+		if (connections1.length >= 1)
+			connections1.splice(connections1.indexOf(client.id), 1);
+		this.logger.log(`Connections size: ${connections1.length}`);
 	}
 
 
@@ -74,14 +72,16 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage('start-game')
 	handleStartGame(client: Socket|any, data: any): void {
-		connections1.splice(0, connections1.length);
 		client.broadcast.to('room-'+client.gameId).emit('start-game', data);
 	}
 
-	@SubscribeMessage('number-of-players')
-	handlePlayers(client: Socket|any, data: any): void {
-		// console.log(connections1.length);
-		client.to('room-'+client.gameId).emit('number-of-players', connections1.length);
+	@SubscribeMessage('player2-connected')
+	handleP2(client: Socket|any, data: any): void{
+		client.broadcast.to('room-'+client.gameId).emit('player2-connected', data);
 	}
 
+	@SubscribeMessage('ready')
+	ready_event(client:	Socket|any, data: any): void{
+		connections1.splice(0, connections1.length);
+	}
 }
