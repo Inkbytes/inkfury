@@ -1,3 +1,11 @@
+// enum game_status;
+//
+// lobby.
+// pregame.
+// game.
+// postgame.
+// quitgame.
+
 
 const socket = io("http://10.12.1.4:3000");
 
