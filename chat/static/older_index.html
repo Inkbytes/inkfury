@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <title>NestJS SocketIO</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div id="v-app" class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 col-sm-12">
+                <h1 class="text-center">{{ title }}</h1>
+                <br>
+                <div id="status"></div>
+                <div id="chat">
+                    <input type="text" v-model="name" id="username" class="form-control" placeholder="Enter name...">
+                    <br>
+                    <div class="card">
+                        <div id="messages" class="card-block">
+                            <ul>
+                                <li v-for="message of messages">{{ message.name }}: {{ message.text }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                        <textarea id="textarea" class="form-control" v-model="text" placeholder="Enter message..."></textarea>
+                    <br>
+                    <button id="myBtn" class="btn" @click.prevent="sendMessage">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: "#v-app",
+            data: {
+                title: 'InkBytes Livechat',
+                name: '',
+                text: '',
+                messages: [],
+                socket: null,
+            },
+            methods: {
+                sendMessage() {
+                    if (this.validateInput()) {
+                        const message = {
+                            name: this.name,
+                            text: this.text
+                        }
+                        console.log(`send name: ${this.name}`);
+                        console.log(`send text: ${this.text}`);
+                        this.socket.emit('msgToServer', message);
+                        this.text = '';
+                    }
+                },
+                receivedMessage(message) {
+                    console.log(`recved name: ${message.name}`);
+                    console.log(`recved text: ${message.text}`);
+                    this.messages.push(message);
+               
+                },
+                validateInput() {
+                    return this.name.length > 0 && this.text.length > 0;
+                }
+            },
+            // Upon creation this will run and setup a socket.io client
+            created() {
+                this.socket = io("http://10.12.2.1:3000");
+                this.socket.on('msgToClient', (message) => {
+                    this.receivedMessage(message);
+                });
+            }
+        });
+    </script>
+    <script>
+        var input = document.getElementById("textarea");
+        // Execute a function when the user releases a key on the keyboard
+        input.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            // Trigger the button element with a click
+            document.getElementById("myBtn").click();
+        }
+        });
+    </script>
+    <script>
+        const chatForm = document.getElementById("card");
+    </script>
+
+</body>
+</html>
