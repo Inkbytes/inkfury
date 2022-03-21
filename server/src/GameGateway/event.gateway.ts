@@ -70,6 +70,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (game_queue.length >= 2)
 			queue_players();
 	}
+//	post game info to game table
 }
 
 let	queue_players = () => {

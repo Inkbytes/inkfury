@@ -9,7 +9,7 @@
 // postgame.
 // quitgame.
 
-const socket = io("http://10.12.1.5:5000");
+const socket = io("http://localhost:3000");
 
 socket.on("connect", ()=>{
 	console.log(`connected with id ${socket.id}`);
@@ -46,6 +46,9 @@ let paddle_width = 10;
 let paddle_height = WIDTH / 10;
 let bg;
 
+let g_tmp_flag = false;
+let quitflag = 0;
+
 const sketch = function(p){
 
 	p.preload = () => {
@@ -77,6 +80,9 @@ const sketch = function(p){
 	}
 	let d_lobby = () => {
 // draw lobby
+		g_tmp_flag = false;
+		quitflag = 0;
+
 		p.background(0);
 		p.stroke(1);
 		p.textSize(30);
@@ -112,8 +118,11 @@ const sketch = function(p){
 		});
 
 		socket.on('quitgame-event', (flag) => {
-			game_state = lobby;
-			socket.emit('queueme-event', 1);
+			if (g_tmp_flag === false && game_state === pregame){
+				socket.emit('queueme-event', 1);
+				game_state = lobby;
+			}
+			g_tmp_flag = true;
 		});
 	}
 
@@ -141,8 +150,8 @@ const sketch = function(p){
 		ball_collition_mouvement();
 
 		socket.on('quitgame-event', (flag) => {
-			console.log(`quitgame-event received`);
-			game_state = quitgame;
+			if (game_state === game)
+				game_state = quitgame;
 		});
 		if (p1score == 5 || p2score == 5)
 			game_state = postgame;
@@ -150,7 +159,6 @@ const sketch = function(p){
 
 	let d_postgame = () => {
 // draw postgame
-		let quitflag = 0;
 		p.background(0);
 		p.stroke(1);
 		p.textSize(30);
@@ -175,7 +183,8 @@ const sketch = function(p){
 		});
 // somebody quit the game
 		socket.on('quitgame-event', (flag) => {
-			quitflag = flag;
+			if (game_state === postgame)
+				quitflag = flag;
 		});
 	}
 
@@ -191,7 +200,6 @@ const sketch = function(p){
 
 		if (p.keyIsDown(32))
 		{
-			console.log('spacebar pressed');
 			game_state = lobby;
 			socket.emit('queueme-event', 1);
 		}
@@ -274,10 +282,10 @@ const sketch = function(p){
 //
 //	player 1 emits his paddle pos and the balls pos
 		if (player_number === 1)
-			socket.emit('game-event', {player: 1, paddle: p1pos / HEIGHT, ball: {x: xpos / WIDTH, y: ypos / HEIGHT}});
+			socket.emit('game-event', {player: 1, paddle: (p1pos / HEIGHT).toFixed(4) , ball: {x: (xpos / WIDTH).toFixed(4), y: (ypos / HEIGHT).toFixed(4)}});
 //	player 2 emits his paddle pos
 		if (player_number === 2)
-			socket.emit('game-event', {player: 2, paddle: p2pos / HEIGHT});
+			socket.emit('game-event', {player: 2, paddle: (p2pos / HEIGHT).toFixed(4)});
 
 //  player 1 receives player 2's paddle and player 2 receives p1 paddle's and ball
 		socket.on('game-event', (gameobj) => {
