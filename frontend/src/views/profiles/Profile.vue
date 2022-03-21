@@ -6,7 +6,7 @@
         <span id="settings" @click="switchSet"></span>
         <div v-if="search">
             <div id="search" >
-                    <p v-for="user in matchingLogin" :key="user.login">{{ user.login }}</p>
+                    <router-link :to="{ name: 'Users', params: { login : user.login}}" v-for="user in matchingLogin" :key="user.login">{{ user.login }}</router-link>
             </div>
         </div>
         <img :src="require('../../assets/'+user.login+'.jpeg')" width="100" height="100">
@@ -283,17 +283,18 @@ export default defineComponent({
     top: 42px;
     background: white; 
     right: 10px;
-    width: 220px;
+    width: 222px;
 }
-#search p {
+#search a {
+    display: block;
     border-top: 1px solid grey;
-    padding-left: 20px;
     margin: 0;
     padding-top: 3px;
     padding-bottom: 5px;
+    text-decoration: none;
     color: black;
 }
-#search p:hover {
+#search a:hover {
   text-decoration: underline;
   background-color: #eeeeee;  
 }
