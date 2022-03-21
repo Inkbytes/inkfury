@@ -9,7 +9,9 @@
 // postgame.
 // quitgame.
 
-const socket = io("http://10.12.1.4:3000");
+const ip_addr = '10.12.1.4';
+
+const socket = io("http://"+ip_addr+":3000");
 
 socket.on("connect", ()=>{
 	console.log(`connected with id ${socket.id}`);
