@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { ChatGateway } from './chat.gateway';
+import { ChatGateway } from './chat/chat.gateway';
+import { AlertGateway } from './alert/alert.gateway';
+import { AlertController } from './alert/alert.controller';
 
 @Module({
   imports: [
@@ -9,6 +11,6 @@ import { ChatGateway } from './chat.gateway';
       rootPath: join(__dirname, '../..', 'static'),
     }),
   ],
-  providers: [ChatGateway, ChatGateway],
+  providers: [ChatGateway, AlertGateway],
 })
 export class AppModule {}

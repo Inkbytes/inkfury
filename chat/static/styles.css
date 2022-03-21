@@ -1,12 +1,22 @@
-#messages {
-    height: 300px;
-    overflow-y: scroll;
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "chat alerts";
 }
 
-.text-center {
-    margin-top: 20px;
+section.chat {
+    grid-area: chat;
 }
 
-#app {
-    margin-top: 10rem;
+section.alerts {
+    grid-area: alerts;
+}
+
+.tab-row {
+    padding-top: 10px;
+}
+
+.tab-btn.active {
+    background: blue;
+    color: white;
 }
