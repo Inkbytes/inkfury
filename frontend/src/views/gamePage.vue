@@ -39,7 +39,7 @@ export default defineComponent({
 		play(image : any) {
 			this.bgClicked = true
 
-			const ip_addr = '10.12.1.4';
+			const ip_addr = 'localhost';
 
 			const socket = io("http://"+ip_addr+":3000");
 
