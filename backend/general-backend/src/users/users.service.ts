@@ -1,43 +1,24 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from '../../src/entities/user.entity';
+import { Repository } from 'typeorm';
+import { AddUserDto } from './dto/add-user.dto';
 import {User} from "./interfaces/user.interface";
 
 @Injectable()
 export class UsersService {
-    private users : User[] = [
-        {
-            id: "1",
-            fullname: 'Ashad Mohamed',
-            username: 'mashad',
-            pdp: 'https://profile.intra.42.fr/users/mashad/photo',
-        },
-        {
-            id: "2",
-            fullname: 'Oussama El ouarti',
-            username: 'oel-ouar',
-            pdp: 'https://profile.intra.42.fr/users/oel-ouar/photo',
-        }
-    ];
-
-    findAll() : User[] {
-        return this.users;
+    constructor(@InjectRepository(UserEntity) private readonly repo: Repository<UserEntity>) {
     }
 
-    findOne(id : string) : User {
-        return this.users.find(item => item.id === id);
+    public async getAll() {
+        return await this.repo.find();
     }
 
-    addUser(user : User) : boolean {
-        if (this.users.find(item => (item.id === user.id)))
-            return false;
-        this.users.push(user);
-        return true;
+    public async create(user : AddUserDto) {
+        return await this.repo.save(user);
     }
 
-    rmUser(id : string) : boolean {
-        if (this.findOne(id)) {
-            this.users = this.users.filter(ele => ele.id != id);
-            return true;
-        }
-        return false;
+    public async remove(username : string) {
+        return await this.repo.delete({username: username});
     }
 }
