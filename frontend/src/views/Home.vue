@@ -1,34 +1,54 @@
 <template>
-  <Header/>
+<DefaultLayout>
+  <span @log-out="logged = !logged"></span>
 
   <div id="pong">
     <aside id="text">
       <h3>InkFury</h3>
       <p class="bold">Play Ping-Pong with your friends</p>
-      <p class="normal">Makers is a Figma Plugin to help you build and publish sites directly in Figma. No code required.</p>
-      <router-link :to="{name : 'Game'}"><button>Play online</button></router-link>
+      <p class="normal">
+        Makers is a Figma Plugin to help you build and publish sites directly in
+        Figma. No code required.
+      </p>
+      <router-link :to="{ name: 'Game' }"
+        ><button>Play online</button></router-link
+      >
     </aside>
     <aside id="pic">
-      <img src="../assets/pong.webp" alt="" width="515" height="500">
+      <img src="../assets/pong.webp" alt="" width="515" height="500" />
     </aside>
   </div>
 
   <div id="about">
     <h2>We are here for you</h2>
     <p class="bold">Learn how to make and publish sites with Figma</p>
-    <p class="normal">Makers is a Figma Plugin to help you build and publish sites directly in Figma. No code required.</p>
+    <p class="normal">
+      Makers is a Figma Plugin to help you build and publish sites directly in
+      Figma. No code required.
+    </p>
     <div id="content">
       <aside>
-          <p class="bold">How do you go from Figma to Site?</p>
-          <p class="normal">Lorem ipsum dolor sit amet, aeque tation vis ei. Ne his simul sensibus percipitur. Lorem ipsum dolor sit amet, aeque tation vis ei. Ne his simul sensibus percipitur.</p>
+        <p class="bold">How do you go from Figma to Site?</p>
+        <p class="normal">
+          Lorem ipsum dolor sit amet, aeque tation vis ei. Ne his simul sensibus
+          percipitur. Lorem ipsum dolor sit amet, aeque tation vis ei. Ne his
+          simul sensibus percipitur.
+        </p>
       </aside>
       <aside>
         <p class="bold">Where’s all the love?</p>
-        <p class="normal">Lorem ipsum dolor sit amet, aeque tation vis ei. Ne his simul sensibus percipitur.</p>
+        <p class="normal">
+          Lorem ipsum dolor sit amet, aeque tation vis ei. Ne his simul sensibus
+          percipitur.
+        </p>
       </aside>
       <aside>
         <p class="bold">Where’s all the love?</p>
-        <p class="normal">Lorem ipsum dolor sit amet, aeque tation vis ei. Ne his simul sensibus percipitur. Lorem ipsum dolor sit amet, aeque tation vis ei. Ne his simul sensibus percipitur.</p>
+        <p class="normal">
+          Lorem ipsum dolor sit amet, aeque tation vis ei. Ne his simul sensibus
+          percipitur. Lorem ipsum dolor sit amet, aeque tation vis ei. Ne his
+          simul sensibus percipitur.
+        </p>
       </aside>
     </div>
   </div>
@@ -36,64 +56,92 @@
   <div id="education">
     <h3>EDUCATION</h3>
     <p class="bold">Learn how to make and publish sites with Figma</p>
-    <p class="normal">Makers is a Figma Plugin to help you build and publish sites directly in Figma. No code required.</p>
-    <Swiper :slides-per-view="3" :space-between="0" :autoplay="{
-      delay: 2500,
-      disableOnInteraction: false,
-    }">
-
-        <swiper-slide><div class="ID">
-            <img src="../assets/mashad.jpeg" width="50" height="50">
-            <h2>Ashad Mohamed</h2>
-            <p>backend, UI UX and database</p>
-            <a href="https://github.com/f0rkr"><img src="../assets/github.png" width="20"></a>
-          </div></swiper-slide>
-        <swiper-slide><div class="ID">
-            <img src="../assets/oel-ouar.jpeg" width="50" height="50">
-            <h2>Oussama Elouarti</h2>
-            <p>frontend and UI UX</p>
-            <a href="https://github.com/OussamaElouarti"><img src="../assets/github.png" width="20"></a>
-          </div></swiper-slide>
-        <swiper-slide><div class="ID">
-            <img src="../assets/ztaouil.jpeg" width="50" height="50">
-            <h2>Zakaria Taouil</h2>
-            <p>pong game</p>
-            <a href="https://github.com/taouil-zakaria"><img src="../assets/github.png" width="20"></a>
-          </div></swiper-slide>
-        <swiper-slide><div class="ID">
-            <img src="../assets/abiari.jpeg" width="50" height="50">
-            <h2>Ali Biari</h2>
-            <p>chat</p>
-            <a href="https://github.com/Gruxme"><img src="../assets/github.png" width="20"></a>
-          </div></swiper-slide>
-        <swiper-slide><div class="ID">
-            <img src="../assets/aabounak.jpeg" width="50" height="50">
-            <h2>Ayoub Abounakif</h2>
-            <p>chat</p>
-            <a href="https://github.com/ayoubabounakif"><img src="../assets/github.png" width="20"></a>
-          </div></swiper-slide>
+    <p class="normal">
+      Makers is a Figma Plugin to help you build and publish sites directly in
+      Figma. No code required.
+    </p>
+    <Swiper
+      :slides-per-view="3"
+      :space-between="0"
+      :autoplay="{
+        delay: 2500,
+        disableOnInteraction: false,
+      }"
+    >
+      <swiper-slide
+        ><div class="ID">
+          <img src="../assets/mashad.jpeg" width="50" height="50" />
+          <h2>Ashad Mohamed</h2>
+          <p>backend, UI UX and database</p>
+          <a href="https://github.com/f0rkr"
+            ><img src="../assets/github.png" width="20"
+          /></a></div
+      ></swiper-slide>
+      <swiper-slide
+        ><div class="ID">
+          <img src="../assets/oel-ouar.jpeg" width="50" height="50" />
+          <h2>Oussama Elouarti</h2>
+          <p>frontend and UI UX</p>
+          <a href="https://github.com/OussamaElouarti"
+            ><img src="../assets/github.png" width="20"
+          /></a></div
+      ></swiper-slide>
+      <swiper-slide
+        ><div class="ID">
+          <img src="../assets/ztaouil.jpeg" width="50" height="50" />
+          <h2>Zakaria Taouil</h2>
+          <p>pong game</p>
+          <a href="https://github.com/taouil-zakaria"
+            ><img src="../assets/github.png" width="20"
+          /></a></div
+      ></swiper-slide>
+      <swiper-slide
+        ><div class="ID">
+          <img src="../assets/abiari.jpeg" width="50" height="50" />
+          <h2>Ali Biari</h2>
+          <p>chat</p>
+          <a href="https://github.com/Gruxme"
+            ><img src="../assets/github.png" width="20"
+          /></a></div
+      ></swiper-slide>
+      <swiper-slide
+        ><div class="ID">
+          <img src="../assets/aabounak.jpeg" width="50" height="50" />
+          <h2>Ayoub Abounakif</h2>
+          <p>chat</p>
+          <a href="https://github.com/ayoubabounakif"
+            ><img src="../assets/github.png" width="20"
+          /></a></div
+      ></swiper-slide>
     </Swiper>
   </div>
 
-  <Footer/>
+  </DefaultLayout>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import Header from "../components/Header.vue";
-import Footer from "../components/Footer.vue";
+import { defineComponent } from "vue";
+
+import DefaultLayout from '../layouts/default.vue'
+
 import { Swiper, SwiperSlide } from "swiper/vue";
-import 'swiper/swiper-bundle.min.css';
-import SwiperCore, { Autoplay} from "swiper/core";
+import "swiper/swiper-bundle.min.css";
+import SwiperCore, { Autoplay } from "swiper/core";
+
+import useStore from '../store'
+
 SwiperCore.use([Autoplay]);
 
 export default defineComponent({
-  name: 'Home',
-  components: { Header, Footer, Swiper, SwiperSlide,},
-  data() {
+  name: "Home",
+  components: { Swiper, SwiperSlide, DefaultLayout },
+  setup () {
+    const store = useStore();
+
     return {
-      
-    }
+      user: null,
+      msg: false
+    };
   }
 });
 </script>
@@ -110,19 +158,19 @@ export default defineComponent({
   text-align: left;
   margin-bottom: 100px;
 }
-#text h3{
-  font-family: 'Inter';
+#text h3 {
+  font-family: "Inter";
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
   line-height: 29px;
-  color: #0A2A42;
+  color: #0a2a42;
 }
 #pic {
   text-align: center;
 }
 .bold {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: bolder;
   font-size: 48px;
@@ -132,20 +180,20 @@ export default defineComponent({
 }
 .normal {
   max-width: 483px;
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: lighter;
   font-size: 16px;
   line-height: 150%;
-  color: #0A2A42;
+  color: #0a2a42;
 }
 button {
   color: white;
-  background: #0069FF;
+  background: #0069ff;
   border: none;
   border-radius: 15px;
   padding: 10px 15px;
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: bold;
   font-size: 18px;
@@ -158,7 +206,7 @@ button {
   margin: 0 auto 100px;
 }
 #education h3 {
-  color: #0069FF;
+  color: #0069ff;
 }
 #education p {
   margin: 0 auto;
@@ -175,7 +223,7 @@ button {
   width: 300px;
   height: 200px;
   margin: 0 auto;
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
   border-radius: 20px;
 }
 .ID img {
@@ -191,8 +239,8 @@ button {
   text-align: center;
   margin-bottom: 100px;
 }
-#about h2{
-  font-family: 'Inter';
+#about h2 {
+  font-family: "Inter";
   font-style: normal;
   font-weight: bold;
   font-size: 24px;

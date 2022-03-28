@@ -1,5 +1,5 @@
 <template>
-  <Header :profil="profil"/>
+  <Header :profil="profil" :logged="logged"/>
     <Modal v-if="settings" :nickname="user.login" @close="switchSet"/>
     <div class="profile">
         <input type="text" v-model="search" onfocus="this.value=''">
@@ -194,11 +194,14 @@ import Header from '../../components/Header.vue'
 import Footer from '../../components/Footer.vue'
 import Modal from '../../components/Modal.vue'
 
+import { computed } from 'vue'
+import useStore from '../../store'
+
 export default defineComponent({
     name: 'Profile',
     components: { Header, Footer , Modal},
     data() {
-    
+        const store = useStore();
         return {
             profil: true,
             user: {
@@ -207,14 +210,15 @@ export default defineComponent({
             },
             users: [],
             search: "search..",
+            logged : computed(() => store.state.auth.logged),
             settings: false
         }
     },
    async mounted()
     {
-        fetch("http://localhost:3000/users")
+        fetch("http://localhost:9000/users")
             .then(res => res.json())
-            .then(data =>  this.users = data )
+            .then(data =>  data && (this.users = data) )
             .catch(err => console.log(err.message))
     },
     computed :{
@@ -222,7 +226,7 @@ export default defineComponent({
         matchingLogin() {
             if (this.users.length == 0)
                 return ;
-            const l : any = this.users.filter((user : any) => user.login.includes(this.search))
+            const l : any = this.users.filter((user : any) => user.login.startsWith(this.search))
             return (l)
         },
     },
@@ -432,6 +436,8 @@ export default defineComponent({
     margin: 0;
 }
 .data p:first-child {
+    max-height: 17px;
+    max-width: 166px;
     font-family: 'Inter';
     font-style: normal;
     font-weight: 600;

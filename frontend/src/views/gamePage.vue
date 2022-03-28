@@ -1,5 +1,5 @@
 <template>
-    <Header :game="game"/>
+    <Header :game="game" :logged="logged"/>
 	<div v-if="!bgClicked" id="swiper">
 		<h1>Choose your game background</h1>
 		<Swiper id="choose-bg" :slides-per-view="2" :space-between="0" :autoplay="{
@@ -19,27 +19,37 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
+
 import p5 from 'p5'
+
 import { Swiper, SwiperSlide } from "swiper/vue";
 import 'swiper/swiper-bundle.min.css';
 import SwiperCore, { Autoplay } from "swiper/core";
+
 import io from 'socket.io-client'
+
+import { computed } from 'vue'
+import  useStore  from '../store'
+
 SwiperCore.use([Autoplay]);
 export default defineComponent({
     components: {Header, Footer, Swiper, SwiperSlide},
     data() {
+		const store = useStore();
         return {
 			game: true,
 			bgClicked: false,
+			logged: computed(() => store.state.auth.logged)
         }
-    },
+	},
 	methods: {
 		play(image : any) {
 			this.bgClicked = true
 
-			const ip_addr = 'localhost';
+			const ip_addr = '10.12.1.6';
 
 			const socket = io("http://"+ip_addr+":3000");
 
@@ -126,7 +136,7 @@ export default defineComponent({
 					socket.on('1or2-event', (message: any) => {
 						player_number = message;
 						game_state = pregame;
-						console.log(message);
+						// console.log(message);
 					});
 				}
 
@@ -223,7 +233,7 @@ export default defineComponent({
 
 				let d_quitgame = () => {
 			// draw quitgame
-					console.log('d_quitgame');
+					// console.log('d_quitgame');
 					p.background(imag);
 					p.stroke(1);
 					p.textSize(30);

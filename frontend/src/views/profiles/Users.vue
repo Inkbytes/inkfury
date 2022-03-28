@@ -1,10 +1,16 @@
 <template>
-    <Header/>
-    <div class="profile">
+    <Header :error="success" :errorMsg="msg"/>
+    <div id="error" v-if="error">
+        <h1>404</h1>
+        <h3>user not found</h3>
+    </div>
+    <div v-else>
+        <div class="profile">
         <img :src="userImage.pic" width="100" height="100">
         <div id="details">
             <h1> {{ user.name }}</h1>
             <p>@{{ user.login }}</p>
+            <img @click="toggleError" src="../../assets/add-friend.jpg" width="35" height="35">
         </div>
     </div>
 
@@ -176,8 +182,10 @@
             </div>
         </aside>
     </div>
+    </div>
 
   <Footer/>
+  <router-view/>
 </template>
 
 <script lang="ts">
@@ -194,13 +202,16 @@ export default defineComponent({
                 name:'',
                 pic:''
             },
-            users: []
+            users: [],
+            error: false,
+            msg: '',
+            success: false
         }
     },
     components: { Header , Footer},
     async mounted()
     {
-        await(fetch("http://localhost:3000/users"))
+        await(fetch("http://localhost:9000/users"))
             .then(res => res.json())
             .then(data =>  this.users = data )
             .catch(err => console.log(err.message))
@@ -208,6 +219,11 @@ export default defineComponent({
             return ;
         const usr: any = this.users.filter((user : any) => user.login.includes(this.login))
         let l = JSON.parse(JSON.stringify(usr))
+        if (l[0]===undefined)
+        {
+            this.error = true
+            return 
+        }
         this.user.login = l[0].login
         this.user.name = l[0].name
         this.user.pic = l[0].pic
@@ -217,6 +233,15 @@ export default defineComponent({
             return {
                 pic: this.user.pic && require('../../assets/'+this.user.pic)
             }
+        }
+    },
+    methods: {
+        async toggleError()
+        {
+            this.success = !this.success
+            this.msg =  'user has been added successfully!'
+            await new Promise(r => setTimeout(r, 2000));
+            this.success = !this.success
         }
     }
 });
@@ -238,9 +263,10 @@ export default defineComponent({
 }
 #details {
     margin-left: 10px;
+    position: relative;
 }
 .profile h1 {
-    margin-top: 20px;
+    margin-top: 5px;
     font-family: 'Inter';
     font-style: normal;
     font-weight: 600;
@@ -462,5 +488,13 @@ export default defineComponent({
     text-align: center;
     color: #FFFFFF;
 }
-
+#details img {
+    background: rgb(190, 187, 187);
+    border-radius: 10%;
+    position: absolute;
+    margin-left: 0;
+    left: 0;
+    top : 58px;
+    cursor: pointer;
+}
 </style>

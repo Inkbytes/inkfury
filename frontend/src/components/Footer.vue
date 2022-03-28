@@ -21,6 +21,7 @@ export default defineComponent({
 #foot {
     overflow: hidden;
     max-width: 800px;
+    width: 100%;
     margin: 0 auto;
 }
 #foot p {

@@ -5,6 +5,10 @@
         {"name": "Ayoub Abounakif", "login": "aabounak", "pic": "aabounak.jpeg"},
         {"name": "Zakaria Taouuil", "login": "ztaouil", "pic": "ztaouil.jpeg"},
         {"name": "Mohmed Ashad", "login": "mashad", "pic": "mashad.jpeg"},
-        {"name": "Oumaima El youssefi", "login": "oel-yous", "pic": "oel-yous.jpeg"}
+        {"name": "Oumaima El youssefi", "login": "oel-yous", "pic": "oel-yous.jpeg"},
+        {"name": "khalil hafni", "login": "khafni", "pic": "khafni.jpeg"},
+        {"name": "fadyl hicham", "login": "hfadyl", "pic": "hfadyl.jpeg"},
+        {"name": "mohammed erradi", "login": "moerradi", "pic": "moerradi.jpeg"},
+        {"name": "mohamed amine grissen", "login": "mgrissen", "pic": "mgrissen.jpeg"}
     ]
 }

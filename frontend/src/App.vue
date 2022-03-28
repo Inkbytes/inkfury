@@ -7,7 +7,12 @@
   
   export default defineComponent({
     name: 'app',
-    components: { }
+    components: { },
+    data() {
+      return {
+        logged : false
+      }
+    }
   });
 </script>
 

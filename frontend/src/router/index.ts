@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import Profile from '../views/profiles/Profile.vue'
 import Game from '../views/gamePage.vue'
 import Users from '../views/profiles/Users.vue'
+import Login from '../views/Login.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
