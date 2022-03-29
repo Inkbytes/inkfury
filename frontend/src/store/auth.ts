@@ -8,7 +8,7 @@ export interface User42Profile {
     email: string;
     login: string;
     fullName: string;
-    image_url: string;
+    avatar: string;
   } | null
 }
 
@@ -26,6 +26,9 @@ export default {
   mutations: {
     setLogged(state: User42Profile, payload: boolean) {
       state.logged = payload;
+    },
+    setUser(state: User42Profile, payload:any){
+      state.user = payload
     }
   },
   actions: {}

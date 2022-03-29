@@ -9,9 +9,9 @@
                     <router-link :to="{ name: 'Users', params: { login : user.login}}" v-for="user in matchingLogin" :key="user.login">{{ user.login }}</router-link>
             </div>
         </div>
-        <img :src="require('../../assets/'+user.login+'.jpeg')" width="100" height="100">
+        <img :src="user.avatar" width="100" height="100">
         <div id="details">
-            <h1> {{ user.name }}</h1>
+            <h1> {{ user.fullName }}</h1>
             <p>@{{ user.login }}</p>
         </div>
     </div>
@@ -58,9 +58,9 @@
             <h1>Matching History</h1>
             <div class="match">
                 <div class="data">
-                    <img :src="require('../../assets/'+user.login+'.jpeg')" width="46" height="45">
+                    <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullName }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -76,9 +76,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="require('../../assets/'+user.login+'.jpeg')" width="46" height="45">
+                    <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullName }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -94,9 +94,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="require('../../assets/'+user.login+'.jpeg')" width="46" height="45">
+                    <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullName }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -112,9 +112,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="require('../../assets/'+user.login+'.jpeg')" width="46" height="45">
+                    <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullName }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -130,9 +130,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="require('../../assets/'+user.login+'.jpeg')" width="46" height="45">
+                    <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullName }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -148,9 +148,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="require('../../assets/'+user.login+'.jpeg')" width="46" height="45">
+                    <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullName }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -166,9 +166,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="require('../../assets/'+user.login+'.jpeg')" width="46" height="45">
+                    <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullName }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -204,10 +204,11 @@ export default defineComponent({
         const store = useStore();
         return {
             profil: true,
-            user: {
-                name: "El ouarti Oussama",
-                login: "oel-ouar"
-            },
+            // user: {
+            //     name: "El ouarti Oussama",
+            //     login: "oel-ouar"
+            // },
+            user : computed(() => store.state.auth.user),
             users: [],
             search: "search..",
             logged : computed(() => store.state.auth.logged),

@@ -26,13 +26,14 @@
 </template>
 
 <script lang="ts">
+// eslint-disable-next-line
 import { defineComponent } from 'vue';
 import Msg from './Msg.vue'
 
 import { computed } from 'vue'
 import useStore from '../store'
 
-import axios, { AxiosResponse, AxiosError } from "axios";
+import axios, { AxiosResponse } from "axios";
 import Loading from './Loading.vue';
 
 export default defineComponent({
@@ -44,8 +45,10 @@ export default defineComponent({
       console.log(store)
       return {
           login: (e:any) => store.commit('auth/setLogged', e),
+          userData:(e:any) => store.commit('auth/setUser', e),
           logged: computed(() => store.state.auth.logged),
-          setLoading: (e: boolean) => store.commit('config/setLoading', e)
+          setLoading: (e: boolean) => store.commit('config/setLoading', e),
+          store
       }
   },
   components: { Msg, Loading },
@@ -71,10 +74,10 @@ export default defineComponent({
         .post("http://10.12.1.6:3000/login_verification", {}, { withCredentials: true })
         .then((resp: AxiosResponse) => {
           this.login(true);
-          console.log("hello front");
-        this.setLoading(false);
+          this.userData(resp.data)
+          this.setLoading(false);
         })
-        .catch((err: AxiosError) => {
+        .catch(() => {
            this.login(false);
           if (this.$route.path !== '/')
             this.$router.replace('/')
