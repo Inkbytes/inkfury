@@ -204,10 +204,6 @@ export default defineComponent({
         const store = useStore();
         return {
             profil: true,
-            // user: {
-            //     name: "El ouarti Oussama",
-            //     login: "oel-ouar"
-            // },
             user : computed(() => store.state.auth.user),
             users: [],
             search: "search..",
@@ -239,14 +235,15 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .profile {
-    position: relative;
-    display: flex;
-   width: 800px;
-   height: 150px;
-   padding-top: 250px;
+    position: relative !important;
+    display: flex !important;
+   max-width: 1200px !important;
+   height: auto !important;
+   padding-top: 250px !important;
     background-image: url('../../assets/user-bg.png');
+    padding-bottom: 20px;
     margin: 0 auto 30px;
 }.profile img {
     margin-left: 30px;
@@ -264,6 +261,9 @@ export default defineComponent({
     text-align: center;
     color: white;
     margin-bottom: 0;
+}
+.profile img {
+    height: 100px;
 }
 .profile p {
     text-align: left;
@@ -305,7 +305,7 @@ export default defineComponent({
 }
 #content {
     padding: 6px;
-    max-width: 790px;
+    max-width: 800px;
     margin: 0 auto 50px;
     text-align: left;
     display: flex;

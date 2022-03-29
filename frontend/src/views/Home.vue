@@ -152,6 +152,7 @@ export default defineComponent({
   margin-right: 200px;
 }
 #pong {
+  padding-top: 50px;
   display: flex;
   max-width: 1200px;
   margin: 0 auto;
@@ -227,11 +228,13 @@ button {
   border-radius: 20px;
 }
 .ID img {
-  margin-top: 10px;
+  display: inline-block;
+  margin-top: 15px;
   border-radius: 10px;
 }
 .ID h2 {
   margin-bottom: 0;
+  margin-top: 10px;
 }
 #about {
   max-width: 1200px;

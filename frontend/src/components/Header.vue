@@ -5,23 +5,26 @@
             <Msg v-if="error" :msg="errorMsg"/>
         </transition>
     </div>
-  <div class="nav">
-      <router-link :to="{ name: 'Home' }">
-      <div id="logo">
-        <img src="../assets/logo.svg">
-        <h1>InkFury</h1>
+  <div class="w-full h-16 shadow-md">
+  <div class="w-full mx-auto max-w-7xl flex flex-row items-center justify-between py-2 px-8 h-16" style="min-height: 4rem;">
+      <div class="flex flex-row items-center gap-8">
+        <div  >
+            <router-link class="flex flex-row gap-2" :to="{ name: 'Home'}">
+                <img src="../assets/logo.svg">
+                <h1 class="text-xl font-semibold">InkFury</h1>
+            </router-link>
+        </div>
+        <ul class="flex flex-row gap-4 items-center text-sm font-semibold">
+            <li v-if="logged" class="hover:text-blue-600 transition-colors duration-300"><router-link :to="{ name: 'Chat' }">Chat</router-link></li>
+            <li v-if="!logged" class="hover:text-blue-600 transition-colors duration-300"><a href="#education">Core team</a></li>
+            <li v-else class="hover:text-blue-600 transition-colors duration-300"><router-link :to="{ name : 'Game' }">Game</router-link></li>
+            <li v-if="!logged" class="hover:text-blue-600 transition-colors duration-300"><a href="#about">About</a></li>
+            <li v-else class="hover:text-blue-600 transition-colors duration-300"><router-link :to="{ name: 'Profile' }">Profil</router-link></li>
+        </ul>
       </div>
-      </router-link>
-      <ul>
-          <li v-if="!logged"><a href="#education">Core team</a></li>
-          <li v-else-if="!game"><router-link :to="{ name : 'Game' }">Game</router-link></li>
-          <li v-else><a href="">Chat</a></li>
-          <li v-if="!logged"><a href="#about">About</a></li>
-          <li v-else-if="profil"><a href="">Chat</a></li>
-          <li v-else><router-link :to="{ name: 'Profile'}">Profile</router-link></li>
-          <li v-if="!logged" id="login"><a href="http://10.12.1.6:3000">Login</a></li>
-          <li v-else id="logOut"><a @click="logout" >Log out</a></li>
-      </ul>
+            <a v-if="!logged" id="login" class="px-4 py-2 text-xs text-white bg-green-600 rounded-md font-semibold hover:bg-green-400 duration-300" href="http://10.12.1.6:3000">login</a>
+            <a v-else id="logOut" class="px-4 py-2 text-xs text-white bg-red-600 rounded-md font-semibold hover:bg-red-400 duration-300" @click="logout">Log out</a>
+  </div>
   </div>
 </template>
 

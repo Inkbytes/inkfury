@@ -1,7 +1,8 @@
-import { Controller, Get , Req, Res, Post, UseGuards, Headers, UnauthorizedException} from '@nestjs/common';
+import { Controller, Get , Req, Res, Post, UseGuards, Headers, UnauthorizedException, ConsoleLogger} from '@nestjs/common';
 import { AppService } from './app.service';
 import axios from "axios";
 import { Request, response, Response } from 'express';
+import { Console } from 'console';
 
 
 @Controller()

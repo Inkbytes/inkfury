@@ -27,7 +27,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 
     .modal {
         width: 500px;

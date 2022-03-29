@@ -251,6 +251,7 @@ export default defineComponent({
 				let ball_collition_mouvement = () => {
 					let goal = false;
 			//	collition with right and left edge goal or not
+					if (player_number == 1){
 					if (xpos + 10 >= WIDTH - paddle_width - 10 && ypos >= p2pos - 5 && ypos <= p2pos + paddle_height + 5)
 					{
 						dx > 0 ? dx += 1: dx -= 1;
@@ -280,7 +281,6 @@ export default defineComponent({
 
 
 			//	move ball
-					if (player_number == 1){
 						xpos = xpos + dx;
 						ypos = ypos + dy;
 					}
@@ -376,7 +376,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 #p5Canvas , #choose-bg{
 	max-width: 1200px;
 	margin: 0 auto 50px;
@@ -397,5 +397,14 @@ button {
 	line-height: 40px;
 	text-align: center;
 	cursor: pointer;
+}
+h1 {
+	margin: 20px 0;
+	font-family: "Inter";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 29px;
+  color: #0a2a42;
 }
 </style>
