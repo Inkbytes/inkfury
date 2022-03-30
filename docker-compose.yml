@@ -1,0 +1,14 @@
+vesion: '3'
+
+services:
+  ### Running the back-end server
+  backend:
+    expose:
+      - 3000:3000
+  ### Running the front-end server
+  frontend:
+    expose:
+      - 80:80
+      - 443:443
+  ### Running the database server
+  db:
