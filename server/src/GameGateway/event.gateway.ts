@@ -19,9 +19,16 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	handleConnection(client: Socket|any, ...args: any[]){
 		this.logger.log(`Client connected ${client.id}`);
+
+		if (client.watcher)
+			return ;
+		//		won't be added to the queuee instead joined to 'room'+client.gameId
+
 		this.logger.log(`game_queue.length ${game_queue.length}`);
 		// add client to the queue
 		game_queue.push(client);
+
+		client.state = 0;
 		// if two players or more and on the queue arbitrary choose who is p1 and p2
 		// queue them advance to pregame status
 		if (game_queue.length >= 2)
@@ -31,6 +38,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	handleDisconnect(client: Socket|any){
 		this.logger.log(`Client disconnected ${client.id}`);
 
+//	not in the game queue hence playing
 		if (game_queue.findIndex( (e: Socket|any) => e === client) != -1)
 			game_queue.splice(game_queue.findIndex( (e: Socket|any) => e === client), 1);
 		else{
@@ -71,6 +79,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			queue_players();
 	}
 //	post game info to game table
+	// watcher-event
+	@SubscribeMessage('joinroom-event')
+	joinroomHandler(client: Socket|any, data: any): void{
+		client.join('room-'+client.gameId);
+	}
 }
 
 let	queue_players = () => {
