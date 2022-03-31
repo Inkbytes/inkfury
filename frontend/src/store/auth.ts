@@ -7,7 +7,7 @@ export interface User42Profile {
     id: number;
     email: string;
     login: string;
-    fullName: string;
+    fullname: string;
     avatar: string;
   } | null
 }

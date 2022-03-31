@@ -2,7 +2,20 @@
   <Header :profil="profil" :logged="logged"/>
     <Modal v-if="settings" :nickname="user.login" @close="switchSet"/>
     <div class="profile">
-        <input type="text" v-model="search" onfocus="this.value=''">
+        <input type="text" class="
+        form-control
+        block
+        w-222
+        px-3
+        py-1.5
+        text-base
+        font-normal
+        text-gray-700
+        bg-white bg-clip-padding
+        border border-solid border-gray-300
+        rounded
+        transition
+        ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" v-model="search" onfocus="this.value=''">
         <span id="settings" @click="switchSet"></span>
         <div v-if="search">
             <div id="search" >
@@ -11,7 +24,7 @@
         </div>
         <img :src="user.avatar" width="100" height="100">
         <div id="details">
-            <h1> {{ user.fullName }}</h1>
+            <h1> {{ user.fullname }}</h1>
             <p>@{{ user.login }}</p>
         </div>
     </div>
@@ -60,7 +73,7 @@
                 <div class="data">
                     <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -78,7 +91,7 @@
                 <div class="data">
                     <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -96,7 +109,7 @@
                 <div class="data">
                     <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -114,7 +127,7 @@
                 <div class="data">
                     <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -132,7 +145,7 @@
                 <div class="data">
                     <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -150,7 +163,7 @@
                 <div class="data">
                     <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -168,7 +181,7 @@
                 <div class="data">
                     <img :src="user.avatar" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -213,13 +226,12 @@ export default defineComponent({
     },
    async mounted()
     {
-        fetch("http://localhost:9000/users")
+        fetch("http://10.12.1.6:9000/api/users")
             .then(res => res.json())
             .then(data =>  data && (this.users = data) )
             .catch(err => console.log(err.message))
     },
     computed :{
-
         matchingLogin() {
             if (this.users.length == 0)
                 return ;
@@ -236,13 +248,16 @@ export default defineComponent({
 </script>
 
 <style scoped>
+h1 {
+    margin: 10px 0;
+}
 .profile {
     position: relative !important;
     display: flex !important;
-   max-width: 1200px !important;
+   max-width: 1000px !important;
    height: auto !important;
    padding-top: 250px !important;
-    background-image: url('../../assets/user-bg.png');
+    background-image: url('../../assets/user-bg.jpg');
     padding-bottom: 20px;
     margin: 0 auto 30px;
 }.profile img {
@@ -288,7 +303,7 @@ export default defineComponent({
     top: 42px;
     background: white; 
     right: 10px;
-    width: 222px;
+    width: 200px;
 }
 #search a {
     display: block;
@@ -305,7 +320,7 @@ export default defineComponent({
 }
 #content {
     padding: 6px;
-    max-width: 800px;
+    max-width: 820px;
     margin: 0 auto 50px;
     text-align: left;
     display: flex;
@@ -315,7 +330,7 @@ export default defineComponent({
     height: 100%;
     width: 40%;
     border: 1px solid #FFFFFF;
-    box-shadow: 1px 8px 28px -4px rgba(0, 0, 0, 0.15);
+    box-shadow: 15px 3px 17px 7px rgb(0 0 0 / 15%);
     border-radius: 6px;
 }
 #fr h1 {
@@ -398,8 +413,8 @@ export default defineComponent({
     border-radius: 7px;
 }
 #matchs {
-    width: 58%;
-    margin-left: 1%;
+    width: 55%;
+    margin-left: 4%;
     background: #FFFFFF;
     box-shadow: 1px 4px 137px rgba(142, 142, 142, 0.15);
     border-radius: 6px;

@@ -1,31 +1,36 @@
 import { Controller, Get , Req, Res, Post, UseGuards, Headers, UnauthorizedException, ConsoleLogger} from '@nestjs/common';
-import { AppService } from './app.service';
 import axios from "axios";
 import { Request, response, Response } from 'express';
-import { Console } from 'console';
+import { OauthService } from './oauth.service';
 
 
-@Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {
+@Controller('login')
+export class OauthController {
+  constructor(private readonly authService: OauthService) {
   }
 
 
   @Get()
   async (@Res() res) {
-    return res.redirect("https://api.intra.42.fr/oauth/authorize?client_id=1d12e68ec30c1d6b0225e6ce42dff29942c5bff4c48a271bcc9760576c17a54f&redirect_uri=http%3A%2F%2F10.12.1.6%3A3000%2Fgoogle%2Fredirect&response_type=code");
+    return res.redirect("https://api.intra.42.fr/oauth/authorize?client_id=692c512c7ac5c517fff90c0360ad71d0ebb322b9c5b2bd373cf01102e2836fe5&redirect_uri=http%3A%2F%2F10.12.1.6%3A9000%2Fapi%2Flogin%2Fintra%2Fredirect&response_type=code");
   }
-  @Get('/google/redirect')
-  async googleAuthRedirect(@Req() req, @Res() res) : Promise<any> {
+  
+
+  @Get('/intra/redirect')
+  async IntraAuthRedirect(@Req() req, @Res() res) : Promise<any> {
+    console.log(req.query.code);
     if (req.query.code === undefined) {
       return res.status(401).redirect('http://10.12.1.6:8081/');
     }
+   
     res.cookie('oauth2_grant_code', req.query.code);
     return res.redirect(`http://10.12.1.6:8081/?auth=true`);
   }
 
+
   @Post('/login_verification')
   async loginVerification(@Req() req : Request, @Res() res : Response, @Headers() headers) : Promise<any> {
+
     if (!req.cookies['oauth2_grant_code'] && !req.cookies['access_token'])
       throw new UnauthorizedException();
     else if (req.cookies['access_token']) {
@@ -36,7 +41,7 @@ export class AppController {
           "Authorization": "Bearer " + req.cookies['access_token']
         }
       }).then(resp => {
-        return this.appService.GetUserData(resp.data);
+        return this.authService.GetUserData(resp.data, req.cookies['access_token']);
       }).catch(err => {
         console.log(err.message);
         throw new UnauthorizedException();
@@ -45,10 +50,13 @@ export class AppController {
       return res.json(result);
     }
 
+
     const code = req.cookies['oauth2_grant_code'];
-    const access_token = await this.appService.GetAccessToken(code).then((access) => {
-      return access;
+    const access_token = await this.authService.GetAccessToken(code).then((res) => {
+        return res;
     });
+    
+    console.log(access_token);
     // Set cookies
     res.cookie('access_token', access_token);
     res.clearCookie('oauth2_grant_code');
@@ -60,7 +68,8 @@ export class AppController {
         "Authorization": "Bearer " + access_token
       }
     }).then(resp => {
-      return this.appService.GetUserData(resp.data);
+        // Create new user
+        return this.authService.GetUserData(resp.data, access_token);
     }).catch(err => {
       console.log(err.message);
       throw new UnauthorizedException();

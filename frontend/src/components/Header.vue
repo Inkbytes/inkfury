@@ -19,10 +19,10 @@
             <li v-if="!logged" class="hover:text-blue-600 transition-colors duration-300"><a href="#education">Core team</a></li>
             <li v-else class="hover:text-blue-600 transition-colors duration-300"><router-link :to="{ name : 'Game' }">Game</router-link></li>
             <li v-if="!logged" class="hover:text-blue-600 transition-colors duration-300"><a href="#about">About</a></li>
-            <li v-else class="hover:text-blue-600 transition-colors duration-300"><router-link :to="{ name: 'Profile' }">Profil</router-link></li>
+            <li v-else class="hover:text-blue-600 transition-colors duration-300"><router-link :to="{ name: 'Profile' }">Profile</router-link></li>
         </ul>
       </div>
-            <a v-if="!logged" id="login" class="px-4 py-2 text-xs text-white bg-green-600 rounded-md font-semibold hover:bg-green-400 duration-300" href="http://10.12.1.6:3000">login</a>
+            <a v-if="!logged" id="login" class="px-4 py-2 text-xs text-white bg-green-600 rounded-md font-semibold hover:bg-green-400 duration-300" href="http://10.12.1.6:9000/api/login">login</a>
             <a v-else id="logOut" class="px-4 py-2 text-xs text-white bg-red-600 rounded-md font-semibold hover:bg-red-400 duration-300" @click="logout">Log out</a>
   </div>
   </div>
@@ -74,13 +74,15 @@ export default defineComponent({
   },
   mounted() {
     axios
-        .post("http://10.12.1.6:3000/login_verification", {}, { withCredentials: true })
+        .post("http://10.12.1.6:9000/api/login/login_verification", {}, { withCredentials: true })
         .then((resp: AxiosResponse) => {
-          this.login(true);
-          this.userData(resp.data)
-          this.setLoading(false);
+            this.login(true);
+            this.userData(resp.data)
+            this.setLoading(false);
         })
-        .catch(() => {
+        .catch((err) => {
+            console.log("HR");
+           console.log(err);
            this.login(false);
           if (this.$route.path !== '/')
             this.$router.replace('/')
