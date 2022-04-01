@@ -20,7 +20,7 @@ export default defineComponent({
 	name: 'Chat',
 	components: { DefaultLayout, Rooms, Inbox },
 	data() {
-		return { socket: io('http://localhost:3100/chat'),}
+		return { socket: io('http://localhost:7000/chat'),}
 	},
 	created() {
 
