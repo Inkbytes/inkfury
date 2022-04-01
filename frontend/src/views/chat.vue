@@ -17,7 +17,7 @@ import Rooms from '../components/chat/Rooms.vue'
 export default defineComponent({
 	name: 'Chat',
 	components: { DefaultLayout, Rooms, Inbox },
-	setup() {
+	data() {
 		return {}
 	},
 })

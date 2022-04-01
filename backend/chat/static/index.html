@@ -116,28 +116,28 @@
 
             // Upon creation this will run and setup a socket.io client
             created() {
-                this.username = prompt("Enter your username: ");
+                // this.username = prompt("Enter your username: ");
                 this.socket.chat = io("http://localhost:3000/chat");
 
                 this.socket.chat.on('chatToClient', (message) => {
                     this.receivedChatMessage(message);
                 });
 
-                this.socket.chat.on('connect', () => {
-                    this.toggleRoomMembership();
-                });
+                // this.socket.chat.on('connect', () => {
+                //     this.toggleRoomMembership();
+                // });
 
-                this.socket.chat.on('joinedRoom', (room) => {
-                    this.rooms[room] = true;
-                });
-                this.socket.chat.on('leftRoom', (room) => {
-                    this.rooms[room] = false;
-                });
+                // this.socket.chat.on('joinedRoom', (room) => {
+                //     this.rooms[room] = true;
+                // });
+                // this.socket.chat.on('leftRoom', (room) => {
+                //     this.rooms[room] = false;
+                // });
 
-                this.socket.alerts = io("http://localhost:3000/alert");
-                this.socket.alerts.on('alertToClient', (message) => {
-                    this.receiveAlertMessage(message);
-                }) 
+                // this.socket.alerts = io("http://localhost:3000/alert");
+                // this.socket.alerts.on('alertToClient', (message) => {
+                //     this.receiveAlertMessage(message);
+                // }) 
             }
         });
     </script>

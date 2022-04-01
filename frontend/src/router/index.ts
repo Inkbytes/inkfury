@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 import Profile from '../views/profiles/Profile.vue'
 import Game from '../views/gamePage.vue'
-import Chat from '../views/chat.vue'
+import Chat from '../views/Chat.vue'
 import Users from '../views/profiles/Users.vue'
 // import Login from '../views/Login.vue'
 
