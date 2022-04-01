@@ -1,5 +1,5 @@
 <template>
-    <Header :game="game" :logged="logged"/>
+<DefaultLayout>
 	<div v-if="!bgClicked" id="swiper">
 		<h1>Choose your game background</h1>
 		<Swiper id="choose-bg" :slides-per-view="2" :space-between="0" :autoplay="{
@@ -14,14 +14,13 @@
 		<button @click="play('none')">continue with Default</button>
 	</div>
     <div  id="p5Canvas" ></div>
-    <Footer />
+</DefaultLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import Header from '../components/Header.vue'
-import Footer from '../components/Footer.vue'
+import DefaultLayout from '../layouts/default.vue'
 
 import p5 from 'p5'
 
@@ -36,7 +35,7 @@ import  useStore  from '../store'
 
 SwiperCore.use([Autoplay]);
 export default defineComponent({
-    components: {Header, Footer, Swiper, SwiperSlide},
+    components: { DefaultLayout , Swiper, SwiperSlide},
     data() {
 		const store = useStore();
         return {

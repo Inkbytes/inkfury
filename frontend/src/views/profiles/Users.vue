@@ -1,5 +1,5 @@
 <template>
-    <Header :error="success" :errorMsg="msg"/>
+<DefaultLayout>
     <div id="error" v-if="error">
         <h1>404</h1>
         <h3>user not found</h3>
@@ -184,14 +184,13 @@
     </div>
     </div>
 
-  <Footer/>
   <router-view/>
+</DefaultLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Header from '../../components/Header.vue'
-import Footer from '../../components/Footer.vue'
+import DefaultLayout from '../../layouts/default.vue'
 
 import { computed } from 'vue'
 
@@ -214,7 +213,7 @@ export default defineComponent({
             valid : true
         }
     },
-    components: { Header , Footer},
+    components: { DefaultLayout },
     async mounted()
     {
         await(fetch("http://10.12.1.6:9000/api/users/"+ this.login))
@@ -225,16 +224,12 @@ export default defineComponent({
             this.$router.replace('/profile')
         }
     },
-    computed: {
-        
-    },
     methods: {
         async toggleError()
         {
             axios
                 .put("http://10.12.1.6:9000/api/users", {}, {})
                 .then((resp : AxiosResponse) => {
-
                 })
                 .catch((err) => {
                     console.log(err)

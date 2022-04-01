@@ -56,7 +56,6 @@ export default defineComponent({
         },
         switchAvatar(e){
             this.avatar = e.target.files || e.dataTreansfer.files;
-
         },
         save() {
             if(this.avatar !== undefined)
@@ -65,7 +64,7 @@ export default defineComponent({
             this.user.is2fa = this.is2fa
             const usr = this.user
             axios
-                .put("http://10.12.1.6:9000/api/users", { user: usr }, {})
+                .put("http://10.12.1.6:9000/api/users", { usr }, {})
                 .then((resp:AxiosResponse) => {
 
                 })
