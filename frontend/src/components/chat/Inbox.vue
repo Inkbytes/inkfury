@@ -21,24 +21,39 @@
 import { defineComponent } from 'vue'
 import MyBubble from './MyBubble.vue'
 import Bubble from './Bubble.vue'
-// import io from 'socket.io-client'
+import io from 'socket.io-client'
 
 export default defineComponent({
 	components: { MyBubble, Bubble },
+	props: ['socket'],
 	data() {
-		return { msg: '', msgs: [] as string[] , isTyping: false, lastTyped: 0 }
+		
+		return { msg: '',
+			msgs: [] as string[],
+			isTyping: false,
+			lastTyped: 0,
+			payload: {
+				senderId: 0,
+				roomId: 0,
+				message: '', // TODO: fetch user data from DB
+			} 
+		}
 	},
 	methods: {
 		submitMsg() {
 			this.msg = this.msg.trim()
 			if(!this.msg.length)
 				return false
-			this.msgs.push(this.msg)
+			this.socket.emit('chatToServer', this.payload)
+			this.socket.on('chatToClient', (message: any) => {
+				console.log(message);
+			})
 			this.msg = ''
 		},
 		typing() {
 			if (!this.isTyping){
 				const time = Date.now();
+				this.socket.emit('typing', this.payload);
 				this.isTyping = true;
 				this.lastTyped = time;
 				setTimeout(() => {
@@ -50,16 +65,6 @@ export default defineComponent({
 			}
 		}
 	}
-	// created() {
-	// 	this.socket = io('http://localhost:3100');
-	// 	this.socket.on('newMessage', (message) => {
-	// 		this.msg = mess;
-	// 	});
-	// 	this.socket.on('actionbar', (text) => {
-	// 		this.actionbar = text;
-	// 	});
-	// 	this.loadMessages();
-	// },
 })
 </script>
 
