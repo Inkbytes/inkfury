@@ -1,41 +1,40 @@
-import { Entity , Column, PrimaryColumn, CreateDateColumn} from "typeorm";
+import { Entity, Column, PrimaryColumn, CreateDateColumn } from 'typeorm';
 
-@Entity({name: 'room'})
+@Entity({ name: 'room' })
 class RoomEntity {
-    @PrimaryColumn('uuid')
-    roomId: number;
+  @PrimaryColumn()
+  roomId: number;
 
-    @Column()
-    roomName: string;
+  @Column()
+  roomName: string;
 
-    @Column()
-    adminId: number;
-
+  @Column()
+  adminId: number;
 }
 
-// 
-@Entity({name: 'messages'})
+//
+@Entity({ name: 'messages' })
 class MessageEntity {
-    @PrimaryColumn('uuid')
-    senderId: number;
+  @PrimaryColumn()
+  senderId: number;
 
-    @Column()
-    roomId: number;
+  @Column()
+  roomId: number;
 
-    @Column()
-    messageData: string;
+  @Column()
+  messageData: string;
 
-    @CreateDateColumn()
-    messageDate:  Date;
+  @CreateDateColumn()
+  messageDate: Date;
 }
 
-@Entity({name: 'generalChat'})
+@Entity({ name: 'generalChat' })
 class ChatEntity {
-    @PrimaryColumn('uuid')
-    chatId: number;
+  @PrimaryColumn('uuid')
+  chatId: number;
 
-    @Column()
-    admin: number;
+  @Column()
+  admin: number;
 }
 
-export {RoomEntity, ChatEntity, MessageEntity};
+export { RoomEntity, ChatEntity, MessageEntity };

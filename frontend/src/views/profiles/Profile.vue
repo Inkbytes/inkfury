@@ -1,6 +1,6 @@
 <template>
-  <Header :profil="profil" :logged="logged"/>
-    <Modal v-if="settings" :nickname="user.login" @close="switchSet"/>
+  <DefaultLayout>
+    <Modal v-if="settings" :user="user" @close="switchSet"/>
     <div class="profile">
         <input type="text" class="
         form-control
@@ -198,7 +198,7 @@
         </aside>
     </div>
 
-  <Footer/>
+  </DefaultLayout>
 </template>
 
 <script lang="ts">
@@ -207,12 +207,14 @@ import Header from '../../components/Header.vue'
 import Footer from '../../components/Footer.vue'
 import Modal from '../../components/Modal.vue'
 
+import DefaultLayout from '../../layouts/default.vue'
+
 import { computed } from 'vue'
 import useStore from '../../store'
 
 export default defineComponent({
     name: 'Profile',
-    components: { Header, Footer , Modal},
+    components: { Header, Footer , Modal, DefaultLayout},
     data() {
         const store = useStore();
         return {
@@ -226,7 +228,7 @@ export default defineComponent({
     },
    async mounted()
     {
-        fetch("http://10.12.1.6:9000/api/users")
+        await(fetch("http://10.12.1.6:9000/api/users"))
             .then(res => res.json())
             .then(data =>  data && (this.users = data) )
             .catch(err => console.log(err.message))
@@ -254,7 +256,7 @@ h1 {
 .profile {
     position: relative !important;
     display: flex !important;
-   max-width: 1000px !important;
+   width: 1000px !important;
    height: auto !important;
    padding-top: 250px !important;
     background-image: url('../../assets/user-bg.jpg');
@@ -320,7 +322,7 @@ h1 {
 }
 #content {
     padding: 6px;
-    max-width: 820px;
+    width: 820px;
     margin: 0 auto 50px;
     text-align: left;
     display: flex;

@@ -81,7 +81,6 @@ export default defineComponent({
             this.setLoading(false);
         })
         .catch((err) => {
-            console.log("HR");
            console.log(err);
            this.login(false);
           if (this.$route.path !== '/')

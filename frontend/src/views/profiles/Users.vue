@@ -10,7 +10,7 @@
         <div id="details">
             <h1> {{ user.fullname }}</h1>
             <p>@{{ user.login }}</p>
-            <img @click="toggleError" src="../../assets/add-friend.jpg" width="35" height="35">
+            <img v-if="valid" @click="toggleError" src="../../assets/add-friend.jpg" width="35" height="35">
         </div>
     </div>
 
@@ -195,6 +195,8 @@ import Footer from '../../components/Footer.vue'
 
 import { computed } from 'vue'
 
+import axios, { AxiosResponse } from "axios";
+
 import useStore from '../../store'
 
 declare var require: any
@@ -204,11 +206,12 @@ export default defineComponent({
     data() {
         const store = useStore();
         return {
-            userData:(e:any) => store.commit('auth/setUser', e),
+            currentUserLogin : computed(() => store.state.auth.user.login),
             user : {},
             error: false,
             msg: '',
-            success: false
+            success: false,
+            valid : true
         }
     },
     components: { Header , Footer},
@@ -218,7 +221,9 @@ export default defineComponent({
             .then(res => res.json())
             .then(data =>  this.user = data )
             .catch(err => console.log(err.message))
-        console.log(this.user)
+        if(this.currentUserLogin === this.user.login){
+            this.$router.replace('/profile')
+        }
     },
     computed: {
         
@@ -226,6 +231,14 @@ export default defineComponent({
     methods: {
         async toggleError()
         {
+            axios
+                .put("http://10.12.1.6:9000/api/users", {}, {})
+                .then((resp : AxiosResponse) => {
+
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
             this.success = !this.success
             this.msg =  'user has been added successfully!'
             await new Promise(r => setTimeout(r, 2000));
