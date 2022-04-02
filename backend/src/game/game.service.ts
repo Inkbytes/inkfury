@@ -61,16 +61,20 @@ export class GameService {
     return await this.currentGameRepo.delete({ gameId: gameId });
   }
   // search currentgame by playernick
-  public async FindCurrentGameByNickname(playerNick: string) {
+  public async FindCurrentGameByNickname(playerId: number) {
     return await this.currentGameRepo
-      .findOne({ p1nick: playerNick })
+      .findOne({ p1id: playerId })
       .then((currentGame) => {
         if (!currentGame)
-          return this.currentGameRepo.findOne({ p2nick: playerNick });
+          return this.currentGameRepo.findOne({ p2id: playerId });
         return currentGame;
       });
   }
-  public async ModifieCurrentGame(gameId: number, game: GameEntity) {
+  public async ModifieCurrentGame(gameId: number, game: CurrentGameEntity) {
     return await this.currentGameRepo.update({ gameId: gameId }, game);
+  }
+
+  public async ModifieCompletedGame(gameId: number, game: GameEntity) {
+    return await this.gamerepo.update({ gameId: gameId }, game);
   }
 }

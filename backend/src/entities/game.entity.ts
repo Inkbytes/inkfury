@@ -5,16 +5,16 @@ class GameEntity {
   @PrimaryColumn()
   gameId: number;
 
-  @Column({ type: 'text', default: true })
-  p1nick: string;
+  @Column({ type: 'int', default: 0 })
+  p1id: number;
 
-  @Column()
-  p2nick: string;
+  @Column({ default: 0 })
+  p2id: number;
 
-  @Column()
+  @Column({ default: 0 })
   p1Score: number;
 
-  @Column()
+  @Column({ default: 0 })
   p2Score: number;
 }
 
@@ -23,11 +23,11 @@ class CurrentGameEntity {
   @PrimaryColumn()
   gameId: number;
 
-  @Column({ default: '' })
-  p1nick: string;
+  @Column({ default: 0 })
+  p1id: number;
 
-  @Column({ default: '' })
-  p2nick: string;
+  @Column({ default: 0 })
+  p2id: number;
 }
 
 export { GameEntity, CurrentGameEntity };

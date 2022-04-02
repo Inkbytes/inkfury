@@ -32,9 +32,9 @@ export class GameController {
   async getCurrentGames() {
     return await this.gameService.GetCurrentGames();
   }
-  @Get('current/:login')
-  async getCurrentGame(@Param('login') login: string) {
-    return await this.gameService.FindCurrentGameByNickname(login);
+  @Get('current/:id')
+  async getCurrentGame(@Param('id') id: number) {
+    return await this.gameService.FindCurrentGameByNickname(id);
   }
 
   @Post('current')
@@ -51,9 +51,17 @@ export class GameController {
 
   @Put('current/:gameId')
   async ModifieCurrentGame(
-    @Body() game: GameEntity,
+    @Body() game: CurrentGameDto,
     @Param('gameId') gameId: number,
   ) {
     return await this.gameService.ModifieCurrentGame(gameId, game);
+  }
+
+  @Put('completed/:gameId')
+  async ModifieCompletedGame(
+    @Body() game: GameDto,
+    @Param('gameId') gameId: number,
+  ) {
+    return await this.gameService.ModifieCompletedGame(gameId, game);
   }
 }
