@@ -8,9 +8,9 @@ import Users from '../views/profiles/Users.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: '/chat',
+    name: 'Chat',
+    component: Chat
   },
   {
     path: '/profile',
@@ -29,9 +29,9 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
-    path: '/chat',
-    name: 'Chat',
-    component: Chat,
+    path: '/',
+    name: 'Home',
+    component: Home,
   }
 ]
 

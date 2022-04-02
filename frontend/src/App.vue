@@ -10,7 +10,7 @@
     components: { },
     data() {
       return {
-        logged : false
+        logged : true
       }
     }
   });

@@ -17,33 +17,44 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" >
+import { computed, defineComponent } from 'vue'
 import MyBubble from './MyBubble.vue'
 import Bubble from './Bubble.vue'
-import io from 'socket.io-client'
+import useStore from '../../store'
+import { io } from 'socket.io-client'
 
 export default defineComponent({
 	components: { MyBubble, Bubble },
 	props: ['socket'],
 	data() {
-		
-		return { msg: '',
+		const store = useStore();
+		return { 
+			msg: '',
 			msgs: [] as string[],
 			isTyping: false,
 			lastTyped: 0,
-			payload: {
-				senderId: 0,
-				roomId: 0,
-				message: '', // TODO: fetch user data from DB
-			} 
+			user: computed(() => store.state.auth.user),
+			// payload: {
+			// 	senderId: 1,
+			// 	roomId: 1,
+			// 	message: '', // TODO: fetch user data from DB
+			// } 
+			payload: '',
+			socket: null
 		}
 	},
+	// created() {
+	// 	this.socket = io('http://localhost:3000/chat');	
+	// },
 	methods: {
 		submitMsg() {
 			this.msg = this.msg.trim()
 			if(!this.msg.length)
 				return false
+			// this.payload.senderId = this.user.id
+			// this.payload.roomId = 1;
+			this.payload = this.msg
 			this.socket.emit('chatToServer', this.payload)
 			this.socket.on('chatToClient', (message: any) => {
 				console.log(message);

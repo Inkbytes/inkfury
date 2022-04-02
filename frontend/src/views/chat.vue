@@ -3,7 +3,7 @@
         <DefaultLayout>
 		<div class="w-full max-w-7xl mx-auto h-full flex flex-row border-x" style="max-height: calc(100vh - 8rem)">
 			<Rooms />
-			<Inbox :socket="socket"/>
+			<Inbox />
 		</div>
         </DefaultLayout>
 	</div>
@@ -20,10 +20,7 @@ export default defineComponent({
 	name: 'Chat',
 	components: { DefaultLayout, Rooms, Inbox },
 	data() {
-		return { socket: io('http://localhost:7000/chat'),}
-	},
-	created() {
-
+		return {  }
 	},
 })
 </script>

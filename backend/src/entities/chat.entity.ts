@@ -1,41 +1,29 @@
-import { Entity , Column, PrimaryColumn, CreateDateColumn} from "typeorm";
+import { Entity, Column, PrimaryColumn, CreateDateColumn } from 'typeorm';
 
-@Entity({name: 'room'})
+@Entity({ name: 'room' })
 class RoomEntity {
-    @PrimaryColumn('uuid')
-    roomId: number;
+  @PrimaryColumn('uuid')
+  roomId: number;
 
-    @Column()
-    roomName: string;
+  @Column({ type: 'varchar' })
+  roomName: string;
 
-    @Column()
-    adminId: number;
+  @Column({ type: 'varchar' })
+  ownerId: number;
 
+  @Column({ type: 'text' })
+  password?: string;
+
+  @Column()
+  state: number; // Enum of state. Public | Private | Password Protected
 }
 
-// 
-@Entity({name: 'messages'})
-class MessageEntity {
-    @PrimaryColumn('uuid')
-    senderId: number;
+// @Entity({name: 'block_list'})
+// class BlockListEntity {
+//     @PrimaryColumn('uuid')
+//     userId: number;
 
-    @Column()
-    roomId: number;
-
-    @Column()
-    messageData: string;
-
-    @CreateDateColumn()
-    messageDate:  Date;
-}
-
-@Entity({name: 'generalChat'})
-class ChatEntity {
-    @PrimaryColumn('uuid')
-    chatId: number;
-
-    @Column()
-    admin: number;
-}
-
-export {RoomEntity, ChatEntity, MessageEntity};
+//     @PrimaryColumn('uuid')
+//     BlockedUserId: number;
+// }
+export { RoomEntity };
