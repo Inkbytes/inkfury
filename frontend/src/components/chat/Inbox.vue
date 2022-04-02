@@ -41,12 +41,16 @@ export default defineComponent({
 			// 	message: '', // TODO: fetch user data from DB
 			// } 
 			payload: '',
-			socket: null
+			socket: null,
 		}
 	},
-	// created() {
-	// 	this.socket = io('http://localhost:3000/chat');	
-	// },
+	created() {
+			this.socket = io('http://10.12.2.4:7000/chat');
+			this.socket.on('chatToClient', (message: any) => {
+				console.log(message);
+				this.msgs.push(message);
+			})
+	},
 	methods: {
 		submitMsg() {
 			this.msg = this.msg.trim()
@@ -56,9 +60,6 @@ export default defineComponent({
 			// this.payload.roomId = 1;
 			this.payload = this.msg
 			this.socket.emit('chatToServer', this.payload)
-			this.socket.on('chatToClient', (message: any) => {
-				console.log(message);
-			})
 			this.msg = ''
 		},
 		typing() {

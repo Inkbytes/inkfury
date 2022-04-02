@@ -4,7 +4,7 @@ import { Server, Socket } from 'socket.io';
 
 // This decorator gives us access to the socket.io functionality.
 @WebSocketGateway(7000, {
-  namespace: '/chat',
+  namespace: 'chat',
   cors: true,
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -12,17 +12,17 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   // This decorator gives us access to the websockets server instance.
   @WebSocketServer() wss: Server;
 
-  // private logger: Logger = new Logger('ChatGateway');
+  private logger: Logger = new Logger('ChatGateway');
 
-  // afterInit(server: Server) {
-  //   this.logger.log('Server initialized!');
-  // }
-  // handleConnection(client: Socket, ...args: any[]) {
-  //     this.logger.log(`'Client connected:    ${client.id}'`)
-  // }
-  // handleDisconnect(client: Socket) {
-  //     this.logger.log(`'Client disconnected: ${client.id}'`)
-  // }
+  afterInit(server: Server) {
+    this.logger.log('Server initialized!');
+  }
+  handleConnection(client: Socket, ...args: any[]) {
+      this.logger.log(`'Client connected:    ${client.id}'`)
+  }
+  handleDisconnect(client: Socket) {
+      this.logger.log(`'Client disconnected: ${client.id}'`)
+  }
 
   /* -- We make use of the instance in here, where we send data to all clients
     connected to the server using the emit() function.
@@ -38,7 +38,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('chatToServer')
   handleMessage(
     client: Socket,
-    payload: string
+    payload: string,
     // payload: { senderID: number, roomID: number, message: string }
   ) {
     this.wss.emit('chatToClient', payload);
