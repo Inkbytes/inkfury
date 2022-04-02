@@ -70,4 +70,7 @@ export class GameService {
         return currentGame;
       });
   }
+  public async ModifieCurrentGame(gameId: number, game: GameEntity) {
+    return await this.currentGameRepo.update({ gameId: gameId }, game);
+  }
 }

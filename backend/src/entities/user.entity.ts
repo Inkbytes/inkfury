@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class UserEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: number;
 
   @Column()
@@ -25,16 +25,16 @@ export class UserEntity {
   @Column({ default: false })
   status: boolean;
 
-  @Column({ nullable: true })
+  @Column()
   statsId: number;
 
-  @Column({ nullable: true })
+  @Column({ default: 0 })
   matchHistoryId: number;
 
   @Column({ default: false })
   is2fa: boolean;
 
-  @Column({ type: 'varchar', default: true })
+  @Column({ type: 'varchar', default: '' })
   token: string;
 
   @Column('int', { array: true, default: [] })

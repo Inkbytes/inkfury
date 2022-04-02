@@ -23,10 +23,11 @@ class CurrentGameEntity {
   @PrimaryColumn()
   gameId: number;
 
-  @Column()
+  @Column({ default: '' })
   p1nick: string;
 
-  @Column()
+  @Column({ default: '' })
   p2nick: string;
 }
+
 export { GameEntity, CurrentGameEntity };

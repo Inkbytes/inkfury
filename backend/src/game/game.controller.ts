@@ -6,10 +6,12 @@ import {
   Delete,
   Post,
   Req,
+  Put,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CurrentGameDto, GameDto } from './dto/game.dto';
 import { GameService } from './game.service';
+import { GameEntity } from '../entities/game.entity';
 
 @Controller('game')
 export class GameController {
@@ -45,5 +47,13 @@ export class GameController {
   @Delete('current/:gameId')
   async DeleteCurrentGame(@Param('gameId') gameId: number) {
     return await this.gameService.DeleteCurrentGameById(gameId);
+  }
+
+  @Put('current/:gameId')
+  async ModifieCurrentGame(
+    @Body() game: GameEntity,
+    @Param('gameId') gameId: number,
+  ) {
+    return await this.gameService.ModifieCurrentGame(gameId, game);
   }
 }

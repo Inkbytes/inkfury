@@ -26,13 +26,12 @@ export class OauthController {
 
   @Get('/intra/redirect')
   async IntraAuthRedirect(@Req() req, @Res() res): Promise<any> {
-    console.log(req.query.code);
     if (req.query.code === undefined) {
       return res.status(401).redirect('http://10.12.1.6:8081/');
     }
 
     res.cookie('oauth2_grant_code', req.query.code);
-    return res.redirect(`http://localhost:9000/api/chat`);
+    return res.redirect(`http://10.12.1.6:8081/auth=true`);
   }
 
   @Post('/login_verification')
