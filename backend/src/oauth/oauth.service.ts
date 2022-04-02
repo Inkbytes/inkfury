@@ -1,25 +1,14 @@
-import {
-  ConsoleLogger,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios from 'axios';
 import { UserEntity } from '../entities/user.entity';
-import { UserDto } from '../users/dto/add-user.dto';
 
 @Injectable()
 export class OauthService {
   constructor(
     @InjectRepository(UserEntity) private readonly repo: Repository<UserEntity>,
   ) {}
-  googleLogin(req) {
-    return {
-      message: 'User information from google',
-      user: req.url,
-    };
-  }
 
   async GetAccessToken(code: string): Promise<string> {
     return await axios({
@@ -38,7 +27,7 @@ export class OauthService {
       .then((resp) => {
         return resp.data['access_token'];
       })
-      .catch((err) => {
+      .catch(() => {
         throw new UnauthorizedException();
       });
   }
