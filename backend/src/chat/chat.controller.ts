@@ -4,7 +4,7 @@ import { RoomDto } from './dto/chat.dto';
 
 @Controller('chat')
 export class ChatController {
-    constructor(private readonly chatService : ChatService) {}
+  constructor(private readonly chatService: ChatService) {}
 
     @Get(':id')
     async getRoom(@Param('id') id: number) {

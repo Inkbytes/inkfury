@@ -1,4 +1,12 @@
-import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
+import {
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+  WsResponse,
+} from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 
@@ -7,8 +15,9 @@ import { Server, Socket } from 'socket.io';
   namespace: 'chat',
   cors: true,
 })
-export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-
+export class ChatGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   // This decorator gives us access to the websockets server instance.
   @WebSocketServer() wss: Server;
 
@@ -18,10 +27,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.logger.log('Server initialized!');
   }
   handleConnection(client: Socket, ...args: any[]) {
-      this.logger.log(`'Client connected:    ${client.id}'`)
+    this.logger.log(`'Client connected:    ${client.id}'`);
   }
   handleDisconnect(client: Socket) {
-      this.logger.log(`'Client disconnected: ${client.id}'`)
+    this.logger.log(`'Client disconnected: ${client.id}'`);
   }
 
   /* -- We make use of the instance in here, where we send data to all clients
@@ -46,13 +55,16 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     // client.emit('chatToClient', data);
   }
 
+  @SubscribeMessage('typing')
+  userTyping(client: Socket) {
+    client.broadcast.emit('typing');
+  }
   // @SubscribeMessage('joinRoom')
   // handleJoinRoom(client: Socket, room: string) {
   //   client.join(room);
   //   this.logger.log(`room --- : ${room}`);
   //   client.emit('joinedRoom', room);
   // }
-  
   // @SubscribeMessage('leaveRoom')
   // handleLeaveRoom(client: Socket, room: string) {
   //   client.leave(room);
