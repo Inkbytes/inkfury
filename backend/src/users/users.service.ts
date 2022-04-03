@@ -4,7 +4,10 @@ import { UserEntity } from '../../src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserDto } from './dto/add-user.dto';
 import { User } from './interfaces/user.interface';
-
+import multiparty from 'multiparty';
+import { IncomingMessage } from 'http';
+import fs from 'fs';
+import { findSourceMap } from 'module';
 @Injectable()
 export class UsersService {
   constructor(
@@ -27,6 +30,12 @@ export class UsersService {
   }
 
   public async update(user: UserDto) {
-    return await this.repo.update({ id: user.id }, user);
+    console.log(user);
+    const userd = await this.repo.findOne({login : user.login}).then((user) => {
+      return user;
+    });
+    if ((userd !== undefined && userd.id === user.id) || userd === undefined)
+      return await this.repo.update({ id: user.id }, user);
+    return {"Error": "Login already exist."};
   }
 }

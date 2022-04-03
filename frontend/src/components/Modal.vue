@@ -29,7 +29,7 @@
                 transition
                 ease-in-out
                 m-0
-                focus:text-gray focus:bg-white focus:border-blue-600 focus:outline-none" type="file" id="formFile" @change="swicthAvatar">
+                focus:text-gray focus:bg-white focus:border-blue-600 focus:outline-none" type="file" id="formFile" accept="image/*"  @change="switchAvatar">
             </div>
         </div>
             <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @click="save">Save</button>
@@ -45,28 +45,48 @@ export default defineComponent({
     props: ["user"],
     data() {
         return {
-            is2fa : '',
-            avatr: '',
-            login: this.user.login
+            is2fa : this.user.is2fa,
+            ext: '',
+            images : null,
+            login: this.user.login,
+            imgError: true
         }
     },
     methods: {
         closeModal() {
             this.$emit('close')
         },
-        switchAvatar(e){
-            this.avatar = e.target.files || e.dataTreansfer.files;
+        switchAvatar(e : any){
+            this.images = e.target.files[0];
+            this.ext = this.images.name.split('.')[1];
+            this.imgError = false
         },
         save() {
-            if(this.avatar !== undefined)
-                this.user.avatar = this.avatar;
             this.user.login = this.login
             this.user.is2fa = this.is2fa
+            if (this.imgError === false)
+            {
+                console.log('asdasdsa')
+                const formData = new FormData();
+                const imageName = this.user.login+'.'+this.ext;
+                formData.append('file' , this.images)
+                console.log(imageName)
+                const headers = { 'Content-Type': 'multipart/form-data' };
+                axios
+                    .post(`http://10.12.1.6:9000/api/users/image/${imageName}`, formData, { headers })
+                    .then(() => {
+                        
+                        });
+                this.user.avatar = imageName
+            }
             const usr = this.user
             axios
-                .put("http://10.12.1.6:9000/api/users", { usr }, {})
+                .put("http://10.12.1.6:9000/api/users", usr, {})
                 .then((resp:AxiosResponse) => {
-
+                    this.$router.go('/profile')
+                })
+                .catch(err => {
+                    console.log(err.message)
                 })
         }
     }

@@ -6,7 +6,7 @@
     </div>
     <div v-else>
         <div class="profile">
-        <img :src="user.avatar" width="100" height="100">
+        <img :src="getImage(user.avatar)" width="100" height="100">
         <div id="details">
             <h1> {{ user.fullname }}</h1>
             <p>@{{ user.login }}</p>
@@ -56,7 +56,7 @@
             <h1>Matching History</h1>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -74,7 +74,7 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -92,7 +92,7 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -110,7 +110,7 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -128,7 +128,7 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -146,7 +146,7 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -164,7 +164,7 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -196,6 +196,7 @@ import { computed } from 'vue'
 
 import axios, { AxiosResponse } from "axios";
 
+
 import useStore from '../../store'
 
 declare var require: any
@@ -210,16 +211,23 @@ export default defineComponent({
             error: false,
             msg: '',
             success: false,
+            setLoading: (e: boolean) => store.commit('config/setLoading', e),
             valid : true
         }
     },
-    components: { DefaultLayout },
+    components: { DefaultLayout},
+    created(){
+        this.setLoading(true)
+    },
     async mounted()
-    {
+    { 
         await(fetch("http://10.12.1.6:9000/api/users/"+ this.login))
             .then(res => res.json())
             .then(data =>  this.user = data )
             .catch(err => console.log(err.message))
+        this.setLoading(false)
+        console.log(this.user.avatar)
+        // if (this.user.avatar )
         if(this.currentUserLogin === this.user.login){
             this.$router.replace('/profile')
         }
@@ -238,6 +246,14 @@ export default defineComponent({
             this.msg =  'user has been added successfully!'
             await new Promise(r => setTimeout(r, 2000));
             this.success = !this.success
+            
+        },
+
+        getImage(pic: string){
+            if (pic.startsWith('https://cdn.intra.42.fr/users/'))
+                return this.user.avatar
+            else
+                return ('../assets/'+this.user.avatar)
         }
     }
 });
@@ -270,6 +286,7 @@ export default defineComponent({
     text-align: center;
     color: white;
     margin-bottom: 0;
+    text-align: left;
 }
 .profile img {
     height: 100px;

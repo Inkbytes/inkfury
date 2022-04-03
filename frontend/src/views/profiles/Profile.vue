@@ -22,7 +22,7 @@
                     <router-link :to="{ name: 'Users', params: { login : user.login}}" v-for="user in matchingLogin" :key="user.login">{{ user.login }}</router-link>
             </div>
         </div>
-        <img :src="user.avatar" width="100" height="100">
+        <img :src="getImage(getImage(user.avatar))"  width="100" height="100">
         <div id="details">
             <h1> {{ user.fullname }}</h1>
             <p>@{{ user.login }}</p>
@@ -71,7 +71,7 @@
             <h1>Matching History</h1>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -89,7 +89,7 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -107,7 +107,7 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -125,7 +125,7 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -143,7 +143,7 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -161,7 +161,7 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -179,7 +179,7 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
                         <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
@@ -207,10 +207,12 @@ import Header from '../../components/Header.vue'
 import Footer from '../../components/Footer.vue'
 import Modal from '../../components/Modal.vue'
 
+
 import DefaultLayout from '../../layouts/default.vue'
 
 import { computed } from 'vue'
 import useStore from '../../store'
+
 
 export default defineComponent({
     name: 'Profile',
@@ -244,6 +246,12 @@ export default defineComponent({
     methods: {
         switchSet(){
             this.settings = !this.settings
+        },
+        getImage(pic: string){
+            if (pic.startsWith('https://cdn.intra.42.fr/users/'))
+                return this.user.avatar
+            else
+                return ('./assets/'+this.user.avatar)
         }
     }
 });
@@ -265,6 +273,7 @@ h1 {
 }.profile img {
     margin-left: 30px;
     border-radius: 50%;
+    height: 100px;
 }
 #details {
     margin-left: 10px;
@@ -278,9 +287,7 @@ h1 {
     text-align: center;
     color: white;
     margin-bottom: 0;
-}
-.profile img {
-    height: 100px;
+    text-align: left;
 }
 .profile p {
     text-align: left;
@@ -449,6 +456,7 @@ h1 {
     border: 1px solid rgba(0, 0, 0, 0.14);
     box-sizing: border-box;
     border-radius: 8px;
+    height: 54px;
     }
 .match p {
     margin: 0;

@@ -45,7 +45,6 @@ export default defineComponent({
   el: "#demo",
   data(){
       const store = useStore();
-      console.log(store)
       return {
           login: (e:any) => store.commit('auth/setLogged', e),
           userData:(e:any) => store.commit('auth/setUser', e),
