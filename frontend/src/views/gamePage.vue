@@ -48,12 +48,16 @@ export default defineComponent({
 	},
 	methods: {
 		play(image : any) {
-			this.bgClicked = true
+			this.bgClicked = true;
 			let put_flag = false;
 			let current_game_delete_flag = false;
 			let game_post_flag = false;
 
-			const ip_addr = '10.12.1.6';
+			let game_id = 0;
+
+
+			const my_user = this.user;
+			const ip_addr = '10.12.2.2';
 
 			const socket = io("http://"+ip_addr+":9000");
 
@@ -141,14 +145,16 @@ export default defineComponent({
 
 			// listen to 1or2-event to assign the number of player_number
 					socket.on('1or2-event', (message: any) => {
-						player_number = message;
+						player_number = message.nb;
+						game_id = message.gameId;
 						game_state = pregame;
-						// console.log(message);
+						// console.log(`socket.gameId: ${socket.gameId}`)
+						// console.log(`my_user.id: ${my_user.id}`);
 						if (player_number === 1 && !put_flag){
 							// put p1nick.
 							axios
-							.put("http://"+ip_addr+":9000/api/game/current/"+socket.gameId, {p1id: this.user.id})
-							.then(console.log("sala bilal"))
+							.put("http://"+ip_addr+":9000/api/game/current/"+game_id, {p1id: my_user.id})
+							.then(console.log("sala bilal p1"))
 							.catch( (err) => {
 								console.log(`err equals to ${err}`);
 							})
@@ -157,8 +163,8 @@ export default defineComponent({
 						else if (player_number === 2 && !put_flag){
 							// put p2nick.
 							axios
-							.put("http://"+ip_addr+":9000/api/game/current"+socket.gameId, {p2id: this.user.id})
-							.then(console.log("sala bilal"))
+							.put("http://"+ip_addr+":9000/api/game/current/"+game_id, {p2id: my_user.id})
+							.then(console.log("sala bilal p2"))
 							.catch( (err) => {
 								console.log(`err equals to ${err}`);
 							})	
@@ -240,31 +246,33 @@ export default defineComponent({
 					// delete to current games
 					if (player_number === 1 && !current_game_delete_flag){
 						axios
-						.delete("http://"+ip_addr+":9000/api/game/current/"+socket.gameId)
-						.then(console.log('sala bilal'))
+						.delete("http://"+ip_addr+":9000/api/game/current/"+game_id)
+						.then(console.log('sala bilal 1'))
 						.catch( err => {console.log(`error: ${err}`)})
 						current_game_delete_flag = true;
 					}
 
+					// post finished game
 					if (player_number === 1 && !game_post_flag){
 						axios
 						.post("http://"+ip_addr+":9000/api/game/completed",
-						{gameId: socket.gameId,
-						 p1nick: this.user.id,
+						{gameId: game_id,
+						 p1id: my_user.id,
 						 p1Score: p1score,
 						 p2Score: p2score,
 						})
-						.then(console.log("sala bilal"))
+						.then(console.log("sala bilal 2"))
 						.catch(err => {console.log(err)})
+						game_post_flag = true;
 					}
 					else if (player_number === 2 && !game_post_flag){
 						axios
-						.post("http://"+ip_addr+":9000/api/game/completed/"+socket.gameId,
+						.put("http://"+ip_addr+":9000/api/game/completed/"+game_id,
 						{
-							p2nick: this.user.id,
+							p2id: my_user.id,
 						})
+						game_post_flag = true;
 					}
-					// post to 
 
 			// reset game and replay
 					if (p.keyIsDown(32)){
@@ -296,6 +304,37 @@ export default defineComponent({
 
 					let loser = (player_number === 1) ? 2 : 1;
 					p.text('player_number ' + loser + '  quits', WIDTH / 2, HEIGHT / 2);
+
+					// delete to current games
+					if (player_number === 1 && !current_game_delete_flag){
+						axios
+						.delete("http://"+ip_addr+":9000/api/game/current/"+game_id)
+						.then(console.log('sala bilal'))
+						.catch( err => {console.log(`error: ${err}`)})
+						current_game_delete_flag = true;
+					}
+
+					// post finished game
+					if (player_number === 1 && !game_post_flag){
+						axios
+						.post("http://"+ip_addr+":9000/api/game/completed",
+						{gameId: game_id,
+						 p1id: my_user.id,
+						 p1Score: p1score,
+						 p2Score: p2score,
+						})
+						.then(console.log("sala bilal"))
+						.catch(err => {console.log(err)})
+						game_post_flag = true;
+					}
+					else if (player_number === 2 && !game_post_flag){
+						axios
+						.put("http://"+ip_addr+":9000/api/game/completed/"+game_id,
+						{
+							p2id: my_user.id,
+						})
+						game_post_flag = true;
+					}
 
 					if (p.keyIsDown(32))
 					{

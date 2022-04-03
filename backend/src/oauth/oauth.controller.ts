@@ -17,7 +17,7 @@ export class OauthController {
   @Get()
   async(@Res() res) {
     return res.redirect(
-      'https://api.intra.42.fr/oauth/authorize?client_id=692c512c7ac5c517fff90c0360ad71d0ebb322b9c5b2bd373cf01102e2836fe5&redirect_uri=http%3A%2F%2F10.12.1.6%3A9000%2Fapi%2Flogin%2Fintra%2Fredirect&response_type=code',
+      'https://api.intra.42.fr/oauth/authorize?client_id=998ac50996d9cd0c4d5eafad44e20b762d94718513d1566c8aa71e02a778e7a2&redirect_uri=http%3A%2F%2F10.12.2.2%3A9000%2Fapi%2Flogin%2Fintra%2Fredirect&response_type=code',
     );
   }
 
@@ -25,10 +25,10 @@ export class OauthController {
   async IntraAuthRedirect(@Req() req, @Res() res): Promise<any> {
     console.log(req.query.code);
     if (req.query.code === undefined) {
-      return res.status(401).redirect('http://10.12.1.6:8082/');
+      return res.status(401).redirect('http://10.12.2.2:8081/');
     }
     res.cookie('oauth2_grant_code', req.query.code);
-    return res.redirect(`http://10.12.1.6:8082/?auth=true`);
+    return res.redirect(`http://10.12.2.2:8081/?auth=true`);
   }
 
   @Post('/login_verification')

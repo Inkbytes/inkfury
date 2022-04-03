@@ -10,7 +10,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.use(cookieParser());
   app.enableCors({
-    origin: "http://10.12.1.6:8082",
+    origin: "http://10.12.2.2:8081",
     credentials: true
   });
   await app.listen(port);

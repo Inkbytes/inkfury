@@ -64,7 +64,7 @@ export default defineComponent({
             this.user.is2fa = this.is2fa
             const usr = this.user
             axios
-                .put("http://10.12.1.6:9000/api/users", { usr }, {})
+                .put("http://10.12.2.2:9000/api/users", { usr }, {})
                 .then((resp:AxiosResponse) => {
 
                 })

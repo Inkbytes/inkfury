@@ -87,13 +87,14 @@ const queue_players = () => {
   const player1: any = game_queue[0];
   const player2: any = game_queue[1];
 
-  // emit to 1or2-event
-  player1.emit('1or2-event', 1);
-  player2.emit('1or2-event', 2);
-
   // join the room game_number
   player1.gameId = game_number;
   player2.gameId = game_number;
+
+  // emit to 1or2-event
+  player1.emit('1or2-event', {nb: 1, gameId: game_number});
+  player2.emit('1or2-event', {nb: 2, gameId: game_number});
+
 
   player1.join('room-' + player1.gameId);
   player2.join('room-' + player2.gameId);
@@ -103,7 +104,7 @@ const queue_players = () => {
 
   // post gameId to currentdb
   axios
-  .post("http://10.12.1.6:9000/api/game/current", {gameId: game_number})
+  .post("http://10.12.2.2:9000/api/game/current", {gameId: game_number})
   .then( )
   .catch (err => {console.log(err)})
   // increment game_number

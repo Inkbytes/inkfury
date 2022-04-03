@@ -17,11 +17,11 @@ export class OauthService {
       data: {
         grant_type: 'authorization_code',
         client_id:
-          '692c512c7ac5c517fff90c0360ad71d0ebb322b9c5b2bd373cf01102e2836fe5',
+          '998ac50996d9cd0c4d5eafad44e20b762d94718513d1566c8aa71e02a778e7a2',
         client_secret:
-          'b1ad468b9f56cd25c66c355d60530d5b5694f468c37354dec598724058fc7ebb',
+          'd006fae911b7002803f7355030f2f486f1e400e6c9cad5ca6e967c0ad6bd3779',
         code: `${code}`,
-        redirect_uri: 'http://10.12.1.6:9000/api/login/intra/redirect',
+        redirect_uri: 'http://10.12.2.2:9000/api/login/intra/redirect',
       },
     })
       .then((resp) => {

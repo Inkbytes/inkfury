@@ -216,7 +216,7 @@ export default defineComponent({
     components: { DefaultLayout },
     async mounted()
     {
-        await(fetch("http://10.12.1.6:9000/api/users/"+ this.login))
+        await(fetch("http://10.12.2.2:9000/api/users/"+ this.login))
             .then(res => res.json())
             .then(data =>  this.user = data )
             .catch(err => console.log(err.message))
@@ -228,7 +228,7 @@ export default defineComponent({
         async toggleError()
         {
             axios
-                .put("http://10.12.1.6:9000/api/users", {}, {})
+                .put("http://10.12.2.2:9000/api/users", {}, {})
                 .then((resp : AxiosResponse) => {
                 })
                 .catch((err) => {
