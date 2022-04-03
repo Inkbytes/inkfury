@@ -6,10 +6,12 @@ import {
   Delete,
   Post,
   Req,
+  Put,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CurrentGameDto, GameDto } from './dto/game.dto';
 import { GameService } from './game.service';
+import { GameEntity } from '../entities/game.entity';
 
 @Controller('game')
 export class GameController {
@@ -30,9 +32,9 @@ export class GameController {
   async getCurrentGames() {
     return await this.gameService.GetCurrentGames();
   }
-  @Get('current/:login')
-  async getCurrentGame(@Param('login') login: string) {
-    return await this.gameService.FindCurrentGameByNickname(login);
+  @Get('current/:id')
+  async getCurrentGame(@Param('id') id: number) {
+    return await this.gameService.FindCurrentGameByNickname(id);
   }
 
   @Post('current')
@@ -45,5 +47,21 @@ export class GameController {
   @Delete('current/:gameId')
   async DeleteCurrentGame(@Param('gameId') gameId: number) {
     return await this.gameService.DeleteCurrentGameById(gameId);
+  }
+
+  @Put('current/:gameId')
+  async ModifieCurrentGame(
+    @Body() game: CurrentGameDto,
+    @Param('gameId') gameId: number,
+  ) {
+    return await this.gameService.ModifieCurrentGame(gameId, game);
+  }
+
+  @Put('completed/:gameId')
+  async ModifieCompletedGame(
+    @Body() game: GameDto,
+    @Param('gameId') gameId: number,
+  ) {
+    return await this.gameService.ModifieCompletedGame(gameId, game);
   }
 }

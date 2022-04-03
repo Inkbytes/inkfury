@@ -40,16 +40,22 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import axios, { AxiosResponse } from "axios";
+import useStore from '../store'
 
 export default defineComponent({
     props: ["user"],
     data() {
+        const store = useStore();
         return {
             is2fa : this.user.is2fa,
             ext: '',
             images : null,
             login: this.user.login,
-            imgError: true
+            currLogin : this.user.login,
+            imgError: true,
+            setMsg: (e: boolean) => store.commit('msg/setMsg', e),
+            setError: (e: boolean) => store.commit('msg/setError', e),
+            setState: (e: boolean) => store.commit('msg/setState', e),
         }
     },
     methods: {
@@ -66,11 +72,9 @@ export default defineComponent({
             this.user.is2fa = this.is2fa
             if (this.imgError === false)
             {
-                console.log('asdasdsa')
                 const formData = new FormData();
                 const imageName = this.user.login+'.'+this.ext;
                 formData.append('file' , this.images)
-                console.log(imageName)
                 const headers = { 'Content-Type': 'multipart/form-data' };
                 axios
                     .post(`http://10.12.1.6:9000/api/users/image/${imageName}`, formData, { headers })
@@ -82,8 +86,23 @@ export default defineComponent({
             const usr = this.user
             axios
                 .put("http://10.12.1.6:9000/api/users", usr, {})
-                .then((resp:AxiosResponse) => {
-                    this.$router.go('/profile')
+                .then(async (resp:AxiosResponse) => {
+                    if (resp.data.Error !== undefined) {
+                        this.login = this.currLogin
+                        this.user.login = this.currLogin
+                        this.setError(true)
+                        this.setMsg(resp.data.Error)
+                        this.setState(true)
+                        this.closeModal();
+                        await new Promise(r => setTimeout(r, 2000));
+                        this.setState(false)
+                    }
+                    else {
+                        this.setMsg('successful modification')
+                        this.setState(true)
+                        this.setError(false)
+                        this.$router.go('/profile')
+                    }
                 })
                 .catch(err => {
                     console.log(err.message)

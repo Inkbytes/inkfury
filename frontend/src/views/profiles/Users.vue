@@ -226,8 +226,6 @@ export default defineComponent({
             .then(data =>  this.user = data )
             .catch(err => console.log(err.message))
         this.setLoading(false)
-        console.log(this.user.avatar)
-        // if (this.user.avatar )
         if(this.currentUserLogin === this.user.login){
             this.$router.replace('/profile')
         }

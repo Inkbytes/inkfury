@@ -41,7 +41,6 @@ export class UsersController {
 
   @Put()
   updateUser(@Body() user: UserDto) {
-    // check if nickName already exists --oel-ouar
     return this.userService.update(user);
   }
   

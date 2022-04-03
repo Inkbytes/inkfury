@@ -2,7 +2,7 @@
   <Loading />
     <div id="demo">
         <transition name="fade">
-            <Msg v-if="error" :msg="errorMsg"/>
+            <Msg/>
         </transition>
     </div>
   <div class="w-full h-16 shadow-md">
@@ -40,7 +40,7 @@ import axios, { AxiosResponse } from "axios";
 import Loading from './Loading.vue';
 
 export default defineComponent({
-  props: [ 'profil' , 'game', 'error', 'errorMsg'],
+  props: [ 'profil' , 'game',],
   name: 'Header',
   el: "#demo",
   data(){
