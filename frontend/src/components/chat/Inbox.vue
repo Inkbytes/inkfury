@@ -44,11 +44,22 @@ export default defineComponent({
 			socket: null,
 		}
 	},
-	created() {
+	mounted() {
 			this.socket = io('http://10.12.2.4:7000/chat');
 			this.socket.on('chatToClient', (message: any) => {
 				console.log(message);
 				this.msgs.push(message);
+			})
+			this.socket.on('typing', () => {
+				const time = Date.now();
+				this.isTyping = true;
+				this.lastTyped = time;
+				setTimeout(() => {
+					if (this.lastTyped == time){
+						this.isTyping = false;
+						this.lastTyped = 0;
+					}
+				}, 2000)
 			})
 	},
 	methods: {
@@ -64,16 +75,7 @@ export default defineComponent({
 		},
 		typing() {
 			if (!this.isTyping){
-				const time = Date.now();
 				this.socket.emit('typing', this.payload);
-				this.isTyping = true;
-				this.lastTyped = time;
-				setTimeout(() => {
-					if (this.lastTyped == time){
-						this.isTyping = false;
-						this.lastTyped = 0;
-					}
-				}, 2000)
 			}
 		}
 	}
