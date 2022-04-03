@@ -1,21 +1,25 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn } from 'typeorm';
+import { RoomVisibility } from '../chat/dto/chat.dto';
+import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'room' })
 class RoomEntity {
-  @PrimaryColumn('uuid')
-  roomId: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: number;
 
-  @Column({ type: 'varchar' })
-  roomName: string;
+  @Column({ nullable: true })
+  name: string;
 
-  @Column({ type: 'varchar' })
-  ownerId: number;
+  @Column({ nullable: true })
+  owner_id: number;
 
-  @Column({ type: 'text' })
-  password?: string;
+  @Column({ nullable: true })
+  password: string;
 
-  @Column()
-  state: number; // Enum of state. Public | Private | Password Protected
+  @Column({ nullable: true })
+  visibility: RoomVisibility; // Enum of state. Public | Private | Password Protected
+
+  @Column({ nullable: true, default: false })
+  pw_protected: boolean;
 }
 
 // @Entity({name: 'block_list'})
@@ -27,3 +31,4 @@ class RoomEntity {
 //     BlockedUserId: number;
 // }
 export { RoomEntity };
+
