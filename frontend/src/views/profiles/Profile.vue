@@ -30,7 +30,7 @@
     </div>
 
     <div id="content">
-        <aside id="friends_achiv">
+        <aside id="friends_achiv" class="shadow-lg rounded">
             <div id="fr">
                 <h1>Friends</h1>
                 <div id="pics">
@@ -67,7 +67,7 @@
                 </div>
             </div>
         </aside>
-        <aside id="matchs">
+        <aside id="matchs" class="shadow-md rounded">
             <h1>Matching History</h1>
             <div class="match">
                 <div class="data">
@@ -258,6 +258,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+body {
+    background: #DFDFDE !important;
+}
 h1 {
     margin: 10px 0;
 }
@@ -339,7 +342,6 @@ h1 {
     height: 100%;
     width: 40%;
     border: 1px solid #FFFFFF;
-    box-shadow: 15px 3px 17px 7px rgb(0 0 0 / 15%);
     border-radius: 6px;
 }
 #fr h1 {
@@ -425,7 +427,6 @@ h1 {
     width: 55%;
     margin-left: 4%;
     background: #FFFFFF;
-    box-shadow: 1px 4px 137px rgba(142, 142, 142, 0.15);
     border-radius: 6px;
 }
 #matchs h1 {

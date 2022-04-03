@@ -21,6 +21,13 @@ export class OauthController {
     );
   }
 
+  @Get('logout')
+  async Logout(@Req() req: Request, @Res() res: Response,) {
+    res.clearCookie('access_token');
+    res.clearCookie('oauth2_grant_code');
+    res.redirect('http://10.12.1.6:8081/');
+  }
+
   @Get('/intra/redirect')
   async IntraAuthRedirect(@Req() req, @Res() res): Promise<any> {
     console.log(req.query.code);

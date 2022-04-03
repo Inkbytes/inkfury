@@ -14,8 +14,11 @@ export class UsersService {
     return await this.repo.find();
   }
 
-  public async getUser(login) {
+  public async getUser(login : string) {
     return await this.repo.findOne({'login' : login});
+  }
+  public async getUserById(id : number) {
+    return await this.repo.findOne({'id' : id});
   }
   public async create(user: UserDto) {
     return await this.repo.save(user);

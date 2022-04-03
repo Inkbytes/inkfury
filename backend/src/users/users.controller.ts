@@ -33,6 +33,10 @@ export class UsersController {
   getUser(@Param('login') login : string) {
       return this.userService.getUser(login);
   }
+  @Get(':id')
+  getUserById(@Param('id') id : number) {
+      return this.userService.getUserById(id);
+  }
 
   @Post('')
   add(@Body() adduser: UserDto) {
