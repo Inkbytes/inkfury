@@ -52,7 +52,7 @@ export default defineComponent({
 		}
 	},
 	mounted() {
-			this.socket = io('http://10.12.2.4:7000/chat');
+			this.socket = io('http://localhost:7000/chat');
 			this.socket.on('chatToClient', (message: any) => {
 				// console.log(message);
 				this.msgs.push(message);

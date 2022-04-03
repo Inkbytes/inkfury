@@ -1,40 +1,53 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn } from 'typeorm';
+import { RoomVisibility } from '../chat/dto/chat.dto';
+import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'room' })
 class RoomEntity {
-  @PrimaryColumn()
-  roomId: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: number;
 
-  @Column()
-  roomName: string;
+  @Column({ nullable: true })
+  name: string;
 
-  @Column()
-  adminId: number;
+  @Column({ nullable: true })
+  owner_id: number;
+
+  @Column({ nullable: true })
+  password: string;
+
+  @Column({ nullable: true })
+  visibility: RoomVisibility;
+
+  @Column({ nullable: true, default: false })
+  pw_protected: boolean;
 }
 
-//
-@Entity({ name: 'messages' })
-class MessageEntity {
-  @PrimaryColumn()
-  senderId: number;
+// @Entity({ name: 'relation_table '})
+// class RelationEntity {
 
-  @Column()
-  roomId: number;
+//   /* room_id as foreign key */
+//   // room_id: number
 
-  @Column()
-  messageData: string;
+//   /* user_id as foreign key */
+//   // user_id: number;
 
-  @CreateDateColumn()
-  messageDate: Date;
-}
+//   @Column({ nullable: true })
+//   blocked: boolean;
 
-@Entity({ name: 'generalChat' })
-class ChatEntity {
-  @PrimaryColumn('uuid')
-  chatId: number;
+//   @Column({ nullable: true })
+//   muted: boolean;
 
-  @Column()
-  admin: number;
-}
+//   @Column({ nullable: true })
+//   is_admin: boolean;
+// }
 
-export { RoomEntity, ChatEntity, MessageEntity };
+// @Entity({name: 'block_list'})
+// class BlockListEntity {
+//     @PrimaryColumn('uuid')
+//     userId: number;
+
+//     @PrimaryColumn('uuid')
+//     BlockedUserId: number;
+// }
+export { RoomEntity };
+

@@ -1,14 +1,23 @@
-import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
+import {
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+  WsResponse,
+} from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 
 // This decorator gives us access to the socket.io functionality.
 @WebSocketGateway(7000, {
-  namespace: '/chat',
-  cors: true
+  namespace: 'chat',
+  cors: true,
 })
-export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-
+export class ChatGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   // This decorator gives us access to the websockets server instance.
   @WebSocketServer() wss: Server;
 
@@ -18,10 +27,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.logger.log('Server initialized!');
   }
   handleConnection(client: Socket, ...args: any[]) {
-      this.logger.log(`'Client connected:    ${client.id}'`)
+    this.logger.log(`'Client connected:    ${client.id}'`);
   }
   handleDisconnect(client: Socket) {
-      this.logger.log(`'Client disconnected: ${client.id}'`)
+    this.logger.log(`'Client disconnected: ${client.id}'`);
   }
 
   /* -- We make use of the instance in here, where we send data to all clients
@@ -36,17 +45,19 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   } */
 
   @SubscribeMessage('chatToServer')
-  handleMessage(client: Socket, payload: { sender: string, room: string, message:string }) {
+  handleMessage(
+    client: Socket,
+    payload: string,
+    // payload: { senderID: number, roomID: number, message: string }
+  ) {
     this.wss.emit('chatToClient', payload);
     // this.wss.to(payload.room).emit('chatToClient', payload);
     // client.emit('chatToClient', data);
   }
 
   @SubscribeMessage('typing')
-  isTyping(client: Socket) {
+  userTyping(client: Socket) {
     client.broadcast.emit('typing');
-    // this.wss.to(payload.room).emit('chatToClient', payload);
-    // client.emit('chatToClient', data);
   }
   // @SubscribeMessage('joinRoom')
   // handleJoinRoom(client: Socket, room: string) {
@@ -54,7 +65,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   //   this.logger.log(`room --- : ${room}`);
   //   client.emit('joinedRoom', room);
   // }
-  
   // @SubscribeMessage('leaveRoom')
   // handleLeaveRoom(client: Socket, room: string) {
   //   client.leave(room);

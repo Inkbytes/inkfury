@@ -230,7 +230,7 @@ export default defineComponent({
     },
    async mounted()
     {
-        await(fetch("http://10.12.2.4:9000/api/users"))
+        await(fetch("http://localhost:9000/api/users"))
             .then(res => res.json())
             .then(data =>  data && (this.users = data) )
             .catch(err => console.log(err.message))

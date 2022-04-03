@@ -3,7 +3,7 @@
         <DefaultLayout>
 		<div class="w-full max-w-7xl mx-auto h-full flex flex-row border-x" style="max-height: calc(100vh - 8rem)">
 			<Rooms />
-			<Inbox />
+			<!-- <Inbox /> -->
 		</div>
         </DefaultLayout>
 	</div>
