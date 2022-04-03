@@ -6,34 +6,75 @@ import { CurrentGameDto, GameDto } from './dto/game.dto';
 
 @Injectable()
 export class GameService {
-    constructor(@InjectRepository(GameEntity) private readonly gamerepo : Repository<GameEntity>, @InjectRepository(CurrentGameEntity) private readonly currentGameRepo : Repository<CurrentGameEntity>){}
-    
-// save game    
-    public async CreateCurrentMatch(game : CurrentGameDto) : Promise<CurrentGameDto>{
-        if (!this.GameCurrentSearch(game))
-            return this.currentGameRepo.save(game);
-        return this.currentGameRepo.findOne(game);
-    }
+  constructor(
+    @InjectRepository(GameEntity)
+    private readonly gamerepo: Repository<GameEntity>,
+    @InjectRepository(CurrentGameEntity)
+    private readonly currentGameRepo: Repository<CurrentGameEntity>,
+  ) {}
 
-    public async CreateCompletedGame(game : GameDto) : Promise<GameDto> {
-        if (!this.GameSearch(game))
-            return this.gamerepo.save(game);
-        return this.gamerepo.findOne(game);
-    }
+  // List completed Games
+  public async GetCompletedGames() {
+    return this.gamerepo.find();
+  }
 
-    public async GameSearch(game : GameDto) : Promise<Boolean> {
-        if (this.gamerepo.findOne(game))
-            return true;
-        return false;
-    }
+  // List Current games
+  public async GetCurrentGames() {
+    return this.currentGameRepo.find();
+  }
 
-    public async GameCurrentSearch(game : CurrentGameEntity) : Promise<Boolean> {
-        if (this.currentGameRepo.findOne(game))
-            return true;
-        return false;
-    }
+  // save game
+  public async CreateCurrentMatch(
+    game: CurrentGameDto,
+  ): Promise<CurrentGameDto> {
+    const Game = await this.GameCurrentSearch(game).then((r) => {
+      return r;
+    });
+    if (!Game) return this.currentGameRepo.save(game);
+    return this.currentGameRepo.findOne(game);
+  }
 
-// delete curentgame by gameId
+  public async CreateCompletedGame(game: GameDto): Promise<GameDto> {
+    const completeGame = await this.GameSearch(game).then((r) => {
+      return r;
+    });
+    if (!completeGame) return this.gamerepo.save(game);
+    return this.gamerepo.findOne(game);
+  }
 
-// search currentgame by playernick
+  public async GameSearch(game: GameDto): Promise<boolean> {
+    const Game = await this.gamerepo.findOne(game).then((r) => {
+      return r;
+    });
+    return !!Game;
+  }
+
+  public async GameCurrentSearch(game: CurrentGameEntity): Promise<boolean> {
+    const CurrentGame = await this.currentGameRepo.findOne(game).then((r) => {
+      return r;
+    });
+    return !!CurrentGame;
+  }
+
+  // delete curentgame by gameId
+  public async DeleteCurrentGameById(gameId: number) {
+    return await this.currentGameRepo.delete({ gameId: gameId });
+  }
+  // search currentgame by playernick
+  public async FindCurrentGameByNickname(playerId: number) {
+    return await this.currentGameRepo
+      .findOne({ p1id: playerId })
+      .then((currentGame) => {
+        if (!currentGame)
+          return this.currentGameRepo.findOne({ p2id: playerId });
+        return currentGame;
+      });
+  }
+  public async ModifieCurrentGame(gameId: number, game: CurrentGameEntity) {
+    return await this.currentGameRepo.update({ gameId: gameId }, game);
+  }
+
+  public async ModifieCompletedGame(gameId: number, game: GameEntity) {
+    return await this.gamerepo.update({ gameId: gameId }, game);
+  }
 }

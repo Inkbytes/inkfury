@@ -14,13 +14,11 @@ import { defineComponent } from 'vue'
 import DefaultLayout from '../layouts/default.vue'
 import Inbox from '../components/chat/Inbox.vue'
 import Rooms from '../components/chat/Rooms.vue'
-import io from 'socket.io-client'
-
 export default defineComponent({
 	name: 'Chat',
 	components: { DefaultLayout, Rooms, Inbox },
 	data() {
-		return {  }
+		return {}
 	},
 })
 </script>

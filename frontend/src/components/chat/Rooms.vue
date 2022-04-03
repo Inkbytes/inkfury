@@ -21,7 +21,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-	data () {
+	setup() {
 		const rooms = [
 			{
 				id: 1,
@@ -51,9 +51,6 @@ export default defineComponent({
 		]
 		return { rooms }
 	},
-	async mounted() {
-		
-	}
 })
 </script>
 

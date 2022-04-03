@@ -2,7 +2,7 @@
   <Loading />
     <div id="demo">
         <transition name="fade">
-            <Msg v-if="error" :msg="errorMsg"/>
+            <Msg/>
         </transition>
     </div>
   <div class="w-full h-16 shadow-md">
@@ -19,7 +19,7 @@
             <li v-if="!logged" class="hover:text-blue-600 transition-colors duration-300"><a href="#education">Core team</a></li>
             <li v-else class="hover:text-blue-600 transition-colors duration-300"><router-link :to="{ name : 'Game' }">Game</router-link></li>
             <li v-if="!logged" class="hover:text-blue-600 transition-colors duration-300"><a href="#about">About</a></li>
-            <li v-else class="hover:text-blue-600 transition-colors duration-300"><router-link :to="{ name: 'Profile' }">Profil</router-link></li>
+            <li v-else class="hover:text-blue-600 transition-colors duration-300"><router-link :to="{ name: 'Profile' }">Profile</router-link></li>
         </ul>
       </div>
             <a v-if="!logged" id="login" class="px-4 py-2 text-xs text-white bg-green-600 rounded-md font-semibold hover:bg-green-400 duration-300" href="http://10.12.2.4:9000/api/login">login</a>
@@ -40,12 +40,11 @@ import axios, { AxiosResponse } from "axios";
 import Loading from './Loading.vue';
 
 export default defineComponent({
-  props: [ 'profil' , 'game', 'error', 'errorMsg'],
+  props: [ 'profil' , 'game',],
   name: 'Header',
   el: "#demo",
   data(){
       const store = useStore();
-      console.log(store)
       return {
           login: (e:any) => store.commit('auth/setLogged', e),
           userData:(e:any) => store.commit('auth/setUser', e),
@@ -76,11 +75,12 @@ export default defineComponent({
     axios
         .post("http://10.12.2.4:9000/api/login/login_verification", {}, { withCredentials: true })
         .then((resp: AxiosResponse) => {
-          this.login(true);
-          this.userData(resp.data)
-          this.setLoading(false);
+            this.login(true);
+            this.userData(resp.data)
+            this.setLoading(false);
         })
-        .catch(() => {
+        .catch((err) => {
+           console.log(err);
            this.login(false);
           if (this.$route.path !== '/')
             this.$router.replace('/')

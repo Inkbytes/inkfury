@@ -4,7 +4,6 @@ import { UserEntity } from '../../src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserDto } from './dto/add-user.dto';
 import { User } from './interfaces/user.interface';
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -15,11 +14,23 @@ export class UsersService {
     return await this.repo.find();
   }
 
+  public async getUser(login) {
+    return await this.repo.findOne({'login' : login});
+  }
   public async create(user: UserDto) {
     return await this.repo.save(user);
   }
 
   public async remove(username: string) {
     return await this.repo.delete({ login: username });
+  }
+
+  public async update(user: UserDto) {
+    const userd = await this.repo.findOne({login : user.login}).then((user) => {
+      return user;
+    });
+    if ((userd !== undefined && userd.id === user.id) || userd === undefined)
+    return await this.repo.update({ id: user.id }, user);
+    return {"Error": "Login already exist."};
   }
 }

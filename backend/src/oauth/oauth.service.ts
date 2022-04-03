@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios from 'axios';
 import { UserEntity } from '../entities/user.entity';
-import { UserDto } from '../users/dto/add-user.dto';
 
 @Injectable()
 export class OauthService {
@@ -28,19 +27,20 @@ export class OauthService {
       .then((resp) => {
         return resp.data['access_token'];
       })
-      .catch(() => {
+      .catch((err) => {
+		  console.error(err)
         throw new UnauthorizedException();
       });
   }
 
   async GetUserData(data, access_token) {
     const user = await this.repo
-      .findOne({ token: access_token })
+      .findOne({ id: Number.parseInt(data.id) })
       .then((res) => {
         return res;
       });
-    if (user === undefined) return this.CreateUser(data, access_token);
-    return this.repo.findOne({ token: access_token });
+    if (!user) return this.CreateUser(data, access_token);
+    return this.repo.findOne({ id: Number.parseInt(data.id) });
   }
 
   // Create user and save it to database
@@ -57,6 +57,7 @@ export class OauthService {
       is2fa: false,
       token: token,
       blockedUsers: [],
+	  statsId: 0
     };
     return this.repo.save(user);
   }

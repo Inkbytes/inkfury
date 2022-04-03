@@ -2,7 +2,7 @@
 set -e
 
 SERVER="postsql";
-  PW="admin";
+PW="admin";
 DB="inkfury";
 
 echo "echo stop & remove old docker [$SERVER] and starting new fresh instance of [$SERVER]"

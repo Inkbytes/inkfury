@@ -4,13 +4,10 @@ import {
   Req,
   Res,
   Post,
-  UseGuards,
-  Headers,
   UnauthorizedException,
-  ConsoleLogger,
 } from '@nestjs/common';
 import axios from 'axios';
-import { Request, response, Response } from 'express';
+import { Request, Response } from 'express';
 import { OauthService } from './oauth.service';
 
 @Controller('login')
@@ -23,6 +20,7 @@ export class OauthController {
       'https://api.intra.42.fr/oauth/authorize?client_id=bcf55a604c8a500225dcade725cb60dd33b9487917ee2688696f8ca6dbb6d600&redirect_uri=http%3A%2F%2F10.12.2.4%3A9000%2Fapi%2Flogin%2Fintra%2Fredirect&response_type=code',
     );
   }
+
   @Get('/intra/redirect')
   async IntraAuthRedirect(@Req() req, @Res() res): Promise<any> {
     console.log(req.query.code);
@@ -37,7 +35,6 @@ export class OauthController {
   async loginVerification(
     @Req() req: Request,
     @Res() res: Response,
-    @Headers() headers,
   ): Promise<any> {
     if (!req.cookies['oauth2_grant_code'] && !req.cookies['access_token'])
       throw new UnauthorizedException();

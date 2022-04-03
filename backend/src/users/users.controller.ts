@@ -6,8 +6,16 @@ import {
   Delete,
   Param,
   Body,
+  UseInterceptors,
+  UploadedFile,
+  Req
 } from '@nestjs/common';
+import * as fs from 'fs';
+import {FileInterceptor} from '@nestjs/platform-express';
+import { Request, response } from 'express';
+import { IncomingMessage } from 'http';
 import { UserEntity } from 'src/entities/user.entity';
+import { Stream } from 'stream';
 import { UserDto } from './dto/add-user.dto';
 import { User } from './interfaces/user.interface';
 import { UsersService } from './users.service';
@@ -21,20 +29,27 @@ export class UsersController {
     return this.userService.getAll();
   }
 
+  @Get(':login')
+  getUser(@Param('login') login : string) {
+      return this.userService.getUser(login);
+  }
+
   @Post('')
   add(@Body() adduser: UserDto) {
     return this.userService.create(adduser);
   }
 
-  @Delete(':username')
-  getUser(@Param('username') id: string) {
-    return this.userService.remove(id);
+  @Put()
+  updateUser(@Body() user: UserDto) {
+    return this.userService.update(user);
   }
-
-  // @Put()
-  // updateUser(@Body() addUserDto: AddUserDto) : string {
-  //     return 'User updated.';
-  // }
-  // @Put()
-  // UpdateUser(@)
+  
+  @Post('/image/:imageName')
+  @UseInterceptors(FileInterceptor('file'))
+  getImage(@Param('imageName') imageName : string, @UploadedFile() file: Express.Multer.File) {
+    fs.writeFileSync("/Users/oel-ouar/Desktop/hamid/frontend/public/assets/"+imageName, file.buffer);
+    return "OK";
+  }
 }
+
+// add to friendList I will send id1 and id2 --oel-ouar

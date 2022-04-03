@@ -1,31 +1,33 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity({name : 'game'})
+@Entity({ name: 'game' })
 class GameEntity {
-    @PrimaryGeneratedColumn('uuid')
-    gameId: number;
+  @PrimaryColumn()
+  gameId: number;
 
-    @Column({type: 'text', default: true})
-    p1nick: string;
+  @Column({ type: 'int', default: 0 })
+  p1id: number;
 
-    @Column()
-    p2nick: string;
+  @Column({ default: 0 })
+  p2id: number;
 
-    @Column()
-    p1Score: number;
+  @Column({ default: 0 })
+  p1Score: number;
 
-    @Column()
-    p2Score: number;
+  @Column({ default: 0 })
+  p2Score: number;
 }
-@Entity({name: 'currentgame'})
+
+@Entity({ name: 'currentgame' })
 class CurrentGameEntity {
-    @PrimaryGeneratedColumn('uuid')
-    gameId: number;
- 
-    @Column()
-    p1nick: string;
+  @PrimaryColumn()
+  gameId: number;
 
-    @Column()
-    p2nick: string;
+  @Column({ default: 0 })
+  p1id: number;
+
+  @Column({ default: 0 })
+  p2id: number;
 }
-export {GameEntity, CurrentGameEntity};
+
+export { GameEntity, CurrentGameEntity };

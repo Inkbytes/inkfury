@@ -1,17 +1,30 @@
 <template>
-  <Header :profil="profil" :logged="logged"/>
-    <Modal v-if="settings" :nickname="user.login" @close="switchSet"/>
+  <DefaultLayout>
+    <Modal v-if="settings" :user="user" @close="switchSet"/>
     <div class="profile">
-        <input type="text" v-model="search" onfocus="this.value=''">
+        <input type="text" class="
+        form-control
+        block
+        w-222
+        px-3
+        py-1.5
+        text-base
+        font-normal
+        text-gray-700
+        bg-white bg-clip-padding
+        border border-solid border-gray-300
+        rounded
+        transition
+        ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" v-model="search" onfocus="this.value=''">
         <span id="settings" @click="switchSet"></span>
         <div v-if="search">
             <div id="search" >
                     <router-link :to="{ name: 'Users', params: { login : user.login}}" v-for="user in matchingLogin" :key="user.login">{{ user.login }}</router-link>
             </div>
         </div>
-        <img :src="user.avatar" width="100" height="100">
+        <img :src="getImage(getImage(user.avatar))"  width="100" height="100">
         <div id="details">
-            <h1> {{ user.fullName }}</h1>
+            <h1> {{ user.fullname }}</h1>
             <p>@{{ user.login }}</p>
         </div>
     </div>
@@ -58,9 +71,9 @@
             <h1>Matching History</h1>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -76,9 +89,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -94,9 +107,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -112,9 +125,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -130,9 +143,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -148,9 +161,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -166,9 +179,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="user.avatar" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.fullName }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -185,7 +198,7 @@
         </aside>
     </div>
 
-  <Footer/>
+  </DefaultLayout>
 </template>
 
 <script lang="ts">
@@ -194,12 +207,16 @@ import Header from '../../components/Header.vue'
 import Footer from '../../components/Footer.vue'
 import Modal from '../../components/Modal.vue'
 
+
+import DefaultLayout from '../../layouts/default.vue'
+
 import { computed } from 'vue'
 import useStore from '../../store'
 
+
 export default defineComponent({
     name: 'Profile',
-    components: { Header, Footer , Modal},
+    components: { Header, Footer , Modal, DefaultLayout},
     data() {
         const store = useStore();
         return {
@@ -213,13 +230,12 @@ export default defineComponent({
     },
    async mounted()
     {
-        fetch("http://localhost:9000/users")
+        await(fetch("http://10.12.2.4:9000/api/users"))
             .then(res => res.json())
             .then(data =>  data && (this.users = data) )
             .catch(err => console.log(err.message))
     },
     computed :{
-
         matchingLogin() {
             if (this.users.length == 0)
                 return ;
@@ -230,24 +246,34 @@ export default defineComponent({
     methods: {
         switchSet(){
             this.settings = !this.settings
+        },
+        getImage(pic: string){
+            if (pic.startsWith('https://cdn.intra.42.fr/users/'))
+                return this.user.avatar
+            else
+                return ('./assets/'+this.user.avatar)
         }
     }
 });
 </script>
 
 <style scoped>
+h1 {
+    margin: 10px 0;
+}
 .profile {
     position: relative !important;
     display: flex !important;
-   max-width: 1200px !important;
+   width: 1000px !important;
    height: auto !important;
    padding-top: 250px !important;
-    background-image: url('../../assets/user-bg.png');
+    background-image: url('../../assets/user-bg.jpg');
     padding-bottom: 20px;
     margin: 0 auto 30px;
 }.profile img {
     margin-left: 30px;
     border-radius: 50%;
+    height: 100px;
 }
 #details {
     margin-left: 10px;
@@ -261,9 +287,7 @@ export default defineComponent({
     text-align: center;
     color: white;
     margin-bottom: 0;
-}
-.profile img {
-    height: 100px;
+    text-align: left;
 }
 .profile p {
     text-align: left;
@@ -288,7 +312,7 @@ export default defineComponent({
     top: 42px;
     background: white; 
     right: 10px;
-    width: 222px;
+    width: 200px;
 }
 #search a {
     display: block;
@@ -305,7 +329,7 @@ export default defineComponent({
 }
 #content {
     padding: 6px;
-    max-width: 800px;
+    width: 820px;
     margin: 0 auto 50px;
     text-align: left;
     display: flex;
@@ -315,7 +339,7 @@ export default defineComponent({
     height: 100%;
     width: 40%;
     border: 1px solid #FFFFFF;
-    box-shadow: 1px 8px 28px -4px rgba(0, 0, 0, 0.15);
+    box-shadow: 15px 3px 17px 7px rgb(0 0 0 / 15%);
     border-radius: 6px;
 }
 #fr h1 {
@@ -398,8 +422,8 @@ export default defineComponent({
     border-radius: 7px;
 }
 #matchs {
-    width: 58%;
-    margin-left: 1%;
+    width: 55%;
+    margin-left: 4%;
     background: #FFFFFF;
     box-shadow: 1px 4px 137px rgba(142, 142, 142, 0.15);
     border-radius: 6px;
@@ -432,6 +456,7 @@ export default defineComponent({
     border: 1px solid rgba(0, 0, 0, 0.14);
     box-sizing: border-box;
     border-radius: 8px;
+    height: 54px;
     }
 .match p {
     margin: 0;

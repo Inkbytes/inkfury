@@ -1,16 +1,16 @@
 <template>
-    <Header :error="success" :errorMsg="msg"/>
+<DefaultLayout>
     <div id="error" v-if="error">
         <h1>404</h1>
         <h3>user not found</h3>
     </div>
     <div v-else>
         <div class="profile">
-        <img :src="userImage.pic" width="100" height="100">
+        <img :src="getImage(user.avatar)" width="100" height="100">
         <div id="details">
-            <h1> {{ user.name }}</h1>
+            <h1> {{ user.fullname }}</h1>
             <p>@{{ user.login }}</p>
-            <img @click="toggleError" src="../../assets/add-friend.jpg" width="35" height="35">
+            <img v-if="valid" @click="toggleError" src="../../assets/add-friend.jpg" width="35" height="35">
         </div>
     </div>
 
@@ -56,9 +56,9 @@
             <h1>Matching History</h1>
             <div class="match">
                 <div class="data">
-                    <img :src="userImage.pic" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -74,9 +74,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="userImage.pic" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -92,9 +92,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="userImage.pic" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -110,9 +110,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="userImage.pic" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -128,9 +128,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="userImage.pic" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -146,9 +146,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="userImage.pic" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -164,9 +164,9 @@
             </div>
             <div class="match">
                 <div class="data">
-                    <img :src="userImage.pic" width="46" height="45">
+                    <img :src="getImage(user.avatar)" width="46" height="45">
                     <div class="info">
-                        <p>{{ user.name }}</p>
+                        <p>{{ user.fullname }}</p>
                         <p>@{{ user.login }}</p>
                     </div>
                 </div>
@@ -184,78 +184,89 @@
     </div>
     </div>
 
-  <Footer/>
   <router-view/>
+</DefaultLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Header from '../../components/Header.vue'
-import Footer from '../../components/Footer.vue'
+import DefaultLayout from '../../layouts/default.vue'
+
+import { computed } from 'vue'
+
+import axios, { AxiosResponse } from "axios";
+
+
+import useStore from '../../store'
+
 declare var require: any
 export default defineComponent({
+    name: 'Users',
     props: ['login'],
     data() {
+        const store = useStore();
         return {
-            user: {
-                login: '',
-                name:'',
-                pic:''
-            },
-            users: [],
+            currentUserLogin : computed(() => store.state.auth.user.login),
+            user : {},
             error: false,
             msg: '',
-            success: false
+            success: false,
+            setLoading: (e: boolean) => store.commit('config/setLoading', e),
+            valid : true
         }
     },
-    components: { Header , Footer},
+    components: { DefaultLayout},
+    created(){
+        this.setLoading(true)
+    },
     async mounted()
-    {
-        await(fetch("http://localhost:9000/users"))
+    { 
+        await(fetch("http://10.12.2.4:9000/api/users/"+ this.login))
             .then(res => res.json())
-            .then(data =>  this.users = data )
+            .then(data =>  this.user = data )
             .catch(err => console.log(err.message))
-        if (this.users.length == 0)
-            return ;
-        const usr: any = this.users.filter((user : any) => user.login.includes(this.login))
-        let l = JSON.parse(JSON.stringify(usr))
-        if (l[0]===undefined)
-        {
-            this.error = true
-            return 
-        }
-        this.user.login = l[0].login
-        this.user.name = l[0].name
-        this.user.pic = l[0].pic
-    },
-    computed: {
-        userImage(){
-            return {
-                pic: this.user.pic && require('../../assets/'+this.user.pic)
-            }
+        this.setLoading(false)
+        if(this.currentUserLogin === this.user.login){
+            this.$router.replace('/profile')
         }
     },
     methods: {
         async toggleError()
         {
+            axios
+                .put("http://10.12.2.4:9000/api/users", {}, {})
+                .then((resp : AxiosResponse) => {
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
             this.success = !this.success
             this.msg =  'user has been added successfully!'
             await new Promise(r => setTimeout(r, 2000));
             this.success = !this.success
+            
+        },
+
+        getImage(pic: string){
+            if (pic.startsWith('https://cdn.intra.42.fr/users/'))
+                return this.user.avatar
+            else
+                return ('../assets/'+this.user.avatar)
         }
     }
 });
 </script>
 
-<style>
+<style scoped>
 
 .profile {
-    position: relative;
-    display: flex;
-   width: 800px;
-   height: 150px;
-   padding-top: 250px;
-    background-image: url('../../assets/user-bg.png');
+    position: relative !important;
+    display: flex !important;
+    max-width: 1000px !important;
+   height: auto !important;
+   padding-top: 250px !important;
+    background-image: url('../../assets/user-bg.jpg');
+    padding-bottom: 20px;
     margin: 0 auto 30px;
 }.profile img {
     margin-left: 30px;
@@ -266,7 +277,6 @@ export default defineComponent({
     position: relative;
 }
 .profile h1 {
-    margin-top: 5px;
     font-family: 'Inter';
     font-style: normal;
     font-weight: 600;
@@ -274,6 +284,10 @@ export default defineComponent({
     text-align: center;
     color: white;
     margin-bottom: 0;
+    text-align: left;
+}
+.profile img {
+    height: 100px;
 }
 .profile p {
     text-align: left;
@@ -293,9 +307,29 @@ export default defineComponent({
     width: 200px;
     padding-left: 20px;
 }
+#search {
+    position: absolute;
+    top: 42px;
+    background: white; 
+    right: 10px;
+    width: 222px;
+}
+#search a {
+    display: block;
+    border-top: 1px solid grey;
+    margin: 0;
+    padding-top: 3px;
+    padding-bottom: 5px;
+    text-decoration: none;
+    color: black;
+}
+#search a:hover {
+  text-decoration: underline;
+  background-color: #eeeeee;  
+}
 #content {
     padding: 6px;
-    max-width: 790px;
+    max-width: 800px;
     margin: 0 auto 50px;
     text-align: left;
     display: flex;
@@ -427,6 +461,8 @@ export default defineComponent({
     margin: 0;
 }
 .data p:first-child {
+    max-height: 17px;
+    max-width: 166px;
     font-family: 'Inter';
     font-style: normal;
     font-weight: 600;
@@ -495,6 +531,7 @@ export default defineComponent({
     margin-left: 0;
     left: 0;
     top : 58px;
+    height: 35px;
     cursor: pointer;
 }
 </style>
