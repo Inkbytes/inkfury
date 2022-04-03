@@ -41,8 +41,8 @@ export default defineComponent({
         return {
 			game: true,
 			bgClicked: false,
-			logged: computed(() => store.state.auth.logged)
-			user: computed(() => store.state.auth.user),
+			logged: computed(() => store.state.auth.logged),
+			user: computed(() => store.state.auth.user)
         }
 	},
 	methods: {
@@ -54,7 +54,7 @@ export default defineComponent({
 
 			const ip_addr = '10.12.1.6';
 
-			const socket = io("http://"+ip_addr+":3000");
+			const socket = io("http://"+ip_addr+":9000");
 
 			socket.on("connect", ()=>{
 				console.log(`connected with id ${socket.id}`);

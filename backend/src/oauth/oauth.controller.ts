@@ -25,10 +25,10 @@ export class OauthController {
   async IntraAuthRedirect(@Req() req, @Res() res): Promise<any> {
     console.log(req.query.code);
     if (req.query.code === undefined) {
-      return res.status(401).redirect('http://10.12.1.6:8081/');
+      return res.status(401).redirect('http://10.12.1.6:8082/');
     }
     res.cookie('oauth2_grant_code', req.query.code);
-    return res.redirect(`http://10.12.1.6:8081/auth=true`);
+    return res.redirect(`http://10.12.1.6:8082/?auth=true`);
   }
 
   @Post('/login_verification')

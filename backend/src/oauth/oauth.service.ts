@@ -17,29 +17,30 @@ export class OauthService {
       data: {
         grant_type: 'authorization_code',
         client_id:
-          '3f629c13c719f75d1671989b3a96bb75d7796453b81b6ca8096945afbb88ab9c',
+          '692c512c7ac5c517fff90c0360ad71d0ebb322b9c5b2bd373cf01102e2836fe5',
         client_secret:
-          '7a4bc77dc2a441a48b34815ccbff76e2247c5b5e37e37da22429c1a8ab397769',
+          'b1ad468b9f56cd25c66c355d60530d5b5694f468c37354dec598724058fc7ebb',
         code: `${code}`,
-        redirect_uri: 'http://localhost:9000/api/login/intra/redirect',
+        redirect_uri: 'http://10.12.1.6:9000/api/login/intra/redirect',
       },
     })
       .then((resp) => {
         return resp.data['access_token'];
       })
-      .catch(() => {
+      .catch((err) => {
+		  console.error(err)
         throw new UnauthorizedException();
       });
   }
 
   async GetUserData(data, access_token) {
     const user = await this.repo
-      .findOne({ token: access_token })
+      .findOne({ id: Number.parseInt(data.id) })
       .then((res) => {
         return res;
       });
-    if (user === undefined) return this.CreateUser(data, access_token);
-    return this.repo.findOne({ token: access_token });
+    if (!user) return this.CreateUser(data, access_token);
+    return this.repo.findOne({ id: Number.parseInt(data.id) });
   }
 
   // Create user and save it to database
@@ -56,6 +57,7 @@ export class OauthService {
       is2fa: false,
       token: token,
       blockedUsers: [],
+	  statsId: 0
     };
     return this.repo.save(user);
   }
