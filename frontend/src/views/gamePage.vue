@@ -58,11 +58,14 @@ export default defineComponent({
 
 			const my_user = this.user;
 			const ip_addr = '10.12.2.2';
-
+			console.log(my_user);
 			const socket = io("http://"+ip_addr+":9000");
 
+
 			socket.on("connect", ()=>{
-				console.log(`connected with id ${socket.id}`);
+
+				socket.emit('registerme-event',my_user.id)                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+				console.log(`connected with id ${socket.id} & user_id ${my_user.id}`);
 			})
 
 			const lobby = Symbol('lobby');
@@ -150,26 +153,6 @@ export default defineComponent({
 						game_state = pregame;
 						// console.log(`socket.gameId: ${socket.gameId}`)
 						// console.log(`my_user.id: ${my_user.id}`);
-						if (player_number === 1 && !put_flag){
-							// put p1nick.
-							axios
-							.put("http://"+ip_addr+":9000/api/game/current/"+game_id, {p1id: my_user.id})
-							.then(console.log("sala bilal p1"))
-							.catch( (err) => {
-								console.log(`err equals to ${err}`);
-							})
-							put_flag = true;
-						}
-						else if (player_number === 2 && !put_flag){
-							// put p2nick.
-							axios
-							.put("http://"+ip_addr+":9000/api/game/current/"+game_id, {p2id: my_user.id})
-							.then(console.log("sala bilal p2"))
-							.catch( (err) => {
-								console.log(`err equals to ${err}`);
-							})	
-							put_flag = true;
-						}
 					});
 				}
 
@@ -181,6 +164,28 @@ export default defineComponent({
 					p.fill('white');
 					p.text('Pregame', WIDTH / 2, HEIGHT / 2);
 
+					// if (player_number === 1 && !put_flag){
+					// 	// put p1nick.
+					// 	console.log('man wtf?');
+					// 	axios
+					// 	.put("http://"+ip_addr+":9000/api/game/current/"+game_id, {p1id: my_user.id})
+					// 	.then(console.log("sala bilal p1"))
+					// 	.catch( (err) => {
+					// 		console.log(`err equals to ${err}`);
+					// 	})
+					// 	put_flag = true;
+					// }
+					// else if (player_number === 2 && !put_flag){
+					// 	// put p2nick.
+					// 	console.log('man wtf?2');
+					// 	axios
+					// 	.put("http://"+ip_addr+":9000/api/game/current/"+game_id, {p2id: my_user.id})
+					// 	.then(console.log("sala bilal p2"))
+					// 	.catch( (err) => {
+					// 		console.log(`err equals to ${err}`);
+					// 	})	
+					// 	put_flag = true;
+					// }
 			// hook space to start the game
 			// emit startgame-event to notify the other player to start the game
 					if (p.keyIsDown(32)){
@@ -243,50 +248,64 @@ export default defineComponent({
 					p.text('Postgame player_number ' + winner +
 						' won', WIDTH / 2, HEIGHT / 2);
 
-					// delete to current games
-					if (player_number === 1 && !current_game_delete_flag){
-						axios
-						.delete("http://"+ip_addr+":9000/api/game/current/"+game_id)
-						.then(console.log('sala bilal 1'))
-						.catch( err => {console.log(`error: ${err}`)})
-						current_game_delete_flag = true;
-					}
+					// // delete to current games
+					// if (player_number === 1 && !current_game_delete_flag){
+					// 	axios
+					// 	.delete("http://"+ip_addr+":9000/api/game/current/"+game_id)
+					// 	.then(console.log('sala bilal 1'))
+					// 	.catch( err => {console.log(`error: ${err}`)})
+					// 	current_game_delete_flag = true;
+					// }
 
-					// post finished game
-					if (player_number === 1 && !game_post_flag){
-						axios
-						.post("http://"+ip_addr+":9000/api/game/completed",
-						{gameId: game_id,
-						 p1id: my_user.id,
-						 p1Score: p1score,
-						 p2Score: p2score,
-						})
-						.then(console.log("sala bilal 2"))
-						.catch(err => {console.log(err)})
-						game_post_flag = true;
-					}
-					else if (player_number === 2 && !game_post_flag){
-						axios
-						.put("http://"+ip_addr+":9000/api/game/completed/"+game_id,
-						{
-							p2id: my_user.id,
-						})
-						game_post_flag = true;
-					}
+					// // post finished game
+					// if (player_number === 1 && !game_post_flag){
+					// 	axios
+					// 	.post("http://"+ip_addr+":9000/api/game/completed",
+					// 	{
+					// 		gameId: game_id,
+					// 		p1id: my_user.id,
+					// 		p1Score: p1score,
+					// 		p2Score: p2score,
+					// 	})
+					// 	.then(console.log("sala bilal 2"))
+					// 	.catch(err => {console.log(err)})
+					// 	game_post_flag = true;
+					// }
+					// else if (player_number === 2 && !game_post_flag){
+					// 	axios
+					// 	.put("http://"+ip_addr+":9000/api/game/completed/"+game_id,
+					// 	{
+					// 		gameId: game_id,
+					// 		p2id: my_user.id,
+					// 		p1Score: p1score,
+					// 		p2Score: p2score,
+					// 	})
+					// 	.then(console.log("sala bilal 3"))
+					// 	.catch(err => {console.log(err)})
+					// 	game_post_flag = true;
+					// }
 
 			// reset game and replay
 					if (p.keyIsDown(32)){
 						if (!quitflag){
-							socket.emit('startgame-event', 1);
+							socket.emit('startgame2-event', 1);
 							game_state = pregame;
+							game_id += 1;
+							put_flag = false;
+							current_game_delete_flag = false;
+							game_post_flag = false;
 						}
 						else{
 							game_state = lobby;
 							socket.emit('queueme-event', 1);
 						}
 					}
-					socket.on('startgame-event', () => {
+					socket.on('startgame2-event', () => {
 						game_state = pregame;
+						game_id += 1;
+						put_flag = false;
+						current_game_delete_flag = false;
+						game_post_flag = false;
 					});
 			// somebody quit the game
 					socket.on('quitgame-event', (flag : any) => {
@@ -305,36 +324,36 @@ export default defineComponent({
 					let loser = (player_number === 1) ? 2 : 1;
 					p.text('player_number ' + loser + '  quits', WIDTH / 2, HEIGHT / 2);
 
-					// delete to current games
-					if (player_number === 1 && !current_game_delete_flag){
-						axios
-						.delete("http://"+ip_addr+":9000/api/game/current/"+game_id)
-						.then(console.log('sala bilal'))
-						.catch( err => {console.log(`error: ${err}`)})
-						current_game_delete_flag = true;
-					}
+					// // delete to current games
+					// if (player_number === 1 && !current_game_delete_flag){
+					// 	axios
+					// 	.delete("http://"+ip_addr+":9000/api/game/current/"+game_id)
+					// 	.then(console.log('sala bilal'))
+					// 	.catch( err => {console.log(`error: ${err}`)})
+					// 	current_game_delete_flag = true;
+					// }
 
-					// post finished game
-					if (player_number === 1 && !game_post_flag){
-						axios
-						.post("http://"+ip_addr+":9000/api/game/completed",
-						{gameId: game_id,
-						 p1id: my_user.id,
-						 p1Score: p1score,
-						 p2Score: p2score,
-						})
-						.then(console.log("sala bilal"))
-						.catch(err => {console.log(err)})
-						game_post_flag = true;
-					}
-					else if (player_number === 2 && !game_post_flag){
-						axios
-						.put("http://"+ip_addr+":9000/api/game/completed/"+game_id,
-						{
-							p2id: my_user.id,
-						})
-						game_post_flag = true;
-					}
+					// // post finished game
+					// if (player_number === 1 && !game_post_flag){
+					// 	axios
+					// 	.post("http://"+ip_addr+":9000/api/game/completed",
+					// 	{gameId: game_id,
+					// 	 p1id: my_user.id,
+					// 	 p1Score: p1score,
+					// 	 p2Score: p2score,
+					// 	})
+					// 	.then(console.log("sala bilal"))
+					// 	.catch(err => {console.log(err)})
+					// 	game_post_flag = true;
+					// }
+					// else if (player_number === 2 && !game_post_flag){
+					// 	axios
+					// 	.put("http://"+ip_addr+":9000/api/game/completed/"+game_id,
+					// 	{
+					// 		p2id: my_user.id,
+					// 	})
+					// 	game_post_flag = true;
+					// }
 
 					if (p.keyIsDown(32))
 					{
