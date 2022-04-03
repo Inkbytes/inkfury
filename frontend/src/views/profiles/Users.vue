@@ -238,7 +238,7 @@ export default defineComponent({
             this.msg =  'user has been added successfully!'
             await new Promise(r => setTimeout(r, 2000));
             this.success = !this.success
-        }
+4        }
     }
 });
 </script>

@@ -6,6 +6,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import axios, { AxiosResponse } from "axios";
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 
@@ -28,9 +29,9 @@ export class GameGateway
 
   handleConnection(client: Socket | any, ...args: any[]) {
     this.logger.log(`Client connected ${client.id}`);
+    game_queue.push(client);
     this.logger.log(`game_queue.length ${game_queue.length}`);
     // add client to the queue
-    game_queue.push(client);
     // if two players or more and on the queue arbitrary choose who is p1 and p2
     // queue them advance to pregame status
     if (game_queue.length >= 2) queue_players();
@@ -56,6 +57,7 @@ export class GameGateway
         e_socket.emit('quitgame-event', 1);
       }
     }
+    this.logger.log(`game_queue.length ${game_queue.length}`);
   }
 
   @SubscribeMessage('startgame-event')
@@ -99,6 +101,13 @@ const queue_players = () => {
   // pop the players from the queue
   game_queue.splice(0, 2);
 
+  // post gameId to currentdb
+  axios
+  .post("http://10.12.1.6:9000/api/game/current", {gameId: game_number})
+  .then( )
+  .catch (err => {console.log(err)})
   // increment game_number
   game_number++;
+
+  console.log(`hamid queued p1: ${player1.id} & p2: ${player2.id}`);
 };

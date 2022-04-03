@@ -27,6 +27,7 @@ import p5 from 'p5'
 import { Swiper, SwiperSlide } from "swiper/vue";
 import 'swiper/swiper-bundle.min.css';
 import SwiperCore, { Autoplay } from "swiper/core";
+import axios, { AxiosResponse } from "axios";
 
 import io from 'socket.io-client'
 
@@ -146,7 +147,7 @@ export default defineComponent({
 						if (player_number === 1 && !put_flag){
 							// put p1nick.
 							axios
-							.put("http://"+ip_addr+":9000/api/game/current/"+socket.gameId, {p1id: user.id})
+							.put("http://"+ip_addr+":9000/api/game/current/"+socket.gameId, {p1id: this.user.id})
 							.then(console.log("sala bilal"))
 							.catch( (err) => {
 								console.log(`err equals to ${err}`);
@@ -156,7 +157,7 @@ export default defineComponent({
 						else if (player_number === 2 && !put_flag){
 							// put p2nick.
 							axios
-							.put("http://"+ip_addr+":9000/api/game/current"+socket.gameId, {p2id: user.id})
+							.put("http://"+ip_addr+":9000/api/game/current"+socket.gameId, {p2id: this.user.id})
 							.then(console.log("sala bilal"))
 							.catch( (err) => {
 								console.log(`err equals to ${err}`);
@@ -249,7 +250,7 @@ export default defineComponent({
 						axios
 						.post("http://"+ip_addr+":9000/api/game/completed",
 						{gameId: socket.gameId,
-						 p1nick: user.id,
+						 p1nick: this.user.id,
 						 p1Score: p1score,
 						 p2Score: p2score,
 						})
@@ -260,7 +261,7 @@ export default defineComponent({
 						axios
 						.post("http://"+ip_addr+":9000/api/game/completed/"+socket.gameId,
 						{
-							p2nick: user.id,
+							p2nick: this.user.id,
 						})
 					}
 					// post to 
