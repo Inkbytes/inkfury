@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'room' })
 class RoomEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ nullable: true })
@@ -20,6 +20,15 @@ class RoomEntity {
 
   @Column({ nullable: true, default: false })
   pw_protected: boolean;
+
+  @Column('int', { array: true, default: [] })
+  members: number[];
+
+  @Column('int', { array: true, default: [] })
+  blocked_members: number[];
+
+  @Column('int', { array: true, default: [] })
+  muted_members: number[];
 }
 
 // @Entity({ name: 'relation_table '})
