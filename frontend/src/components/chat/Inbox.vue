@@ -1,6 +1,6 @@
 <template>
 	<div class="w-full flex flex-col justify-between">
-		<div class="flex items-center border-b border-gray-300 justify-center pl-3 py-4">
+		<div class="relative flex items-center border-b border-gray-300 justify-center pl-3 h-20">
       <img class="h-10 w-10 rounded-full object-cover" src="https://images.pexels.com/photos/3777931/pexels-photo-3777931.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=750&amp;w=1260" alt="username">
       <span class="block ml-2 font-bold text-base text-gray-600">Eduard</span>
       <span class="connected text-green-500 ml-2">
@@ -8,6 +8,16 @@
           <circle cx="3" cy="3" r="3" fill="currentColor"></circle>
         </svg>
       </span>
+
+			<div class="absolute lg:hidden top-0 right-0 h-16 flex items-center justify-center mr-4" @click="toggleUsersList">
+				<div class="flex justify-center items-center  w-10 h-10 leading-none tracking-tighter">
+					<svg viewBox="0 0 100 80" width="25" height="25">
+            <rect width="100" height="20" rx="10"></rect>
+            <rect y="30" width="100" height="20" rx="10"></rect>
+            <rect y="60" width="100" height="20" rx="10"></rect>
+          </svg>
+				</div>
+			</div>
    </div>
 		<div class="w-full h-full p-4 overflow-y-scroll hide-scroll">
 			<!-- <div v-for="(msg, idx) in msgs" :key="idx">
@@ -37,6 +47,7 @@ export default defineComponent({
 	components: { MyBubble, Bubble },
 	props: ['socket'],
 	data() {
+		const store = useStore();
 		return { 
 			msg: '',
 			msgs: [] as string[],
@@ -49,6 +60,8 @@ export default defineComponent({
 			// } 
 			payload: '',
 			socket: null,
+			showUsers: computed(() => store.state.chat.showUsers),
+			toggleUsersList: () => store.commit('chat/toggleUsersList')
 		}
 	},
 	mounted() {

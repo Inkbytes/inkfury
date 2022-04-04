@@ -5,15 +5,7 @@
 			<Rooms />
 			<!-- <CreateRoom /> -->
 			<Inbox />
-			<div class="w-2/5 border-l px-5">
-        <div class="flex flex-col">
-          <div class="font-semibold text-xl py-4">Room Members</div>
-          <div class="font-semibold py-4">Created 22 Sep 2021</div>
-          <div class="font-light">
-            Members will be displayed here
-          </div>
-        </div>
-      </div>
+			<RoomDetailsWrapper />
 		</div>
         </DefaultLayout>
 	</div>
@@ -25,10 +17,11 @@ import DefaultLayout from '../layouts/default.vue'
 import Inbox from '../components/chat/Inbox.vue'
 import Rooms from '../components/chat/Rooms.vue'
 import CreateRoom from '../components/chat/CreateRoom.vue'
+import RoomDetailsWrapper from '../components/chat/RoomDetailsWrapper.vue'
 
 export default defineComponent({
 	name: 'Chat',
-	components: { DefaultLayout, Rooms, Inbox, CreateRoom },
+	components: { DefaultLayout, Rooms, Inbox, CreateRoom, RoomDetailsWrapper },
 	data() {
 		return {}
 	},
