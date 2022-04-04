@@ -9,10 +9,6 @@ import { UserDto } from '../users/dto/add-user.dto';
 export class OauthService {
     constructor(@InjectRepository(UserEntity) private readonly repo : Repository<UserEntity>){}
   googleLogin(req) {
-    return {
-      message: 'User information from google',
-      user: req.url,
-    }
   }
 
   async GetAccessToken(code : string) : Promise<string> {
@@ -31,6 +27,10 @@ export class OauthService {
     }).catch((err) => {
       throw new UnauthorizedException();
     })
+  }
+
+  async findOne(condition : any): Promise<UserEntity> {
+    return this.repo.findOne(condition);
   }
 
   async GetUserData(data, access_token) {
