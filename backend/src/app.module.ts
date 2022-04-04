@@ -4,8 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { GameModule } from './game/game.module';
 import { ChatModule } from './chat/chat.module';
-import { OauthController } from './oauth/oauth.controller';
-import { OauthService } from './oauth/oauth.service';
 import { OauthModule } from './oauth/oauth.module';
 
 

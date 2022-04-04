@@ -6,7 +6,7 @@ import { ChatService } from './chat.service';
 import { AuthGuard } from '../oauth/auth.guard';
 
 @Controller('chat')
-// @UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
@@ -42,11 +42,11 @@ export class ChatController {
         return this.chatService.createRoom(room);
     }
 
-    @Post(':id')
+    /* @Post(':id')
     async updateRoom(@Param('id') id: number, @Body() roomData: UpdateRoomDto, @CurrentUser() currentUser: User) {
         console.log(currentUser);
         return this.chatService.updateRoom(id, roomData, currentUser);
-    }
+    } */
 
     @Delete(':id')
     async deleteRoom(@Param('id') id: number) {

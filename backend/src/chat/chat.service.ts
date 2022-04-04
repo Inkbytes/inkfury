@@ -16,24 +16,18 @@ export class ChatService {
         return await this.roomRepo.save(room);
     }
 
-    
     /*-----------------|
     |--- UPDATE -------|
     |---------------- */
-    public async updateRoom(id: number, roomData: UpdateRoomDto, currentUser: User) {
+    /* public async updateRoom(id: number, roomData: UpdateRoomDto, currentUser: User) {
         const room = await this.roomRepo.findOne(id);
-
-        if (!room)
-            throw new ForbiddenException();
-
+        if (!room) throw new ForbiddenException();
         if (currentUser.id !== room.owner_id && !room.admins?.includes(currentUser.id))
             throw new UnauthorizedException();
-
         if (roomData.password && currentUser.id !== room.owner_id)
             throw new UnauthorizedException("Only owners can change the password");
-
         return await this.roomRepo.update(id, roomData);
-    }
+    } */
 
     /*-------------------|
     |------ READ --------|
