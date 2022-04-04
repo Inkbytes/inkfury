@@ -6,7 +6,7 @@
         </transition>
     </div>
   <div class="w-full h-16 shadow-md">
-  <div class="w-full mx-auto max-w-7xl flex flex-row items-center justify-between py-2 px-8 h-16" style="min-height: 4rem;">
+  <div class="w-full mx-auto max-w-full flex flex-row items-center justify-between py-2 px-8 h-16" style="min-height: 4rem;">
       <div class="flex flex-row items-center gap-8">
         <div  >
             <router-link class="flex flex-row gap-2" :to="{ name: 'Home'}">

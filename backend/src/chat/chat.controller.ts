@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post, Delete, Req, Param, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Req,
+  Param,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { CurrentUser } from '../users/decorator/user.decorator';
 import { User } from '../users/interfaces/user.interface';
 import { RoomDto, UpdateRoomDto } from './dto/chat.dto';
@@ -10,9 +20,9 @@ import { AuthGuard } from '../oauth/auth.guard';
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
-    /* -- PROBLEM WOULD BE ROUTES -- */
+  /* -- PROBLEM WOULD BE ROUTES -- */
 
-    /* @Get(':id')
+  /* @Get(':id')
     async getRoom(@Param('id') id: number) {
         return this.chatService.getRoom(id);
     } */
