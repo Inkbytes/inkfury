@@ -20,6 +20,9 @@ class RoomEntity {
 
   @Column({ nullable: true, default: false })
   pw_protected: boolean;
+  
+  @Column('int', { array: true, default: [] })
+  admins: number[];
 
   @Column('int', { array: true, default: [] })
   members: number[];

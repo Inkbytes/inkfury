@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/interfaces/user.interface';
 import { Repository } from 'typeorm';
 import { RoomEntity } from '../entities/chat.entity';
-import { RoomDto } from './dto/chat.dto';
+import { RoomDto, UpdateRoomDto } from './dto/chat.dto';
 
 @Injectable()
 export class ChatService {
@@ -19,23 +20,19 @@ export class ChatService {
     /*-----------------|
     |--- UPDATE -------|
     |---------------- */
-    public async updateRoomName(id: number, newRoomName: string) {
-        const roomd = await this.roomRepo.findOne({ id: id }).then((room) => {
-            return room;
-        });
-        if (roomd !== undefined) {
-            return await this.roomRepo.update(roomd, { name: newRoomName });
-        }
-    }
+    public async updateRoom(id: number, roomData: UpdateRoomDto, currentUser: User) {
+        const room = await this.roomRepo.findOne(id);
 
-    public async updatePassword(id: number, newPassword: string) {
-        const roomd = await this.roomRepo.findOne({ id: id }).then((room) => {
-            return room;
-        });
-        if (roomd !== undefined) {
-            await this.roomRepo.update(roomd, { pw_protected: true });
-            return await this.roomRepo.update(roomd, { password: newPassword });
-        }
+        if (!room)
+            throw new ForbiddenException();
+
+        if (currentUser.id !== room.owner_id && !room.admins?.includes(currentUser.id))
+            throw new UnauthorizedException();
+
+        if (roomData.password && currentUser.id !== room.owner_id)
+            throw new UnauthorizedException("Only owners can change the password");
+
+        return await this.roomRepo.update(id, roomData);
     }
 
     /*-------------------|
@@ -51,24 +48,18 @@ export class ChatService {
     }
 
     public async getRoomMembers(id: number) : Promise<number[]> {
-        const roomd = await this.roomRepo.findOne({ id: id }).then((room) => {
-            return room.members;
-        });
-        return roomd;
+        return await this.roomRepo.findOne({ id: id }, { select: ['members'] })
+            .then(({ members }) => (members));
     }
 
     public async getRoomBlockedMembers(id: number) : Promise<number[]> {
-        const roomd = await this.roomRepo.findOne({ id: id }).then((room) => {
-            return room.blocked_members;
-        });
-        return roomd;
+        return await this.roomRepo.findOne({ id: id }, { select: ['blocked_members'] })
+            .then(({ blocked_members }) => (blocked_members));
     }
 
     public async getRoomMutedMembers(id: number) : Promise<number[]> {
-        const roomd = await this.roomRepo.findOne({ id: id }).then((room) => {
-            return room.muted_members;
-        });
-        return roomd;
+        return await this.roomRepo.findOne({ id: id }, { select: ['muted_members'] })
+            .then(({ muted_members }) => (muted_members));
     }
     
     /*------------------|

@@ -1,8 +1,12 @@
-import { Body, Controller, Get, Post, Delete, Req, Param, Put } from '@nestjs/common';
+import { Body, Controller, Get, Post, Delete, Req, Param, Put, UseGuards } from '@nestjs/common';
+import { CurrentUser } from '../users/decorator/user.decorator';
+import { User } from '../users/interfaces/user.interface';
+import { RoomDto, UpdateRoomDto } from './dto/chat.dto';
 import { ChatService } from './chat.service';
-import { RoomDto } from './dto/chat.dto';
+import { AuthGuard } from '../oauth/auth.guard';
 
 @Controller('chat')
+// @UseGuards(AuthGuard)
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
@@ -18,35 +22,31 @@ export class ChatController {
         return this.chatService.getRooms();
     }
 
-    /* @Get(':id')
+    @Get(':id/members')
     async getRoomMembers(@Param('id') id: number) {
         return this.chatService.getRoomMembers(id);
-    } */
+    }
 
-    /* @Get(':id')
+    @Get(':id/blocked_members')
     async getRoomBlockedMembers(@Param('id') id: number) {
         return this.chatService.getRoomBlockedMembers(id);
-    } */
+    }
 
-   /*  @Get(':id')
+    @Get(':id/muted_members')
     async getRoomMutedMembers(@Param('id') id: number) {
         return this.chatService.getRoomMutedMembers(id);
-    } */
+    }
 
     @Post()
     async createRoom(@Body() room : RoomDto) {
         return this.chatService.createRoom(room);
     }
 
-    /* @Put(':id/:name')
-    async updateRoomName(@Param('id') id: number, @Param('name') newRoomName: string) {
-        return this.chatService.updateRoomName(id, newRoomName);
-    } */
-
-    /* @Put(':id/:password')
-    async updatePassword(@Param('id') id: number, @Param('password') newPassword: string) {
-        return this.chatService.updatePassword(id, newPassword);
-    } */
+    @Post(':id')
+    async updateRoom(@Param('id') id: number, @Body() roomData: UpdateRoomDto, @CurrentUser() currentUser: User) {
+        console.log(currentUser);
+        return this.chatService.updateRoom(id, roomData, currentUser);
+    }
 
     @Delete(':id')
     async deleteRoom(@Param('id') id: number) {
