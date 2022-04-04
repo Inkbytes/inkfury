@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; flex-direction: column; width: 100%; height: 100%">
-    <Header :logged="logged" />
+    <Header />
       <Loading v-if="isLoading" />
       <slot v-else/>
     <Footer />

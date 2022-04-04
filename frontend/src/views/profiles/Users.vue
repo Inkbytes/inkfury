@@ -16,8 +16,7 @@ export default defineComponent({
   data() {
     const store = useStore();
     return {
-      currentUser: computed(() => store.state.auth.user),
-      setLoading: (e: boolean) => store.commit("config/setLoading", e),
+      currentUser: computed(() => store.state.auth.user)
     };
   },
   components: { DefaultLayout, UserProfile },

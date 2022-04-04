@@ -28,7 +28,6 @@ export default {
       state.logged = payload;
     },
     setUser(state: User42Profile, payload:any){
-      console.log('called', payload)
       state.user = payload
     }
   },

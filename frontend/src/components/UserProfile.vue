@@ -3,19 +3,14 @@
     <h1>404</h1>
     <h3>user not found</h3>
   </div>
-  <div v-else-if="isLoaded">
-    <div class="profile">
+  <div v-else-if="isLoaded" class="bg-slate-50">
+    <div class="profile rounded shadow-md bg-white">
       <img :src="getImage(user.avatar)" width="100" height="100" />
       <div id="details">
         <h1>{{ user.fullname }}</h1>
         <p>@{{ user.login }}</p>
-        <img
-          v-if="valid"
-          @click="toggleError"
-          src="../assets/add-friend.jpg"
-          width="35"
-          height="35"
-        />
+        <img v-if="valid" @click="toggleError" src="../assets/add-friend.svg" width="35" height="35"/>
+        <img v-else  src="../assets/friends.svg" width="35" height="35"/>
       </div>
     </div>
     <div id="content">
@@ -242,6 +237,8 @@ export default defineComponent({
       isLoaded: false,
       currentUser: computed(() => store.state.auth.user),
       setLoading: (e: boolean) => store.commit("config/setLoading", e),
+      setMsg: (e: boolean) => store.commit('msg/setMsg', e),
+      setState: (e: boolean) => store.commit('msg/setState', e)
     });
     const store = useStore();
     const router = useRouter();
@@ -282,6 +279,10 @@ export default defineComponent({
           console.log(err);
         });
       this.valid = false;
+      this.setMsg(this.user.login+' has been added to your friends list!')
+      this.setState(true)
+      await new Promise(r => setTimeout(r, 2000));
+      this.setState(false)
     },
     getImage(pic: string) {
       if (pic.startsWith("https://cdn.intra.42.fr/users/"))
@@ -371,12 +372,14 @@ export default defineComponent({
   overflow: hidden;
 }
 #friends_achiv {
+  background: white;
   height: 100%;
   width: 40%;
   border: 1px solid #ffffff;
   border-radius: 6px;
 }
 #fr h1 {
+  margin: 20px 0;
   margin-left: 8px;
   font-family: "Inter";
   font-style: normal;
@@ -412,6 +415,7 @@ export default defineComponent({
   margin: 0 auto;
 }
 #achiv h1 {
+  margin: 20px 0;
   font-family: "Inter";
   font-style: normal;
   font-weight: lighter;
@@ -462,6 +466,7 @@ export default defineComponent({
   border-radius: 6px;
 }
 #matchs h1 {
+  margin: 20px 0;
   font-family: "Inter";
   font-style: normal;
   font-weight: lighter;
@@ -558,8 +563,8 @@ export default defineComponent({
   color: #ffffff;
 }
 #details img {
-  background: rgb(190, 187, 187);
-  border-radius: 10%;
+  background: #dde3e6;
+  border-radius: 25%;
   position: absolute;
   margin-left: 0;
   left: 0;
