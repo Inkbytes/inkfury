@@ -11,13 +11,14 @@ import { ConsoleLogger, Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { LargeNumberLike } from 'crypto';
 import { Game } from './game'
-
+import update_score from './game'
 
 //
 
 let io: any;
 const game_queue: any[] = [];
 let game_number = 0;
+let game_array: Game[] = [];
 
 @WebSocketGateway({ cors: true })
 export class GameGateway
@@ -34,12 +35,13 @@ export class GameGateway
 
   handleConnection(client: any, ...args: any[]) {
     this.logger.log(`Client connected ${client.id}`);
-    game_queue.push(client);
-    this.logger.log(`game_queue.length ${game_queue.length}`);
+	// console.log(client.player);
+    // game_queue.push(client);
+    // this.logger.log(`game_queue.length ${game_queue.length}`);
     // add client to the queue
     // if two players or more and on the queue arbitrary choose who is p1 and p2
     // queue them advance to pregame status
-    if (game_queue.length >= 2) queue_players();
+    // if (game_queue.length >= 2) queue_players();
   }
 
   handleDisconnect(client: Socket | any) {
@@ -54,6 +56,9 @@ export class GameGateway
       //	disconnected in pregame or game or postgame
       const clients = io.sockets.adapter.rooms.get('room-' + client.gameId);
 
+	  let current_game = game_array.find(e => e.gameId === client.gameId);
+	  let idx = game_array.indexOf(current_game);
+	  game_array.splice(idx, 1);
       if (!clients) return;
       //	pay attention to who want to watch they won't be queued!
       for (const e of clients) {
@@ -84,6 +89,8 @@ export class GameGateway
   @SubscribeMessage('scoregame-event')
   scoreHandler(client: Socket | any, data: any): void {
     client.to('room-' + client.gameId).emit('scoregame-event', data);
+	update_score(game_array, client.gameId, data.p1, data.p2);
+	console.log(game_array);
   }
 
   @SubscribeMessage('queueme-event')
@@ -96,8 +103,37 @@ export class GameGateway
   // register userId
   @SubscribeMessage('registerme-event')
   registermeHandler(client: any, data: any): void{
-	  client.userId = data;
-	  console.log(`client.userId: ${client.userId} || client.id: ${client.id}`);
+	  if (!client.userId)
+	  	client.userId = data;
+	  game_queue.push(client);
+      if (game_queue.length >= 2) queue_players();
+  }
+
+  @SubscribeMessage('postdb-event')
+  postdbHandler(client: any, data: any): void{
+	  let current_game = game_array.find(e => e.gameId === client.gameId);
+
+	  if (current_game && !current_game.posted){
+		  // post
+		  axios
+		  .post('http://10.12.2.2:9000/api/game/completed', {
+			  gameId: current_game.gameId,
+			  p1id: current_game.p1Id,
+			  p2id: current_game.p2Id,
+			  p1Score: current_game.p1Score,
+			  p2Score: current_game.p2Score,
+		  })
+		  .then( () => current_game.posted = 1)
+		  .catch ( err => console.log(err))
+	  }
+
+	  let idx = game_array.indexOf(current_game);
+	  game_array.splice(idx, 1);
+  }
+
+  @SubscribeMessage('addme-event')
+  addmeHandler(client: any, data: any): void{
+	  client.join('room-'+data);
   }
 }
 
@@ -110,8 +146,8 @@ const queue_players = () => {
   player2.gameId = game_number;
 
   // emit to 1or2-event
-  player1.emit('1or2-event', {nb: 1, gameId: game_number});
-  player2.emit('1or2-event', {nb: 2, gameId: game_number});
+  player1.emit('1or2-event', 1);
+  player2.emit('1or2-event', 2);
 
 
   player1.join('room-' + player1.gameId);
@@ -121,9 +157,12 @@ const queue_players = () => {
   game_queue.splice(0, 2);
 
   // create a Game object
-  let game = new Game(game_number, player1.userId, player2.userId);
+  let game = new Game(game_number);
 
-  game.debug();
+  game.p1Id = player1.userId;
+  game.p2Id = player2.userId;
+
+  game_array.push(game);
   // increment game_number
   game_number++;
 

@@ -55,6 +55,7 @@ export default defineComponent({
 
 			socket.on("connect", ()=>{
 				console.log(`connected with id ${socket.id}`);
+				// join correspondant room.
 			})
 
 			const lobby = Symbol('lobby');
@@ -102,72 +103,6 @@ export default defineComponent({
 					p.background(imag);
 				};
 
-				let key_event = () => {
-			//	key event for both player_numbers
-					if (player_number == 1 && p.keyIsDown(p.UP_ARROW)){
-						if (p1pos > 0)
-							p1pos -= 10;
-					}
-					if (player_number == 1 && p.keyIsDown(p.DOWN_ARROW)){
-						if (p1pos < HEIGHT - paddle_height)
-							p1pos += 10;
-					}
-					if (player_number == 2 && p.keyIsDown(p.UP_ARROW)){
-						if (p2pos > 0)
-							p2pos -= 10;
-					}
-					if (player_number == 2 && p.keyIsDown(p.DOWN_ARROW)){
-						if (p2pos < HEIGHT - paddle_height)
-							p2pos += 10;
-					}
-				}
-				let d_lobby = () => {
-			// draw lobby
-					g_tmp_flag = false;
-					quitflag = 0;
-
-					p.background(imag);
-					p.stroke(1);
-					p.textSize(30);
-					p.fill('white');
-					p.text('Lobby', WIDTH / 2, HEIGHT / 2);
-
-			// listen to 1or2-event to assign the number of player_number
-					socket.on('1or2-event', (message: any) => {
-						player_number = message;
-						game_state = pregame;
-						// console.log(message);
-					});
-				}
-
-				let d_pregame = () => {
-			// draw pregame
-					p.background(imag);
-					p.stroke(1);
-					p.textSize(30);
-					p.fill('white');
-					p.text('Pregame', WIDTH / 2, HEIGHT / 2);
-
-			// hook space to start the game
-			// emit startgame-event to notify the other player to start the game
-					if (p.keyIsDown(32)){
-						socket.emit('startgame-event', 1);
-						reset_game();
-						game_state = game;
-					}
-					socket.on('startgame-event', () => {
-						reset_game();
-						game_state = game;
-					});
-
-					socket.on('quitgame-event', () => {
-						if (g_tmp_flag === false && game_state === pregame){
-							socket.emit('queueme-event', 1);
-							game_state = lobby;
-						}
-						g_tmp_flag = true;
-					});
-				}
 
 				let	d_game = () => {
 			// draw game components
@@ -189,7 +124,6 @@ export default defineComponent({
 					p.text('PONG GAME', WIDTH / 2 - 37, 20);
 					p.fill('white');
 
-					key_event();
 					ball_collition_mouvement();
 
 					socket.on('quitgame-event', () => {
@@ -211,24 +145,7 @@ export default defineComponent({
 						' won', WIDTH / 2, HEIGHT / 2);
 
 			// reset game and replay
-					if (p.keyIsDown(32)){
-						if (!quitflag){
-							socket.emit('startgame-event', 1);
-							game_state = pregame;
-						}
-						else{
-							game_state = lobby;
-							socket.emit('queueme-event', 1);
-						}
-					}
-					socket.on('startgame-event', () => {
-						game_state = pregame;
-					});
-			// somebody quit the game
-					socket.on('quitgame-event', (flag : any) => {
-						if (game_state === postgame)
-							quitflag = flag;
-					});
+			
 				}
 
 				let d_quitgame = () => {
@@ -249,41 +166,6 @@ export default defineComponent({
 				}
 
 				let ball_collition_mouvement = () => {
-					let goal = false;
-			//	collition with right and left edge goal or not
-					if (player_number == 1){
-					if (xpos + 10 >= WIDTH - paddle_width - 10 && ypos >= p2pos - 5 && ypos <= p2pos + paddle_height + 5)
-					{
-						dx > 0 ? dx += 1: dx -= 1;
-						dx = -dx;
-					}
-					else if (xpos + 10 >= WIDTH){
-						p1score += 1;
-						reset_ball();
-						goal = true;
-					}
-					if (xpos - 10 <= paddle_width + 10 && ypos >= p1pos - 5 && ypos <= p1pos + paddle_height + 5)
-					{
-						dx > 0 ? dx += 1: dx -= 1;
-						dx = -dx;
-					}
-					else if (xpos - 10 <= 0){
-						p2score += 1;
-						reset_ball();
-						goal = true;
-					}
-
-			//	collition with top and bottom edge
-					if (ypos >= HEIGHT - 10 || ypos <= 10)
-					{
-						dy = -dy;
-					}
-
-
-			//	move ball
-						xpos = xpos + dx;
-						ypos = ypos + dy;
-					}
 
 					if (player_number === 1 && goal === true)
 					{
@@ -305,30 +187,7 @@ export default defineComponent({
 				}
 
 
-				let	reset_ball = () => {
-			//	reset ball to the middle of the court and reset dx & dy
-					xpos = WIDTH / 2;
-					ypos = HEIGHT / 2;
-					dx = list[Math.floor(Math.random() * 4)];
-					dy = list[Math.floor(Math.random() * 4)];
-				}
-
-				let reset_game = () => {
-			// reset score and ball
-					reset_ball();
-					p1score = 0;
-					p2score = 0;
-				}
-
 				let send_receiv_game_info = () => {
-			// send and receive game info
-			//
-			//	player 1 emits his paddle pos and the balls pos
-					if (player_number === 1)
-						socket.emit('game-event', {player: 1, paddle: (p1pos / HEIGHT).toFixed(4) , ball: {x: (xpos / WIDTH).toFixed(4), y: (ypos / HEIGHT).toFixed(4)}});
-			//	player 2 emits his paddle pos
-					if (player_number === 2)
-						socket.emit('game-event', {player: 2, paddle: (p2pos / HEIGHT).toFixed(4)});
 
 			//  player 1 receives player 2's paddle and player 2 receives p1 paddle's and ball
 					socket.on('game-event', (gameobj) => {
@@ -353,11 +212,7 @@ export default defineComponent({
 				};
 
 				p.draw = function (){
-					if (game_state === lobby)
-						d_lobby();
-					else if (game_state === pregame)
-						d_pregame();
-					else if (game_state === game)
+					if (game_state === game)
 						d_game();
 					else if (game_state === postgame)
 						d_postgame();
