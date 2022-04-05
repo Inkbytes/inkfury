@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CurrentGameEntity, GameEntity } from '../entities/game.entity';
+import { CurrentGameEntity, GameEntity, ScoreGameEntity } from '../entities/game.entity';
 import { Repository } from 'typeorm';
-import { CurrentGameDto, GameDto } from './dto/game.dto';
+import { CurrentGameDto, GameDto, ScoreGameDto } from './dto/game.dto';
 
 @Injectable()
 export class GameService {
@@ -11,6 +11,8 @@ export class GameService {
     private readonly gamerepo: Repository<GameEntity>,
     @InjectRepository(CurrentGameEntity)
     private readonly currentGameRepo: Repository<CurrentGameEntity>,
+	@InjectRepository(ScoreGameEntity)
+	private readonly scoreGameRepo: Repository<ScoreGameEntity>
   ) {}
 
   // List completed Games
@@ -49,6 +51,28 @@ export class GameService {
     return !!Game;
   }
 
+  public async SearchGameScore(score: ScoreGameDto): Promise<boolean> {
+	  const Score = await this.scoreGameRepo.findOne(score).then( (r) => {
+		  return r;
+	  });
+	  return !!Score;
+  }
+
+  public async CreateGameScore(score: ScoreGameDto): Promise<ScoreGameDto>{
+	  const current_score = await this.SearchGameScore(score).then((r) => {
+		  return r;
+	  });
+	  if (!current_score) return this.scoreGameRepo.save(score);
+	  return this.scoreGameRepo.findOne(score);
+  }
+
+  public async FindGameScoreById(playerId: number){
+	  return await this.scoreGameRepo
+	  .findOne({userId: playerId })
+	  .then( (score) => {
+		  return score;
+	  });
+  }
   public async GameCurrentSearch(game: CurrentGameEntity): Promise<boolean> {
     const CurrentGame = await this.currentGameRepo.findOne(game).then((r) => {
       return r;
@@ -77,4 +101,9 @@ export class GameService {
   public async ModifieCompletedGame(gameId: number, game: GameEntity) {
     return await this.gamerepo.update({ gameId: gameId }, game);
   }
+
+  public async ModifyScore(id: number, score: ScoreGameEntity){
+	  return await this.scoreGameRepo.update({ userId: id}, score);
+  }
+
 }

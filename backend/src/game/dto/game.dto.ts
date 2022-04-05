@@ -10,4 +10,8 @@ class CurrentGameDto {
   p1id?: number;
   p2id?: number;
 }
-export { GameDto, CurrentGameDto };
+class ScoreGameDto{
+	userId: number;
+	wins: number;
+}
+export { GameDto, CurrentGameDto, ScoreGameDto };

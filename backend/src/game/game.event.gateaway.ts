@@ -12,6 +12,7 @@ import { Server, Socket } from 'socket.io';
 import { LargeNumberLike } from 'crypto';
 import { Game } from './game'
 import update_score from './game'
+import { fetch } from 'node-fetch'
 
 //
 
@@ -90,7 +91,6 @@ export class GameGateway
   scoreHandler(client: Socket | any, data: any): void {
     client.to('room-' + client.gameId).emit('scoregame-event', data);
 	update_score(game_array, client.gameId, data.p1, data.p2);
-	console.log(game_array);
   }
 
   @SubscribeMessage('queueme-event')
@@ -110,9 +110,8 @@ export class GameGateway
   }
 
   @SubscribeMessage('postdb-event')
-  postdbHandler(client: any, data: any): void{
+  async postdbHandler(client: any, data: any): Promise<void> {
 	  let current_game = game_array.find(e => e.gameId === client.gameId);
-
 	  if (current_game && !current_game.posted){
 		  // post
 		  axios
@@ -125,10 +124,31 @@ export class GameGateway
 		  })
 		  .then( () => current_game.posted = 1)
 		  .catch ( err => console.log(err))
+		let winnerId = (current_game.p1Score > current_game.p2Score) ? current_game.p1Id : current_game.p2Id;
+	
+		const res = await axios.get('http://10.12.2.2:9000/api/game/score/'+winnerId);
+		if (!res.data.userId){
+			axios
+			.post('http://10.12.2.2:9000/api/game/score', {
+				userId: winnerId,
+				wins: 1,
+			})
+			.then( (resp) => console.log('gut'))
+			.catch( err => { console.log(err)})
+		}else{
+			axios
+			.put('http://10.12.2.2:9000/api/game/score/'+res.data.userId,
+			{
+				wins: res.data.wins + 1,
+			})
+			.then ( (resp) => console.log('gut'))
+			.catch (err => {console.log(err)})
+		}
+		let idx = game_array.indexOf(current_game);
+		game_array.splice(idx, 1);
+		console.log(game_array);
 	  }
 
-	  let idx = game_array.indexOf(current_game);
-	  game_array.splice(idx, 1);
   }
 
   @SubscribeMessage('addme-event')

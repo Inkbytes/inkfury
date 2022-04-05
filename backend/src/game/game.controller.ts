@@ -9,7 +9,7 @@ import {
   Put,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CurrentGameDto, GameDto } from './dto/game.dto';
+import { CurrentGameDto, GameDto, ScoreGameDto } from './dto/game.dto';
 import { GameService } from './game.service';
 import { GameEntity } from '../entities/game.entity';
 
@@ -26,6 +26,16 @@ export class GameController {
   async CreateCompGame(@Req() req, @Body() game: GameDto) {
     // if (!req.rawHeaders.cookies['access_token']) throw new UnauthorizedException();
     return this.gameService.CreateCompletedGame(game);
+  }
+
+  @Post('score')
+  async CreateScoreGame(@Req() req, @Body() score: ScoreGameDto){
+	  return this.gameService.CreateGameScore(score);
+  }
+
+  @Get('score/:id')
+  async getScoreById(@Param('id') id: number){
+	  return await this.gameService.FindGameScoreById(id);
   }
 
   @Get('current')
@@ -47,6 +57,14 @@ export class GameController {
   @Delete('current/:gameId')
   async DeleteCurrentGame(@Param('gameId') gameId: number) {
     return await this.gameService.DeleteCurrentGameById(gameId);
+  }
+
+  @Put('score/:id')
+  async ModifyScore(
+	  @Body() score: ScoreGameDto,
+	  @Param('id') id: number,
+  ){
+	  return await this.gameService.ModifyScore(id, score);
   }
 
   @Put('current/:gameId')
