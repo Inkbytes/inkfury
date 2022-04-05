@@ -8,28 +8,32 @@ import {
   Param,
   Put,
   UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
-// import { CurrentUser } from '../users/decorator/user.decorator';
 import { User } from '../users/interfaces/user.interface';
 import { RoomDto } from './dto/chat.dto';
 import { ChatService } from './chat.service';
-// import { AuthGuard } from '../oauth/auth.guard';
+import { Request } from 'express';
+import { UsersService } from '../users/users.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('chat')
 // @UseGuards(AuthGuard)
 export class ChatController {
-  constructor(private readonly chatService: ChatService) {}
-
-  /* -- PROBLEM WOULD BE ROUTES -- */
-
-  /* @Get(':id')
-    async getRoom(@Param('id') id: number) {
-        return this.chatService.getRoom(id);
-    } */
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly userService : UsersService,
+    private jwtService : JwtService
+  ) {}
 
   @Get()
   async getRooms() {
     return this.chatService.getRooms();
+  }
+  
+  @Get(':id')
+  async getRoom(@Param('id') id: number) {
+    return this.chatService.getRoom(id);
   }
 
   @Get(':id/members')
@@ -53,11 +57,15 @@ export class ChatController {
     return this.chatService.createRoom(room);
   }
 
-  /* @Post(':id')
-    async updateRoom(@Param('id') id: number, @Body() roomData: UpdateRoomDto, @CurrentUser() currentUser: User) {
-        console.log(currentUser);
-        return this.chatService.updateRoom(id, roomData, currentUser);
-    } */
+  @Post(':id')
+  async updateRoom(@Req() req : Request, @Param('id') id: number, @Body() roomData: RoomDto) {
+    const cookie = req.cookies['jwt'];
+    const data = await this.jwtService.verifyAsync(cookie);
+    if (!cookie || !data) { throw new UnauthorizedException(); }
+    const currentUser = await this.userService.getUserById(data['id']);
+    console.log(currentUser);
+    return this.chatService.updateRoom(id, roomData, currentUser);
+  }
 
   @Delete(':id')
   async deleteRoom(@Param('id') id: number) {
