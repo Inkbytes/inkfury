@@ -1,14 +1,24 @@
 <template>
-    <div>
+    <div v-if="msgState" :class="{ red : msgError }">
         <p>{{ this.msg }}</p>
     </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
+import useStore from '../store';
+
 export default defineComponent({
-    props: ['msg'],
-    name : 'Msg'
+    name : 'Msg',
+    setup() {
+        const store = useStore()
+
+        return {
+            msg : computed(() => store.state.msg.msg),
+            msgState : computed(() => store.state.msg.msgState),
+            msgError : computed(() => store.state.msg.error)
+        }
+    }
 });
 </script>
 
@@ -18,6 +28,9 @@ export default defineComponent({
         color: white;
         margin: 0;
         height: 30px;
+    }
+    .red {
+        background: red !important;
     }
     p {
         margin: 0;

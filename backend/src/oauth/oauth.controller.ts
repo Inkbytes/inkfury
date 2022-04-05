@@ -1,93 +1,90 @@
-import {
-  Controller,
-  Get,
-  Req,
-  Res,
-  Post,
-  UnauthorizedException,
-} from '@nestjs/common';
-import axios from 'axios';
-import { Request, Response } from 'express';
+import { Controller, Get , Req, Res, Post, UseGuards, Headers, UnauthorizedException, ConsoleLogger} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import axios from "axios";
+import { Request, response, Response } from 'express';
+import { userInfo } from 'os';
 import { OauthService } from './oauth.service';
+
 
 @Controller('login')
 export class OauthController {
-  constructor(private readonly authService: OauthService) {}
-
-  @Get()
-  async(@Res() res) {
-    return res.redirect(
-      'https://api.intra.42.fr/oauth/authorize?client_id=998ac50996d9cd0c4d5eafad44e20b762d94718513d1566c8aa71e02a778e7a2&redirect_uri=http%3A%2F%2F10.12.2.2%3A9000%2Fapi%2Flogin%2Fintra%2Fredirect&response_type=code',
-    );
+  constructor(
+    private readonly authService: OauthService,
+    private jwtService : JwtService
+    ) {
   }
 
+
+  @Get()
+  async (@Res() res) {
+    return res.redirect("https://api.intra.42.fr/oauth/authorize?client_id=998ac50996d9cd0c4d5eafad44e20b762d94718513d1566c8aa71e02a778e7a2&redirect_uri=http%3A%2F%2F10.12.2.2%3A9000%2Fapi%2Flogin%2Fintra%2Fredirect&response_type=code");
+  }
+  
+
   @Get('/intra/redirect')
-  async IntraAuthRedirect(@Req() req, @Res() res): Promise<any> {
-    console.log(req.query.code);
+  async IntraAuthRedirect(@Req() req, @Res() res) : Promise<any> {
+    
     if (req.query.code === undefined) {
       return res.status(401).redirect('http://10.12.2.2:8081/');
     }
-    res.cookie('oauth2_grant_code', req.query.code);
+
+    const access_token = await this.authService.GetAccessToken(req.query.code).then((res) => {
+      return res;
+    })
+    const result = await axios({
+      url: "https://api.intra.42.fr/v2/me",
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer " + access_token
+      }
+    }).then(resp => {
+      return this.authService.GetUserData(resp.data, access_token);
+    }).catch(err => {
+      console.log(err.message);
+      throw new UnauthorizedException();
+    })
+
+    if (!result) {
+      throw new UnauthorizedException();
+    }
+
+    const jwt = await this.jwtService.signAsync({id : result.id});
+
+    res.cookie('jwt', jwt , {httpOnly: true});
     return res.redirect(`http://10.12.2.2:8081/?auth=true`);
   }
 
-  @Post('/login_verification')
-  async loginVerification(
-    @Req() req: Request,
-    @Res() res: Response,
-  ): Promise<any> {
-    if (!req.cookies['oauth2_grant_code'] && !req.cookies['access_token'])
+  @Get('logout')
+  async Logout(@Req() req: Request, @Res() res: Response,) {
+    try {
+      const cookie = req.cookies['jwt'];
+      const data = await this.jwtService.verifyAsync(cookie);
+
+      if (!data) {throw new UnauthorizedException();}
+
+      res.clearCookie('jwt');
+      res.redirect('http://10.12.2.2:8081/');
+    } catch (e) {
       throw new UnauthorizedException();
-    else if (req.cookies['access_token']) {
-      const result = await axios({
-        url: 'https://api.intra.42.fr/v2/me',
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + req.cookies['access_token'],
-        },
-      })
-        .then((resp) => {
-          return this.authService.GetUserData(
-            resp.data,
-            req.cookies['access_token'],
-          );
-        })
-        .catch((err) => {
-          console.log(err.message);
-          throw new UnauthorizedException();
-        });
-
-      return res.json(result);
     }
+  
+  }
+  @Post('/login_verification')
+  async loginVerification(@Req() req : Request, @Res() res : Response, @Headers() headers) : Promise<any> {
+    const cookie = req.cookies['jwt'];
 
-    const code = req.cookies['oauth2_grant_code'];
-    const access_token = await this.authService
-      .GetAccessToken(code)
-      .then((res) => {
-        return res;
-      });
+    if (!cookie)
+      throw new UnauthorizedException();
 
-    console.log(access_token);
-    // Set cookies
-    res.cookie('access_token', access_token);
-    res.clearCookie('oauth2_grant_code');
+    const data = await this.jwtService.verifyAsync(cookie);
 
-    const result = await axios({
-      url: 'https://api.intra.42.fr/v2/me',
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + access_token,
-      },
-    })
-      .then((resp) => {
-        // Create new user
-        return this.authService.GetUserData(resp.data, access_token);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        throw new UnauthorizedException();
-      });
+    if (!data) {throw new UnauthorizedException();}
 
-    return res.json(result);
+    const user = await this.authService.findOne({id: data['id']});
+
+    return res.json(user);
   }
 }
+
+
+

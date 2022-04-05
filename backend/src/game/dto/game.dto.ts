@@ -1,7 +1,7 @@
 class GameDto {
   gameId: number;
   p1id: number;
-  p2id?: number;
+  p2id: number;
   p1Score: number;
   p2Score: number;
 }

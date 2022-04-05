@@ -9,7 +9,7 @@ class GameEntity {
   p1id: number;
 
   @Column({ default: 0 })
-  p2id?: number;
+  p2id: number;
 
   @Column({ default: 0 })
   p1Score: number;
