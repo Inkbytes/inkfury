@@ -1,24 +1,32 @@
-import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export enum RoomVisibility {
-  PUBLIC = "public",
-  PRIVATE = "private"
-};
-  
-export class RoomDto {
-  id: number;
-  name?: string;
-  owner_id?: number;
-  password?: string;
-  visibility?: RoomVisibility;
-  pw_protected?: boolean;
-  members?: number[];
-  admins?: number[];
-  blocked_members?: number[];
-  muted_members?: number[];
+  PUBLIC = 'public',
+  PRIVATE = 'private',
 }
 
-export class UpdateRoomDto {
+// export class RoomDto {
+//   id: number;
+//   name?: string;
+//   owner_id?: number;
+//   password?: string;
+//   visibility?: RoomVisibility;
+//   pw_protected?: boolean;
+//   members?: number[];
+//   admins?: number[];
+//   blocked_members?: number[];
+//   muted_members?: number[];
+// }
+
+export class RoomDto {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
@@ -30,7 +38,6 @@ export class UpdateRoomDto {
 
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
   password?: string;
 
   @IsOptional()

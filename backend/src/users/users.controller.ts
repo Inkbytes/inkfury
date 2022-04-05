@@ -8,10 +8,10 @@ import {
   Body,
   UseInterceptors,
   UploadedFile,
-  Req
+  Req,
 } from '@nestjs/common';
 import * as fs from 'fs';
-import {FileInterceptor} from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, response } from 'express';
 import { IncomingMessage } from 'http';
 import { UserEntity } from 'src/entities/user.entity';
@@ -30,8 +30,8 @@ export class UsersController {
   }
 
   @Get(':login')
-  getUser(@Param('login') login : string) {
-      return this.userService.getUser(login);
+  getUser(@Param('login') login: string) {
+    return this.userService.getUser(login);
   }
 
   @Post('')
@@ -43,12 +43,18 @@ export class UsersController {
   updateUser(@Body() user: UserDto) {
     return this.userService.update(user);
   }
-  
+
   @Post('/image/:imageName')
   @UseInterceptors(FileInterceptor('file'))
-  getImage(@Param('imageName') imageName : string, @UploadedFile() file: Express.Multer.File) {
-    fs.writeFileSync("/Users/oel-ouar/Desktop/hamid/frontend/public/assets/"+imageName, file.buffer);
-    return "OK";
+  getImage(
+    @Param('imageName') imageName: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    fs.writeFileSync(
+      '/Users/oel-ouar/Desktop/hamid/frontend/public/assets/' + imageName,
+      file.buffer,
+    );
+    return 'OK';
   }
 }
 

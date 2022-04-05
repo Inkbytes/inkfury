@@ -16,7 +16,7 @@
 						<div class="flex flex-row font-semibold text-base text-gray-600 w-full text-left">
 							<span class="inline-block font-semibold text-sm text-gray-600 whitespace-nowrap overflow-hidden line-clamp-1"> {{ room.name }}</span>
 						</div>
-						<span class="inline-block text-xs text-gray-600 text-left line-clamp-2"> {{ room.msg }} </span>
+						<!-- <span class="inline-block text-xs text-gray-600 text-left line-clamp-2"> {{ room. }} </span> -->
 					</div>
 				</a>
 			</li>
@@ -25,41 +25,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useStore } from 'vuex'
+import { computed, defineComponent } from 'vue'
+import useStore from '../../store'
 
 export default defineComponent({
 	data() {
 		const store = useStore();
-		const rooms = [
-			{
-				id: 1,
-				name: "OCP GANG",
-				msg: "lorem ipsum msg"
-			},
-			{
-				id: 2,
-				name: "OCP GANG",
-				msg: "lorem ipsum msg"
-			},
-			{
-				id: 3,
-				name: "OCP GANG",
-				msg: "lorem ipsum msg"
-			},
-			{
-				id: 4,
-				name: "OCP GANG",
-				msg: "lorem ipsum msg sdfsd fsd fsd fsdfsdfsd fsdfsdfsd"
-			},
-			// ...[...Array(18)].map((_, i) => ({
-			// 	id: 4 + i + 1,
-			// 	name: "OCP GANG",
-			// 	msg: "lorem ipsum msg sdfsd fsd fsd fsdfsdfsd fsdfsdfsd"
-			// }))
-		]
-		return { rooms, roomSearch: '' }
+
+		return { 
+			rooms: computed(() => store.state.chat.rooms),
+			setHasRooms: (e: boolean) => store.commit('chat/setHasRooms', e),
+			roomSearch: '' 
+		}
 	},
+	mounted() {
+		this.rooms.length ? this.setHasRooms(true) : this.setHasRooms(false);
+	}
+	// watch: {
+	// 	rooms(newVal){
+	// 		console.log(newVal);
+	// 		newVal.length ? this.setHasRooms(true) : this.setHasRooms(false)
+	// 	}
+	// }
 })
 </script>
 

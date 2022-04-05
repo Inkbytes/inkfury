@@ -9,7 +9,7 @@
         </svg>
       </span>
 
-			<div class="absolute lg:hidden top-0 right-0 h-16 flex items-center justify-center mr-4" @click="toggleUsersList">
+			<div class="absolute lg:hidden top-0 right-0 h-16 flex items-center justify-center mr-4 cursor-pointer" @click="toggleUsersList">
 				<div class="flex justify-center items-center  w-10 h-10 leading-none tracking-tighter">
 					<svg viewBox="0 0 100 80" width="25" height="25">
             <rect width="100" height="20" rx="10"></rect>
@@ -45,7 +45,7 @@ import { io } from 'socket.io-client'
 
 export default defineComponent({
 	components: { MyBubble, Bubble },
-	props: ['socket'],
+	// props: ['socket'],
 	data() {
 		const store = useStore();
 		return { 

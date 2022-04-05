@@ -1,5 +1,5 @@
 import { RoomVisibility } from '../chat/dto/chat.dto';
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'room' })
 class RoomEntity {
@@ -20,7 +20,7 @@ class RoomEntity {
 
   @Column({ nullable: true, default: false })
   pw_protected: boolean;
-  
+
   @Column('int', { array: true, default: [] })
   admins: number[];
 
@@ -62,4 +62,3 @@ class RoomEntity {
 //     BlockedUserId: number;
 // }
 export { RoomEntity };
-
