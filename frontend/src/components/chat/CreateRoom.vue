@@ -29,15 +29,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 import axios, { AxiosResponse } from "axios";
+import useStore from '../../store';
 
 export default defineComponent({
   data() {
+		const store = useStore();
     return {
       roomData: {
         name: '',
         password: '',
+        owner_id: computed(() => store.state.auth.user?.id),
         visibility: 'public',
       }
     }

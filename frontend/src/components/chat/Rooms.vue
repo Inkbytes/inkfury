@@ -16,7 +16,6 @@
 						<div class="flex flex-row font-semibold text-base text-gray-600 w-full text-left">
 							<span class="inline-block font-semibold text-sm text-gray-600 whitespace-nowrap overflow-hidden line-clamp-1"> {{ room.name }}</span>
 						</div>
-						<!-- <span class="inline-block text-xs text-gray-600 text-left line-clamp-2"> {{ room. }} </span> -->
 					</div>
 				</a>
 			</li>
@@ -34,19 +33,9 @@ export default defineComponent({
 
 		return { 
 			rooms: computed(() => store.state.chat.rooms),
-			setHasRooms: (e: boolean) => store.commit('chat/setHasRooms', e),
 			roomSearch: '' 
 		}
-	},
-	mounted() {
-		this.rooms.length ? this.setHasRooms(true) : this.setHasRooms(false);
 	}
-	// watch: {
-	// 	rooms(newVal){
-	// 		console.log(newVal);
-	// 		newVal.length ? this.setHasRooms(true) : this.setHasRooms(false)
-	// 	}
-	// }
 })
 </script>
 

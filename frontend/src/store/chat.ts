@@ -5,7 +5,7 @@ export interface ChatRoom {
   id: number
   name: string
   owner_id: number
-  password?: number
+  password?: string
   visibility: RoomVisibility
   pw_protected: boolean
   members: number[]
@@ -18,7 +18,6 @@ export interface ChatConfig {
   showUsers: boolean;
   rooms: ChatRoom[];
   currentRoomId: number | null;
-  hasRooms: boolean
 }
 
 export const key: InjectionKey<Store<ChatConfig>> = Symbol()
@@ -31,15 +30,11 @@ export default {
       showUsers: false,
       rooms: [],
       currentRoomId: null,
-      hasRooms: false
     }
   },
   mutations: {
     toggleUsersList(state: ChatConfig) {
       state.showUsers = !state.showUsers;
-    },
-    setHasRooms(state: ChatConfig, status: boolean){
-      state.hasRooms = status;
     },
     userRooms(state: ChatConfig, data: ChatRoom[]){
       state.rooms = data;

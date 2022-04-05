@@ -28,15 +28,22 @@ export default defineComponent({
 		const store = useStore();
 		return {
 			store,
-			hasRooms: computed(() => store.state.chat.hasRooms),
+			hasRooms: false,
+			roomCount: computed(() => store.state.chat.rooms.length),
 			setRooms: (data: ChatRoom[]) => store.commit('chat/userRooms', data),
+			
 		}
 	},
-	async mounted() {
+	async mounted() { //fetch current user rooms, public rooms and friends list
 		await fetch('http://localhost:9000/api/chat')
 					.then(res => res.json())
 					.then(data => this.setRooms(data))
 					.catch(err => console.log(err))
+	},
+	watch: {
+		roomCount(newVal) {
+			newVal > 0 ? this.hasRooms = true : this.hasRooms = false;
+		}
 	}
 })
 </script>
