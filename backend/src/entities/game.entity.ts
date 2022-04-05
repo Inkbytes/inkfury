@@ -24,10 +24,10 @@ class CurrentGameEntity {
   gameId: number;
 
   @Column({ default: 0 })
-  p1id: number;
+  p1id?: number;
 
   @Column({ default: 0 })
-  p2id: number;
+  p2id?: number;
 }
 
 export { GameEntity, CurrentGameEntity };

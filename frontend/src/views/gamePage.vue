@@ -27,6 +27,7 @@ import p5 from 'p5'
 import { Swiper, SwiperSlide } from "swiper/vue";
 import 'swiper/swiper-bundle.min.css';
 import SwiperCore, { Autoplay } from "swiper/core";
+import axios, { AxiosResponse } from "axios";
 
 import io from 'socket.io-client'
 
@@ -41,18 +42,27 @@ export default defineComponent({
         return {
 			game: true,
 			bgClicked: false,
-			logged: computed(() => store.state.auth.logged)
+			logged: computed(() => store.state.auth.logged),
+			user: computed(() => store.state.auth.user)
         }
 	},
 	methods: {
 		play(image : any) {
-			this.bgClicked = true
+			this.bgClicked = true;
+			let put_flag = false;
+			let current_game_delete_flag = false;
+			let game_post_flag = false;
 
-			const ip_addr = '10.12.1.6';
 
-			const socket = io("http://"+ip_addr+":3000");
+			const my_user = this.user;
+			const ip_addr = '10.12.2.2';
+			console.log(my_user);
+			let socket = io("http://"+ip_addr+":9000");
+			socket.player = 1;
 
 			socket.on("connect", ()=>{
+				socket.userId = my_user.id;
+				socket.emit('registerme-event',my_user.id);
 				console.log(`connected with id ${socket.id}`);
 			})
 
@@ -124,6 +134,9 @@ export default defineComponent({
 			// draw lobby
 					g_tmp_flag = false;
 					quitflag = 0;
+					put_flag = false;
+					current_game_delete_flag = false;
+					game_post_flag = false;
 
 					p.background(imag);
 					p.stroke(1);
@@ -135,7 +148,8 @@ export default defineComponent({
 					socket.on('1or2-event', (message: any) => {
 						player_number = message;
 						game_state = pregame;
-						// console.log(message);
+						// console.log(`socket.gameId: ${socket.gameId}`)
+						// console.log(`my_user.id: ${my_user.id}`);
 					});
 				}
 
@@ -161,7 +175,7 @@ export default defineComponent({
 
 					socket.on('quitgame-event', () => {
 						if (g_tmp_flag === false && game_state === pregame){
-							socket.emit('queueme-event', 1);
+							socket.emit('registerme-event', socket.userId);
 							game_state = lobby;
 						}
 						g_tmp_flag = true;
@@ -209,25 +223,13 @@ export default defineComponent({
 					p.text('Postgame player_number ' + winner +
 						' won', WIDTH / 2, HEIGHT / 2);
 
-			// reset game and replay
+					socket.emit('postdb-event', 1);
+
+			// reset game and rejoin lobby
 					if (p.keyIsDown(32)){
-						if (!quitflag){
-							socket.emit('startgame-event', 1);
-							game_state = pregame;
-						}
-						else{
 							game_state = lobby;
-							socket.emit('queueme-event', 1);
-						}
+							socket.emit('registerme-event', socket.userId);
 					}
-					socket.on('startgame-event', () => {
-						game_state = pregame;
-					});
-			// somebody quit the game
-					socket.on('quitgame-event', (flag : any) => {
-						if (game_state === postgame)
-							quitflag = flag;
-					});
 				}
 
 				let d_quitgame = () => {
@@ -237,13 +239,15 @@ export default defineComponent({
 					p.stroke(1);
 					p.textSize(30);
 
+					socket.emit('postdb-event', 1);
+
 					let loser = (player_number === 1) ? 2 : 1;
 					p.text('player_number ' + loser + '  quits', WIDTH / 2, HEIGHT / 2);
 
 					if (p.keyIsDown(32))
 					{
 						game_state = lobby;
-						socket.emit('queueme-event', 1);
+						socket.emit('registerme-event', socket.userId);
 					}
 				}
 

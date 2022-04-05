@@ -7,7 +7,7 @@ class GameDto {
 }
 class CurrentGameDto {
   gameId: number;
-  p1id: number;
-  p2id: number;
+  p1id?: number;
+  p2id?: number;
 }
 export { GameDto, CurrentGameDto };
