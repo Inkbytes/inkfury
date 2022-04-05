@@ -14,7 +14,7 @@ import { User } from '../users/interfaces/user.interface';
 import { RoomDto } from './dto/chat.dto';
 import { ChatService } from './chat.service';
 import { Request } from 'express';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller('chat')

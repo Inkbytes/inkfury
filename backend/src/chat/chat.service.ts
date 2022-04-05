@@ -11,7 +11,7 @@ import { Repository } from 'typeorm';
 import { RoomEntity } from '../entities/chat.entity';
 import { RoomDto } from './dto/chat.dto';
 import { Request } from "express";
-import { UserEntity } from 'src/entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class ChatService {
