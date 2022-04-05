@@ -104,7 +104,7 @@ const queue_players = () => {
 
   // post gameId to currentdb
   axios
-  .post("http://localhost:9000/api/game/current", {gameId: game_number})
+  .post("http://10.12.2.4:9000/api/game/current", {gameId: game_number})
   .then( )
   .catch (err => {console.log(err)})
   // increment game_number

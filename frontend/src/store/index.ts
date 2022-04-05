@@ -9,7 +9,7 @@ export interface StoreInterface {
   auth: User42Profile;
   config: GlobalConfig;
   msg: GlobalMsg;
-  chat: ChatConfig;
+  chat: ChatConfig
 }
 
 export const key: InjectionKey<Store<StoreInterface>> = Symbol()

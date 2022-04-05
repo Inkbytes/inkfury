@@ -9,11 +9,11 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CurrentUser } from '../users/decorator/user.decorator';
+// import { CurrentUser } from '../users/decorator/user.decorator';
 import { User } from '../users/interfaces/user.interface';
 import { RoomDto } from './dto/chat.dto';
 import { ChatService } from './chat.service';
-import { AuthGuard } from '../oauth/auth.guard';
+// import { AuthGuard } from '../oauth/auth.guard';
 
 @Controller('chat')
 // @UseGuards(AuthGuard)

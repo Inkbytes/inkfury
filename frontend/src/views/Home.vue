@@ -1,5 +1,7 @@
 <template>
 <DefaultLayout>
+  <span @log-out="logged = !logged"></span>
+
   <div id="pong">
     <aside id="text">
       <h3>InkFury</h3>
