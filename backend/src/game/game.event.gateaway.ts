@@ -112,7 +112,6 @@ export class GameGateway
   @SubscribeMessage('postdb-event')
   async postdbHandler(client: any, data: any): Promise<void> {
 	  let current_game = game_array.find(e => e.gameId === client.gameId);
-	  console.log(current_game + " ##########");
 	  if (current_game != undefined && current_game.posted === 0){
 		  // post
 		  axios
@@ -148,7 +147,7 @@ export class GameGateway
 		}
 		let idx = game_array.indexOf(current_game);
 		game_array.splice(idx, 1);
-		console.log(game_array);
+		// console.log(game_array);
 	  }
 
   }

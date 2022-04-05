@@ -30,4 +30,13 @@ class CurrentGameEntity {
   p2id?: number;
 }
 
-export { GameEntity, CurrentGameEntity };
+@Entity({ name: 'scoregame'})
+class ScoreGameEntity{
+  @PrimaryColumn()
+  userId: number;
+
+  @Column({ default: 0})
+  wins: number;
+}
+
+export { GameEntity, CurrentGameEntity, ScoreGameEntity };
