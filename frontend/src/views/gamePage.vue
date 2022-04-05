@@ -52,6 +52,7 @@ export default defineComponent({
 			let put_flag = false;
 			let current_game_delete_flag = false;
 			let game_post_flag = false;
+			let postdb_flag = false;
 
 
 			const my_user = this.user;
@@ -137,6 +138,7 @@ export default defineComponent({
 					put_flag = false;
 					current_game_delete_flag = false;
 					game_post_flag = false;
+					postdb_flag = false;
 
 					p.background(imag);
 					p.stroke(1);
@@ -223,7 +225,10 @@ export default defineComponent({
 					p.text('Postgame player_number ' + winner +
 						' won', WIDTH / 2, HEIGHT / 2);
 
-					socket.emit('postdb-event', 1);
+					if (player_number === 1 && !postdb_flag){
+						socket.emit('postdb-event', 1);
+						postdb_flag = true;
+					}
 
 			// reset game and rejoin lobby
 					if (p.keyIsDown(32)){
