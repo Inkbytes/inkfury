@@ -38,24 +38,10 @@
             </div>
             <div id="achiv">
                 <h1>Achievements</h1>
-                <div class="ach">
+                <div class="ach" v-for="achiv in getAchiv()" :key="achiv">
                     <div>
-                        <h4>its's a rich man's world 3</h4> 
-                        <p>Collected 500 wallet points.</p>
-                    </div>
-                   <img src="../assets/achiv.png" width="50" height="54">
-                </div>
-                <div class="ach">
-                    <div>
-                        <h4>its's a rich man's world 3</h4> 
-                        <p>Collected 500 wallet points.</p>
-                    </div>
-                   <img src="../assets/achiv.png" width="50" height="54">
-                </div>
-                <div class="ach">
-                    <div>
-                        <h4>its's a rich man's world 3</h4> 
-                        <p>Collected 500 wallet points.</p>
+                        <h4>{{ achiv.title }}</h4> 
+                        <p>{{ achiv.msg }}</p>
                     </div>
                    <img src="../assets/achiv.png" width="50" height="54">
                 </div>
@@ -63,132 +49,24 @@
         </aside>
         <aside id="matchs" class="shadow-md rounded">
             <h1>Matching History</h1>
-            <div class="match">
-                <div class="data">
-                    <img :src="getImage(user.avatar)" width="46" height="45">
-                    <div class="info">
-                        <p>{{ user.fullname }}</p>
-                        <p>@{{ user.login }}</p>
+            <div class="match" v-for="game in getGameInfo()" :key="game">
+                    <div class="data ">
+                        <img :src="getImage(getUserData(game.opId).avatar)" width="46" height="45">
+                        <div class="info">
+                            <p>{{getUserData(game.opId).fullname}}</p>
+                            <p>@{{ getUserData(game.opId).login }}</p>
+                        </div>
+                    </div>
+                    <div class="score">
+                        <p>Match score</p>
+                        <p>{{game.opScore}} - {{ game.myScore }}</p>
+                    </div>
+                    <div class="result">
+                        <p>Results</p>
+                        <p v-if="game.win">Win</p>
+                        <p v-else >Lose</p>
                     </div>
                 </div>
-                <div class="score">
-                    <p>Match score</p>
-                    <p>5 - 3</p>
-                </div>
-                <div class="result">
-                    <p>Results</p>
-                    <p>WIN</p>
-
-                </div>
-            </div>
-            <div class="match">
-                <div class="data">
-                    <img :src="getImage(user.avatar)" width="46" height="45">
-                    <div class="info">
-                        <p>{{ user.fullname }}</p>
-                        <p>@{{ user.login }}</p>
-                    </div>
-                </div>
-                <div class="score">
-                    <p>Match score</p>
-                    <p>5 - 3</p>
-                </div>
-                <div class="result">
-                    <p>Results</p>
-                    <p>WIN</p>
-
-                </div>
-            </div>
-            <div class="match">
-                <div class="data">
-                    <img :src="getImage(user.avatar)" width="46" height="45">
-                    <div class="info">
-                        <p>{{ user.fullname }}</p>
-                        <p>@{{ user.login }}</p>
-                    </div>
-                </div>
-                <div class="score">
-                    <p>Match score</p>
-                    <p>5 - 3</p>
-                </div>
-                <div class="result">
-                    <p>Results</p>
-                    <p>WIN</p>
-
-                </div>
-            </div>
-            <div class="match">
-                <div class="data">
-                    <img :src="getImage(user.avatar)" width="46" height="45">
-                    <div class="info">
-                        <p>{{ user.fullname }}</p>
-                        <p>@{{ user.login }}</p>
-                    </div>
-                </div>
-                <div class="score">
-                    <p>Match score</p>
-                    <p>5 - 3</p>
-                </div>
-                <div class="result">
-                    <p>Results</p>
-                    <p>WIN</p>
-
-                </div>
-            </div>
-            <div class="match">
-                <div class="data">
-                    <img :src="getImage(user.avatar)" width="46" height="45">
-                    <div class="info">
-                        <p>{{ user.fullname }}</p>
-                        <p>@{{ user.login }}</p>
-                    </div>
-                </div>
-                <div class="score">
-                    <p>Match score</p>
-                    <p>5 - 3</p>
-                </div>
-                <div class="result">
-                    <p>Results</p>
-                    <p>WIN</p>
-
-                </div>
-            </div>
-            <div class="match">
-                <div class="data">
-                    <img :src="getImage(user.avatar)" width="46" height="45">
-                    <div class="info">
-                        <p>{{ user.fullname }}</p>
-                        <p>@{{ user.login }}</p>
-                    </div>
-                </div>
-                <div class="score">
-                    <p>Match score</p>
-                    <p>5 - 3</p>
-                </div>
-                <div class="result">
-                    <p>Results</p>
-                    <p>WIN</p>
-
-                </div>
-            </div>
-            <div class="match">
-                <div class="data">
-                    <img :src="getImage(user.avatar)" width="46" height="45">
-                    <div class="info">
-                        <p>{{ user.fullname }}</p>
-                        <p>@{{ user.login }}</p>
-                    </div>
-                </div>
-                <div class="score">
-                    <p>Match score</p>
-                    <p>5 - 3</p>
-                </div>
-                <div class="result">
-                    <p>Results</p>
-                    <p>WIN</p>
-
-                </div>
-            </div>
         </aside>
     </div>
     </div>
@@ -201,7 +79,7 @@ import useStore from '../store'
 import Modal from './Modal.vue'
 export default defineComponent({
     name: 'Iprofile',
-    props: ["users"],
+    props: ["users", "games", "wins"],
     components: { Modal},
     data() {
         const store = useStore();
@@ -237,8 +115,51 @@ export default defineComponent({
             this.user.friendList.forEach(element => {
                 arr.push(this.users.find((user) => user.id === element))
             })
-            console.log(this.users)
+            this.getGameInfo();
             return arr;
+        },
+        getUserData(id: number) {
+            return this.users.find((user: any) => user.id === id)
+        },
+        getGameInfo() {
+            let arr = [];
+            let i  = 0;
+            this.games.forEach(element => {
+
+                if ((element.p1id == this.user.id || element.p2id == this.user.id ) && i<6)
+                {
+                    i++;
+                    let tmp = {gameId: 0,opId: 0, myScore: 0, opScore: 0, win: false};
+                    tmp.gameId = element.gameId;
+                    if ( element.p1id == this.user.id )
+                    {
+                        tmp.myScore = element.p1Score;
+                        tmp.opId = element.p2id;
+                        tmp.opScore = element.p2Score;
+                    }
+                    else if ( element.p2id == this.user.id )
+                    {
+                        tmp.myScore = element.p2Score;
+                        tmp.opId = element.p1id;
+                        tmp.opScore = element.p1Score;
+                    }
+                    if (tmp.myScore > tmp.opScore)
+                        tmp.win = true
+                    arr.push(tmp);
+                }
+            })
+            arr = arr.reverse();
+            return arr;
+        },
+        getAchiv(){
+            let tab = [1, 3, 5, 10, 50];
+            let arr = [];
+
+            for (let i: number = 1; i <= this.wins; i++){
+                if (tab.find(e => e === i) != undefined)
+                    arr.push({title: 'Game achievement ' + i, msg: 'winner winner chicken dinner stage '+i});
+            }
+            return arr ;
         }
     }
 });
@@ -249,7 +170,7 @@ body {
     background: #DFDFDE !important;
 }
 h1 {
-    margin: 10px 0;
+    margin: 20px 0;
 }
 .profile {
     position: relative !important;
@@ -444,6 +365,7 @@ h1 {
 }
 .data {
     display: flex;
+    width: 50%;
     padding-left: 5px;
     padding-right: 25px;
 }
@@ -451,7 +373,7 @@ h1 {
     border: 1px solid rgba(0, 0, 0, 0.14);
     box-sizing: border-box;
     border-radius: 8px;
-    height: 54px;
+    height: 45px;
     }
 .match p {
     margin: 0;
@@ -480,6 +402,7 @@ h1 {
     padding-top: 7px;
 }
 .score {
+    width: 30%;
     padding-right: 50px;
 }
 .score p:first-child {
@@ -500,6 +423,9 @@ h1 {
     line-height: 16px;
     text-align: center;
     color: #FFFFFF;
+}
+.result {
+    width: 20%;
 }
 .result p:first-child {
     padding-top: 7px;

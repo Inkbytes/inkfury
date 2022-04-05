@@ -162,6 +162,9 @@ const queue_players = () => {
   const player1: any = game_queue[0];
   const player2: any = game_queue[1];
 
+  if (player1.userId === player2.userId)
+    return ;
+
   // join the room game_number
   player1.gameId = game_number;
   player2.gameId = game_number;
