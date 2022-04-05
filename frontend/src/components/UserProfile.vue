@@ -18,54 +18,7 @@
         <div id="fr">
           <h1>Friends</h1>
           <div id="pics">
-            <div class="pic">
-              <img
-                src="../assets/aabounak.jpeg"
-                alt=""
-                width="36"
-                height="36"
-              /><span></span>
-            </div>
-            <div class="pic">
-              <img
-                src="../assets/abiari.jpeg"
-                alt=""
-                width="36"
-                height="36"
-              /><span></span>
-            </div>
-            <div class="pic">
-              <img
-                src="../assets/ztaouil.jpeg"
-                alt=""
-                width="36"
-                height="36"
-              /><span></span>
-            </div>
-            <div class="pic">
-              <img
-                src="../assets/mashad.jpeg"
-                alt=""
-                width="36"
-                height="36"
-              /><span></span>
-            </div>
-            <div class="pic">
-              <img
-                src="../assets/oel-yous.jpeg"
-                alt=""
-                width="36"
-                height="36"
-              /><span></span>
-            </div>
-            <div class="pic">
-              <img
-                src="../assets/mgrissen.jpeg"
-                alt=""
-                width="36"
-                height="36"
-              /><span></span>
-            </div>
+            <router-link :to="{name : 'Users', params: {login : friend.login}}" v-for="friend in  getInfo()" :key="friend.id"><img :src="getImage(friend.avatar)" width="35" height="35" /></router-link>
           </div>
         </div>
         <div id="achiv">
@@ -220,16 +173,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, watch } from "vue";
 import { onMounted, reactive } from "vue";
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 import axios, { AxiosResponse } from "axios";
 import useStore from "../store";
 
 export default defineComponent({
   name: "UserProfile",
-  props: ["login"],
+  props: ["login", "users"],
   setup(props) {
     const data = reactive({
       user: {},
@@ -238,10 +191,32 @@ export default defineComponent({
       currentUser: computed(() => store.state.auth.user),
       setLoading: (e: boolean) => store.commit("config/setLoading", e),
       setMsg: (e: boolean) => store.commit('msg/setMsg', e),
-      setState: (e: boolean) => store.commit('msg/setState', e)
+      setState: (e: boolean) => store.commit('msg/setState', e),
+      error : false
     });
+    const route = useRoute();
+    watch(
+      () => route.params.login,
+      async newLogin => {
+        await fetch("http://10.12.1.6:9000/api/users/" + newLogin)
+        .then((res) => res.json())
+        .then((userData) => {
+          data.user = userData;
+          if ((store.state.auth.user as any)?.friendList.includes((data.user as any)?.id))
+            data.valid = false;
+          if(userData === undefined)
+            data.error = true;
+          if (store.state.auth.user.login === (data.user as any)?.login) {
+            router.replace("/profile");
+          }
+          data.isLoaded = true;
+        })
+        .catch((err) => data.error = true);
+      }
+    )
     const store = useStore();
     const router = useRouter();
+
 
     onMounted(async () => {
       await fetch("http://10.12.1.6:9000/api/users/" + props.login)
@@ -250,12 +225,14 @@ export default defineComponent({
           data.user = userData;
           if ((store.state.auth.user as any)?.friendList.includes((data.user as any)?.id))
             data.valid = false;
+          if(userData === undefined)
+            data.error = true;
           if (store.state.auth.user.login === (data.user as any)?.login) {
             router.replace("/profile");
           }
           data.isLoaded = true;
         })
-        .catch((err) => console.log(err.message));
+        .catch((err) => data.error = true);
     });
 
     return data;
@@ -286,9 +263,16 @@ export default defineComponent({
     },
     getImage(pic: string) {
       if (pic.startsWith("https://cdn.intra.42.fr/users/"))
-        return this.user.avatar;
-      else return "../assets/" + this.user.avatar;
+        return pic;
+      else return "../assets/" + pic;
     },
+    getInfo(){
+        let arr = [];
+        this.user.friendList.forEach(element => {
+            arr.push(this.users.find((user) => user.id === element))
+        })
+        return arr;
+    }
   },
 });
 </script>
@@ -388,10 +372,16 @@ export default defineComponent({
   line-height: 29px;
   color: #000000;
 }
+#pics {
+    margin-left: 8px;
+    display: flex;
+}
 #pics img {
-  border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  box-sizing: border-box;
+    margin-right: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    box-sizing: border-box;
+    height: 35px;
 }
 .pic:last-child img {
   filter: blur(2px);

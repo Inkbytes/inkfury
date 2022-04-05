@@ -33,7 +33,7 @@
             <div id="fr">
                 <h1>Friends</h1>
                 <div id="pics">
-                        <router-link :to="{name : 'Users', params: {login : friend.login}}" v-for="friend in  getInfo()" :key="friend.id"><img :src="getImage(friend.avatar)" width="36" height="36" /></router-link>
+                        <router-link :to="{name : 'Users', params: {login : friend.login}}" v-for="friend in  getInfo()" :key="friend.id"><img :src="getImage(friend.avatar)" width="35" height="35" /></router-link>
                 </div>
             </div>
             <div id="achiv">
@@ -230,7 +230,7 @@ export default defineComponent({
             if (pic.startsWith('https://cdn.intra.42.fr/users/'))
                 return pic
             else
-                return ('./assets/'+this.user.avatar)
+                return ('./assets/'+pic)
         },
         getInfo(){
             let arr = [];
@@ -350,6 +350,7 @@ h1 {
     border-radius: 8px;
     border: 1px solid rgba(0, 0, 0, 0.14);
     box-sizing: border-box;
+    height: 35px;
 }
 .pic:last-child img{
     filter: blur(2px);

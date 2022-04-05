@@ -56,7 +56,7 @@ export default defineComponent({
 
 
 			const my_user = this.user;
-			const ip_addr = '10.12.2.2';
+			const ip_addr = '10.12.1.6';
 			console.log(my_user);
 			let socket = io("http://"+ip_addr+":9000");
 			socket.player = 1;

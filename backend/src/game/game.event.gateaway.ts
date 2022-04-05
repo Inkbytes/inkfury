@@ -115,7 +115,7 @@ export class GameGateway
 	  if (current_game != undefined && current_game.posted === 0){
 		  // post
 		  axios
-		  .post('http://10.12.2.2:9000/api/game/completed', {
+		  .post('http://10.12.1.6:9000/api/game/completed', {
 			  gameId: current_game.gameId,
 			  p1id: current_game.p1Id,
 			  p2id: current_game.p2Id,
@@ -127,10 +127,10 @@ export class GameGateway
 
 		let winnerId = (current_game.p1Score > current_game.p2Score) ? current_game.p1Id : current_game.p2Id;
 	
-		const res =  await axios.get('http://10.12.2.2:9000/api/game/score/'+winnerId);
+		const res =  await axios.get('http://10.12.1.6:9000/api/game/score/'+winnerId);
 		if (res.data.userId === undefined){
 			axios
-			.post('http://10.12.2.2:9000/api/game/score', {
+			.post('http://10.12.1.6:9000/api/game/score', {
 				userId: winnerId,
 				wins: 1,
 			})
@@ -138,7 +138,7 @@ export class GameGateway
 			.catch( err => { console.log(err)})
 		}else{
 			axios
-			.put('http://10.12.2.2:9000/api/game/score/'+res.data.userId,
+			.put('http://10.12.1.6:9000/api/game/score/'+res.data.userId,
 			{
 				wins: res.data.wins + 1,
 			})
