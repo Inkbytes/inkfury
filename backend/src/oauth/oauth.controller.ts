@@ -17,7 +17,7 @@ export class OauthController {
 
   @Get()
   async (@Res() res) {
-    return res.redirect("https://api.intra.42.fr/oauth/authorize?client_id=998ac50996d9cd0c4d5eafad44e20b762d94718513d1566c8aa71e02a778e7a2&redirect_uri=http%3A%2F%2F10.12.2.2%3A9000%2Fapi%2Flogin%2Fintra%2Fredirect&response_type=code");
+    return res.redirect("https://api.intra.42.fr/oauth/authorize?client_id=8b93710cfef0ce75e1cc33753a7d6568d2bbd8080cb4bb49ea0a4f013f42334c&redirect_uri=http%3A%2F%2F10.12.1.6%3A9000%2Fapi%2Flogin%2Fintra%2Fredirect&response_type=code");
   }
   
 
@@ -25,7 +25,7 @@ export class OauthController {
   async IntraAuthRedirect(@Req() req, @Res() res) : Promise<any> {
     
     if (req.query.code === undefined) {
-      return res.status(401).redirect('http://10.12.2.2:8081/');
+      return res.status(401).redirect('http://10.12.1.6:8081/');
     }
 
     const access_token = await this.authService.GetAccessToken(req.query.code).then((res) => {
@@ -51,7 +51,7 @@ export class OauthController {
     const jwt = await this.jwtService.signAsync({id : result.id});
 
     res.cookie('jwt', jwt , {httpOnly: true});
-    return res.redirect(`http://10.12.2.2:8081/?auth=true`);
+    return res.redirect(`http://10.12.1.6:8081/?auth=true`);
   }
 
   @Get('logout')
@@ -63,7 +63,7 @@ export class OauthController {
       if (!data) {throw new UnauthorizedException();}
 
       res.clearCookie('jwt');
-      res.redirect('http://10.12.2.2:8081/');
+      res.redirect('http://10.12.1.6:8081/');
     } catch (e) {
       throw new UnauthorizedException();
     }

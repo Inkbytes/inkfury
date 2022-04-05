@@ -56,7 +56,7 @@
           hover:bg-green-400
           duration-300
         "
-        href="http://10.12.2.2:9000/api/login"
+        href="http://10.12.1.6:9000/api/login"
         >login</a
       >
       <a
@@ -105,7 +105,7 @@ export default defineComponent({
   components: { Msg, Loading },
   methods: {
     async logout() {
-    window.location.href = 'http://10.12.2.2:9000/api/login/logout'
+    window.location.href = 'http://10.12.1.6:9000/api/login/logout'
     },
     deleteAllCookies() {
       var cookies = document.cookie.split(";");
@@ -121,7 +121,7 @@ export default defineComponent({
   mounted() {
     axios
       .post(
-        "http://10.12.2.2:9000/api/login/login_verification",
+        "http://10.12.1.6:9000/api/login/login_verification",
         {},
         { withCredentials: true }
       )

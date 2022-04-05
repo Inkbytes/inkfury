@@ -244,7 +244,7 @@ export default defineComponent({
     const router = useRouter();
 
     onMounted(async () => {
-      await fetch("http://10.12.2.2:9000/api/users/" + props.login)
+      await fetch("http://10.12.1.6:9000/api/users/" + props.login)
         .then((res) => res.json())
         .then((userData) => {
           data.user = userData;
@@ -267,13 +267,13 @@ export default defineComponent({
       const usr = this.user;
       const curUsr = this.currentUser;
       axios
-        .put("http://10.12.2.2:9000/api/users", usr, {})
+        .put("http://10.12.1.6:9000/api/users", usr, {})
         .then((resp: AxiosResponse) => {})
         .catch((err) => {
           console.log(err);
         });
       axios
-        .put("http://10.12.2.2:9000/api/users", curUsr, {})
+        .put("http://10.12.1.6:9000/api/users", curUsr, {})
         .then((resp: AxiosResponse) => {})
         .catch((err) => {
           console.log(err);
