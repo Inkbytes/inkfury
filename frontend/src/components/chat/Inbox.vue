@@ -1,13 +1,13 @@
 <template>
 	<div class="w-full flex flex-col justify-between">
 		<div class="relative flex items-center border-b border-gray-300 justify-center pl-3 h-20">
-      <img class="h-10 w-10 rounded-full object-cover" src="https://images.pexels.com/photos/3777931/pexels-photo-3777931.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=750&amp;w=1260" alt="username">
-      <span class="block ml-2 font-bold text-base text-gray-600">Eduard</span>
-      <span class="connected text-green-500 ml-2">
+      <!-- <img class="h-10 w-10 rounded-full object-cover" src="https://images.pexels.com/photos/3777931/pexels-photo-3777931.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=750&amp;w=1260" alt="username"> -->
+      <span class="block ml-2 font-bold text-2xl text-gray-600">{{roomData.name}}</span>
+      <!-- <span class="connected text-green-500 ml-2">
         <svg width="6" height="6">
           <circle cx="3" cy="3" r="3" fill="currentColor"></circle>
         </svg>
-      </span>
+      </span> -->
 
 			<div class="absolute lg:hidden top-0 right-0 h-16 flex items-center justify-center mr-4 cursor-pointer" @click="toggleUsersList">
 				<div class="flex justify-center items-center  w-10 h-10 leading-none tracking-tighter">
@@ -42,6 +42,7 @@ import MyBubble from './MyBubble.vue'
 import Bubble from './Bubble.vue'
 import useStore from '../../store'
 import { io } from 'socket.io-client'
+import { ChatRoom } from '@/store/chat'
 
 export default defineComponent({
 	components: { MyBubble, Bubble },
@@ -53,22 +54,30 @@ export default defineComponent({
 			msgs: [] as string[],
 			isTyping: false,
 			lastTyped: 0,
-			// payload: {
-			// 	senderId: 1,
-			// 	roomId: 1,
-			// 	message: '', // TODO: fetch user data from DB
-			// } 
-			payload: '',
-			socket: null,
+			payload: {
+				senderId: 1,
+				room: '',
+				message: '', // TODO: fetch user data from DB
+			},
+			// payload: '',
+			roomData: {} as ChatRoom,
+			currentUserId: computed(() => store.state.auth.user?.id).value,
 			showUsers: computed(() => store.state.chat.showUsers),
-			toggleUsersList: () => store.commit('chat/toggleUsersList')
+			currentRoomId: computed(() => store.state.chat.currentRoomId),
+			socket: computed(() => store.state.chat.socket),
+			toggleUsersList: () => store.commit('chat/toggleUsersList'),
 		}
 	},
-	mounted() {
-			this.socket = io('http://localhost:7000/chat');
-			this.socket.on('chatToClient', (message: any) => {
-				// console.log(message);
-				this.msgs.push(message);
+	async mounted() {
+			if(this.currentRoomId !== null) {
+				await fetch('http://10.12.2.4:9000/api/chat/' + this.currentRoomId)
+						.then(res => res.json())
+						.then(data => this.roomData = data)
+						.catch(err => console.log(err));
+			}
+			this.socket.on('chatToClient', (payload: any) => {
+				console.log(payload);
+				this.msgs.push(payload.message);
 			})
 			this.socket.on('typing', () => {
 				const time = Date.now();
@@ -81,21 +90,31 @@ export default defineComponent({
 					}
 				}, 2000)
 			})
+			
+	},
+	watch: {
+		async currentRoomId(newVal){
+			await fetch('http://10.12.2.4:9000/api/chat/' + newVal)
+						.then(res => res.json())
+						.then(data => this.roomData = data)
+						.catch(err => console.log(err));
+		}
 	},
 	methods: {
 		submitMsg() {
 			this.msg = this.msg.trim()
 			if(!this.msg.length)
 				return false
-			// this.payload.senderId = this.user.id
-			// this.payload.roomId = 1;
-			this.payload = this.msg
+			this.payload.senderId = this.currentUserId;
+			this.payload.room = this.roomData.name;
+			this.payload.message = this.msg;
+			console.log(this.payload);
 			this.socket.emit('chatToServer', this.payload)
 			this.msg = ''
 		},
 		typing() {
 			if (!this.isTyping){
-				this.socket.emit('typing', this.payload);
+				this.socket.emit('typing', this.roomData.name);
 			}
 		}
 	}

@@ -1,3 +1,4 @@
+import { Socket } from 'socket.io-client'
 import { InjectionKey } from 'vue'
 import { Store } from 'vuex'
 import { RoomVisibility } from '../../../backend/src/chat/dto/chat.dto'
@@ -18,6 +19,7 @@ export interface ChatConfig {
   showUsers: boolean;
   rooms: ChatRoom[];
   currentRoomId: number | null;
+  socket: Socket;
 }
 
 export const key: InjectionKey<Store<ChatConfig>> = Symbol()
@@ -30,6 +32,7 @@ export default {
       showUsers: false,
       rooms: [],
       currentRoomId: null,
+      socket: null
     }
   },
   mutations: {
@@ -37,7 +40,15 @@ export default {
       state.showUsers = !state.showUsers;
     },
     userRooms(state: ChatConfig, data: ChatRoom[]){
+      console.log(data)
+      state.currentRoomId = data?.[0]?.id || null;
       state.rooms = data;
+    },
+    setCurrentRoomId(state: ChatConfig, id: number){
+      state.currentRoomId = id;
+    },
+    setSocket(state: ChatConfig, socket: Socket){
+      state.socket = socket;
     }
   },
   actions: {}

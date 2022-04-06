@@ -47,27 +47,29 @@ export class ChatGateway
   @SubscribeMessage('chatToServer')
   handleMessage(
     client: Socket,
-    payload: string,
-    // payload: { senderID: number, roomID: number, message: string }
+    payload: { senderID: number; room: string; message: string },
   ) {
-    this.wss.emit('chatToClient', payload);
-    // this.wss.to(payload.room).emit('chatToClient', payload);
+    // console.log(payload);
+    // this.wss.emit('chatToClient', payload);
+    // console.log(client.id);
+    // client.in(payload.room).emit('chatToClient', payload);
+    this.wss.to(payload.room).emit('chatToClient', payload);
     // client.emit('chatToClient', data);
   }
 
   @SubscribeMessage('typing')
-  userTyping(client: Socket) {
-    client.broadcast.emit('typing');
+  userTyping(client: Socket, room: string) {
+    client.broadcast.to(room).emit('typing');
   }
-  // @SubscribeMessage('joinRoom')
-  // handleJoinRoom(client: Socket, room: string) {
-  //   client.join(room);
-  //   this.logger.log(`room --- : ${room}`);
-  //   client.emit('joinedRoom', room);
-  // }
-  // @SubscribeMessage('leaveRoom')
-  // handleLeaveRoom(client: Socket, room: string) {
-  //   client.leave(room);
-  //   client.emit('leftRoom', room);
-  // }
+  @SubscribeMessage('joinRoom')
+  handleJoinRoom(client: Socket, room: string) {
+    client.join(room);
+    this.logger.log(`room --- : ${room}`);
+    client.emit('joinedRoom', room);
+  }
+  @SubscribeMessage('leaveRoom')
+  handleLeaveRoom(client: Socket, room: string) {
+    client.leave(room);
+    client.emit('leftRoom', room);
+  }
 }

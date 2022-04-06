@@ -10,7 +10,7 @@
       <RoomDetails />
     </div>
   </div>
-  <div class="w-2/5 border-l px-5 hidden lg:block">
+  <div class="w-1/6 border-l px-5 hidden lg:block">
   <RoomDetails />
   </div>
 </template>

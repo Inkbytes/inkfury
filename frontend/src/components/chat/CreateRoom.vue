@@ -40,7 +40,7 @@ export default defineComponent({
       roomData: {
         name: '',
         password: '',
-        owner_id: computed(() => store.state.auth.user?.id),
+        owner_id: computed(() => store.state.auth.user?.id).value,
         visibility: 'public',
       }
     }
@@ -50,7 +50,7 @@ export default defineComponent({
       const formData = this.roomData;
       const headers = { 'Content-Type': 'application/json' }
       axios
-        .post(`http://localhost:9000/api/chat`, formData, { headers } )
+        .post(`http://10.12.2.4:9000/api/chat`, formData, { headers } )
         .then((res: AxiosResponse) => {
           console.log(this.roomData.name + " Created");
         })

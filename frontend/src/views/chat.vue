@@ -20,6 +20,7 @@ import CreateRoom from '../components/chat/CreateRoom.vue'
 import RoomDetailsWrapper from '../components/chat/RoomDetailsWrapper.vue'
 import useStore from '../store'
 import { ChatRoom } from '../store/chat'
+import { io, Socket } from 'socket.io-client'
 
 export default defineComponent({
 	name: 'Chat',
@@ -31,14 +32,16 @@ export default defineComponent({
 			hasRooms: false,
 			roomCount: computed(() => store.state.chat.rooms.length),
 			setRooms: (data: ChatRoom[]) => store.commit('chat/userRooms', data),
-			
+			setSocket: (socket: Socket) => store.commit('chat/setSocket', socket),
 		}
 	},
 	async mounted() { //fetch current user rooms, public rooms and friends list
-		await fetch('http://localhost:9000/api/chat')
+		await fetch('http://10.12.2.4:9000/api/chat')
 					.then(res => res.json())
 					.then(data => this.setRooms(data))
 					.catch(err => console.log(err))
+		const socket = io('http://10.12.2.4:7000/chat');
+		this.setSocket(socket);
 	},
 	watch: {
 		roomCount(newVal) {
