@@ -1,5 +1,5 @@
 <template>
-  <form class="w-full flex flex-col justify-between" @submit="createRoom">
+  <form class="w-full flex flex-col justify-between" @submit.prevent="createRoom">
     <div class="flex items-center justify-center h-full w-full bg-gray-100 overflow-y-auto">
       <div class="flex flex-col items-center justify-center bg-white py-8 rounded-md px-12 shadow-lg w-1/4 min-w-[400px] min-h-[600px] h-1/2">
         <h1 class="text-center text-lg font-bold text-gray-500">Create Room</h1>
@@ -49,14 +49,14 @@ export default defineComponent({
     async createRoom() {
       const formData = this.roomData;
       const headers = { 'Content-Type': 'application/json' }
-      axios
-        .post(`http://10.12.2.4:9000/api/chat`, formData, { headers } )
-        .then((res: AxiosResponse) => {
-          console.log(this.roomData.name + " Created");
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      await axios
+              .post(`http://10.12.2.4:9000/api/chat`, formData, { headers } )
+              .then((res: AxiosResponse) => {
+                console.log(this.roomData.name + " Created");
+              })
+              .catch(err => {
+                console.log(err)
+              })
     }
   }
 })

@@ -44,7 +44,8 @@ export default defineComponent({
 		this.setSocket(socket);
 	},
 	watch: {
-		roomCount(newVal) {
+		roomCount(newVal, oldVal) {
+			console.log(this.hasRooms + ' ' + newVal)
 			newVal > 0 ? this.hasRooms = true : this.hasRooms = false;
 		}
 	}

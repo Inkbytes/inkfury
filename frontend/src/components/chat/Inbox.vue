@@ -29,9 +29,8 @@
 		</div>
 		<form @submit.prevent="submitMsg" class="w-full py-3 px-3 flex items-center justify-between border-t">
 			<input placeholder="Type your message here..." class="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100 outline-none focus:text-gray-700" v-model="msg" @input="typing" >
-			<button class="outline-none focus:outline-none" type="submit">
-					<svg class="w-7 h-7 stroke-gray-500 fill-transparent hover:fill-blue-300 hover:stroke-blue-500 hover:stroke-2" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <title id="sendIconTitle">Send</title> <desc id="sendIconDesc">Icon of a paper plane</desc> <polygon points="21.368 12.001 3 21.609 3 14 11 12 3 9.794 3 2.394"/> </svg>
-			</button>
+			<button class="outline-none focus:outline-none bg-green-600 font-semibold text-sm text-white py-2 px-4 my-2 rounded-lg" type="submit">Send</button>
+			<button class="mx-2 bg-red-600 font-semibold text-sm text-white py-2 px-4 my-2 rounded-lg" @click="leaveRoom">Leave</button>
 		</form>
 	</div>
 </template>
@@ -43,6 +42,7 @@ import Bubble from './Bubble.vue'
 import useStore from '../../store'
 import { io } from 'socket.io-client'
 import { ChatRoom } from '@/store/chat'
+import axios, { AxiosResponse } from 'axios'
 
 export default defineComponent({
 	components: { MyBubble, Bubble },
@@ -116,6 +116,16 @@ export default defineComponent({
 			if (!this.isTyping){
 				this.socket.emit('typing', this.roomData.name);
 			}
+		},
+		async leaveRoom() {
+			await axios.delete('http://localhost:9000/api/chat/' + this.currentRoomId)
+			.then((res: AxiosResponse) => {
+				console.log(this.roomData.name + ' deleted');
+				this.$forceUpdate();
+			})
+			.catch(err => {
+				console.error(err); 
+			})
 		}
 	}
 })

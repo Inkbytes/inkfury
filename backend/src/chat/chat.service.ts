@@ -27,7 +27,7 @@ export class ChatService {
   |------------------ */
   public async createRoom(room: RoomDto): Promise<RoomDto> {
     const roomd = await this.roomRepo.findOne({ name: room.name });
-    if (roomd.name === room.name) throw new ForbiddenException("Room name taken!");
+    if (roomd !== undefined && roomd.name === room.name) throw new ForbiddenException("Room name taken!");
     return await this.roomRepo.save(room);
   }
 
