@@ -27,6 +27,10 @@ export enum RoomVisibility {
 // }
 
 export class RoomDto {
+
+  // @IsNumber()
+  // id: number;
+
   @IsOptional()
   @IsString()
   @IsNotEmpty()
