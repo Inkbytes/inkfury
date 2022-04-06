@@ -36,6 +36,9 @@ export class GameGateway
 
   handleConnection(client: any, ...args: any[]) {
     this.logger.log(`Client connected ${client.id}`);
+
+    console.log("game_array: " + game_array);
+    io.emit('currentgames-event', {games: game_array, test: -1});
 	// console.log(client.player);
     // game_queue.push(client);
     // this.logger.log(`game_queue.length ${game_queue.length}`);

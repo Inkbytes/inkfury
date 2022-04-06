@@ -12,6 +12,7 @@
 			<SwiperSlide><img src="https://i.imgur.com/njI0p7U.jpeg" width="500" height="400" @click="play('https://i.imgur.com/njI0p7U.jpeg')"></SwiperSlide>
 		</Swiper>
 		<button @click="play('none')">continue with Default</button>
+		<router-link :to="{name: 'Games'}"><button>Watch games</button></router-link>
 	</div>
     <div  id="p5Canvas" ></div>
 </DefaultLayout>
@@ -36,7 +37,8 @@ import  useStore  from '../store'
 
 SwiperCore.use([Autoplay]);
 export default defineComponent({
-    components: { DefaultLayout , Swiper, SwiperSlide},
+	name: 'Game',
+	components: { DefaultLayout , Swiper, SwiperSlide},
     data() {
 		const store = useStore();
         return {
@@ -58,7 +60,7 @@ export default defineComponent({
 			const my_user = this.user;
 			const ip_addr = '10.12.1.6';
 			console.log(my_user);
-			let socket = io("http://"+ip_addr+":9000");
+			let socket: any = io("http://"+ip_addr+":9000");
 			socket.player = 1;
 
 			socket.on("connect", ()=>{

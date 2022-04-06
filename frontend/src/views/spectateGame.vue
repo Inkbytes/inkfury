@@ -1,42 +1,22 @@
 <template>
-    <Header :game="game" :logged="logged"/>
-	<div v-if="!bgClicked" id="swiper">
-		<h1>Choose your game background</h1>
-		<Swiper id="choose-bg" :slides-per-view="2" :space-between="0" :autoplay="{
-		delay: 1500,
-		disableOnInteraction: false,
-		}">
-			<SwiperSlide><img src="https://i.imgur.com/eWtfMME.png" width="500" height="400" @click="play('https://i.imgur.com/eWtfMME.png')"></SwiperSlide>
-			<SwiperSlide><img src="https://i.imgur.com/0HztdXb.jpeg" width="500" height="400" @click="play('https://i.imgur.com/0HztdXb.jpeg')"></SwiperSlide>
-			<SwiperSlide><img src="https://i.imgur.com/M7YCfZS.jpeg" width="500" height="400" @click="play('https://i.imgur.com/M7YCfZS.jpeg')"></SwiperSlide>
-			<SwiperSlide><img src="https://i.imgur.com/njI0p7U.jpeg" width="500" height="400" @click="play('https://i.imgur.com/njI0p7U.jpeg')"></SwiperSlide>
-		</Swiper>
-		<button @click="play('none')">continue with Default</button>
-	</div>
-    <div  id="p5Canvas" ></div>
-    <Footer />
+	<DefaultLayout >
+		<div  id="p5Canvas" ></div>
+	</DefaultLayout>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 
-import Header from '../components/Header.vue'
-import Footer from '../components/Footer.vue'
+import DefaultLayout from '../layouts/default.vue'
 
 import p5 from 'p5'
 
-import { Swiper, SwiperSlide } from "swiper/vue";
-import 'swiper/swiper-bundle.min.css';
-import SwiperCore, { Autoplay } from "swiper/core";
-
 import io from 'socket.io-client'
 
-import { computed } from 'vue'
 import  useStore  from '../store'
 
-SwiperCore.use([Autoplay]);
 export default defineComponent({
-    components: {Header, Footer, Swiper, SwiperSlide},
+    components: {DefaultLayout},
     data() {
 		const store = useStore();
         return {
@@ -166,17 +146,14 @@ export default defineComponent({
 				}
 
 				let ball_collition_mouvement = () => {
+					
 
-					if (player_number === 1 && goal === true)
-					{
-						socket.emit('scoregame-event', {p1: p1score, p2: p2score});
-					}
-					else{
+					
 						socket.on('scoregame-event', (obj) => {
 							p1score = obj.p1;
 							p2score = obj.p2;
 						});
-					}
+					
 					send_receiv_game_info();
 
 			//	display score

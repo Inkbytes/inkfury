@@ -28,7 +28,10 @@ export class UsersController {
   getUsers() {
     return this.userService.getAll();
   }
-
+  @Post()
+  showdata(@Body() user : UserDto) {
+    console.log(user);
+  }
   @Get(':login')
   getUser(@Param('login') login : string) {
       return this.userService.getUser(login);

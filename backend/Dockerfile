@@ -1,12 +1,14 @@
-FROM node:14
+FROM node:latest
 
-RUN npm i -g @nestjs/cli
+WORKDIR /app
+
+RUN npm install -g @nestjs/cli
 
 COPY package.json .
 
-RUN npm install
-
 COPY . .
+
+RUN npm install
 
 EXPOSE 9000
 

@@ -16,7 +16,3 @@ export default defineComponent({
   name: 'Footer',
 });
 </script>
-
-<style>
-
-</style>
