@@ -1,6 +1,6 @@
 <template>
   <DefaultLayout>
-    <UserProfile v-if="!!currentUser && !loading" :users="users" :login="login" />
+    <UserProfile v-if="!!currentUser && !loading" :users="users" :login="login" :games="games" />
   </DefaultLayout>
 </template>
 
@@ -17,7 +17,8 @@ export default defineComponent({
     const store = useStore();
     return {
       currentUser: computed(() => store.state.auth.user),
-      users: []
+      users: [],
+      games: []
     };
   },
   components: { DefaultLayout, UserProfile },
@@ -27,6 +28,10 @@ export default defineComponent({
           .then(res => res.json())
           .then(data =>  data && (this.users = data) )
           .catch(err => console.log(err.message))
+      await(fetch("http://10.12.1.6:9000/api/game/completed"))
+            .then(res => res.json())
+            .then(data =>  data && (this.games = data) )
+            .catch(err => console.log(err.message))
       this.loading = false
   }
 });
