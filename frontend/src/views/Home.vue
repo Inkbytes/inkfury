@@ -112,6 +112,15 @@
             ><img src="../assets/github.png" width="20"
           /></a></div
       ></swiper-slide>
+      <swiper-slide
+        ><div class="ID">
+          <img src="../assets/carry.jpeg" width="50" height="50" />
+          <h2>Abdessamad El Bahri</h2>
+          <p>Big thanks</p>
+          <a href="https://github.com/ayoubabounakif"
+            ><img src="../assets/github.png" width="20"
+          /></a></div
+      ></swiper-slide>
     </Swiper>
   </div>
   </div>
