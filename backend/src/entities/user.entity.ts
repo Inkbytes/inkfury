@@ -41,4 +41,12 @@ export class UserEntity {
 
   @Column('int', { array: true, default: [] })
   blockedUsers: number[];
+
+  // in_game: boolean 
+  @Column({ default: false})
+  inGame: boolean;
+
+// logged: boolean
+  @Column({ default: false})
+  logged: boolean;
 }

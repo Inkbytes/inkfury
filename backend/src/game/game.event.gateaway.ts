@@ -59,7 +59,9 @@ export class GameGateway
       const clients = io.sockets.adapter.rooms.get('room-' + client.gameId);
 
 	  let current_game = game_array.find(e => e.gameId === client.gameId);
-      if (!clients) return;
+    if (!clients) return;
+    axios.put('http://10.12.1.6:9000/api/users', {id: current_game.p1Id, inGame: false});
+	  axios.put('http://10.12.1.6:9000/api/users', {id: current_game.p2Id, inGame: false});
 	  let idx = game_array.indexOf(current_game);
 	  game_array.splice(idx, 1);
       //	pay attention to who want to watch they won't be queued!
@@ -146,6 +148,8 @@ export class GameGateway
 			.then ( (resp) => console.log('gut-2'))
 			.catch (err => {console.log(err)})
 		}
+    axios.put('http://10.12.1.6:9000/api/users', {id: current_game.p1Id, inGame: false});
+	  axios.put('http://10.12.1.6:9000/api/users', {id: current_game.p2Id, inGame: false});
 		let idx = game_array.indexOf(current_game);
 		game_array.splice(idx, 1);
 		// console.log(game_array);
@@ -175,6 +179,9 @@ const queue_players = () => {
   // join the room game_number
   player1.gameId = game_number;
   player2.gameId = game_number;
+
+  axios.put('http://10.12.1.6:9000/api/users', {id: current_game.p1Id, inGame: true});
+  axios.put('http://10.12.1.6:9000/api/users', {id: current_game.p2Id, inGame: true});
 
   // emit to 1or2-event
   player1.emit('1or2-event', 1);

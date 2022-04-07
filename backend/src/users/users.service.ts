@@ -29,7 +29,7 @@ export class UsersService {
   }
 
   public async update(user: UserDto) {
-    const userd = await this.repo.findOne({login : user.login}).then((user) => {
+    const userd = await this.repo.findOne({id : user.id}).then((user) => {
       return user;
     });
     if ((userd !== undefined && userd.id === user.id) || userd === undefined)
