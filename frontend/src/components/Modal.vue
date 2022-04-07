@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import axios, { AxiosResponse } from "axios";
 import useStore from '../store'
 
@@ -55,7 +55,7 @@ export default defineComponent({
             imgError: true,
             setMsg: (e: boolean) => store.commit('msg/setMsg', e),
             setError: (e: boolean) => store.commit('msg/setError', e),
-            setState: (e: boolean) => store.commit('msg/setState', e),
+            setState: (e: boolean) => store.commit('msg/setState', e)
         }
     },
     methods: {
@@ -83,6 +83,7 @@ export default defineComponent({
                         });
                 this.user.avatar = imageName
             }
+            this.user.isFirst = true;
             const usr = this.user
             axios
                 .put("http://10.12.1.6:9000/api/users", usr, {})

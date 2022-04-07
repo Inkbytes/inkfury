@@ -5,7 +5,6 @@ export class UserEntity {
   @PrimaryColumn()
   id: number;
 
-  @Column()
   @Column({ type: 'text' })
   fullname: string;
 
@@ -36,6 +35,9 @@ export class UserEntity {
 
   @Column({ type: 'varchar', default: '' })
   token: string;
+
+  @Column({ type: 'boolean', default: false})
+  isFirst: boolean;
 
   @Column('int', { array: true, default: [] })
   blockedUsers: number[];

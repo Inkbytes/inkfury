@@ -38,7 +38,7 @@
                     <div class="data ">
                         <img :src="getImage(getUserData(game.opId).avatar)" width="46" height="45">
                         <div class="info">
-                            <p>{{getUserData(game.opId).fullname}}</p>
+                            <p class="line-clamp-1">{{getUserData(game.opId).fullname}}</p>
                             <p>@{{ getUserData(game.opId).login }}</p>
                         </div>
                     </div>
@@ -134,15 +134,7 @@ export default defineComponent({
   methods: {
     async toggleError() {
       this.currentUser.friendList.push(this.user.id);
-      this.user.friendList.push(this.currentUser.id);
-      const usr = this.user;
       const curUsr = this.currentUser;
-      axios
-        .put("http://10.12.1.6:9000/api/users", usr, {})
-        .then((resp: AxiosResponse) => {})
-        .catch((err) => {
-          console.log(err);
-        });
       axios
         .put("http://10.12.1.6:9000/api/users", curUsr, {})
         .then((resp: AxiosResponse) => {})

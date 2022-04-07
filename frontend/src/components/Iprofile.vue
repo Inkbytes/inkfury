@@ -53,7 +53,7 @@
                     <div class="data ">
                         <img :src="getImage(getUserData(game.opId).avatar)" width="46" height="45">
                         <div class="info">
-                            <p>{{getUserData(game.opId).fullname}}</p>
+                            <p class="line-clamp-1">{{getUserData(game.opId).fullname}}</p>
                             <p>@{{ getUserData(game.opId).login }}</p>
                         </div>
                     </div>

@@ -17,7 +17,7 @@ export const store = createStore({
   modules: {
     auth: AuthModule,
     config: GlobalModule,
-    msg: GlobalModule
+    msg: GlobalModule,
   }
 })
 

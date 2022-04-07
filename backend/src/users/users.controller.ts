@@ -48,6 +48,7 @@ export class UsersController {
 
   @Put()
   updateUser(@Body() user: UserDto) {
+    console.log(user);
     return this.userService.update(user);
   }
   

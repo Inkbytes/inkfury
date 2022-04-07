@@ -36,10 +36,11 @@ export default defineComponent({
 
         socket.on('connect', () => {
             console.log(`/games connected with id ${socket.id}`);
+			socket.emit('sendgamearray-event', 1);
         });
-        socket.on('currentgames-event', ( data: any ) => {
-            this.games = data.games;
-            console.log(`data: ${data.games}`)
+        socket.on('receivegamearray-event', ( data: any ) => {
+			console.log(`data received: ${data}`);
+            this.games = data;
         });
         this.loading = false
     }

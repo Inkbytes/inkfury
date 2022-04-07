@@ -1,8 +1,7 @@
 <template>
 <DefaultLayout>
-  <span @log-out="logged = !logged"></span>
-
-  <div id="pong">
+  <div>
+      <div  id="pong">
     <aside id="text">
       <h3>InkFury</h3>
       <p class="bold">Play Ping-Pong with your friends</p>
@@ -115,14 +114,15 @@
       ></swiper-slide>
     </Swiper>
   </div>
-
+  </div>
   </DefaultLayout>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 
 import DefaultLayout from '../layouts/default.vue'
+import Modal from  '../components/Modal.vue'
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/swiper-bundle.min.css";
@@ -134,12 +134,11 @@ SwiperCore.use([Autoplay]);
 
 export default defineComponent({
   name: "Home",
-  components: { Swiper, SwiperSlide, DefaultLayout },
+  components: { Swiper, SwiperSlide, DefaultLayout, Modal },
   setup () {
     const store = useStore();
 
     return {
-      user: null,
       msg: false
     };
   }

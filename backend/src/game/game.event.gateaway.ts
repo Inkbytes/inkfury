@@ -19,7 +19,7 @@ import { fetch } from 'node-fetch'
 let io: any;
 const game_queue: any[] = [];
 let game_number = 0;
-let game_array: Game[] = [];
+let game_array: any[] = [];
 
 @WebSocketGateway({ cors: true })
 export class GameGateway
@@ -37,8 +37,6 @@ export class GameGateway
   handleConnection(client: any, ...args: any[]) {
     this.logger.log(`Client connected ${client.id}`);
 
-    console.log("game_array: " + game_array);
-    io.emit('currentgames-event', {games: game_array, test: -1});
 	// console.log(client.player);
     // game_queue.push(client);
     // this.logger.log(`game_queue.length ${game_queue.length}`);
@@ -61,9 +59,9 @@ export class GameGateway
       const clients = io.sockets.adapter.rooms.get('room-' + client.gameId);
 
 	  let current_game = game_array.find(e => e.gameId === client.gameId);
+      if (!clients) return;
 	  let idx = game_array.indexOf(current_game);
 	  game_array.splice(idx, 1);
-      if (!clients) return;
       //	pay attention to who want to watch they won't be queued!
       for (const e of clients) {
         const e_socket = io.sockets.sockets.get(e);
@@ -159,15 +157,21 @@ export class GameGateway
   addmeHandler(client: any, data: any): void{
 	  client.join('room-'+data);
   }
+
+  @SubscribeMessage('sendgamearray-event')
+  sendgamearrayHanddler(client: any, data: any): void{
+	  client.emit('receivegamearray-event', game_array);
+  }
 }
 
 const queue_players = () => {
-  const player1: any = game_queue[0];
-  const player2: any = game_queue[1];
+  const player1: any = game_queue.shift();
+  const player2: any = game_queue.shift();
 
   if (player1.userId === player2.userId)
     return ;
 
+  console.log(`hamid queued p1: ${player1.id} & p2: ${player2.id}`);
   // join the room game_number
   player1.gameId = game_number;
   player2.gameId = game_number;
@@ -180,8 +184,6 @@ const queue_players = () => {
   player1.join('room-' + player1.gameId);
   player2.join('room-' + player2.gameId);
 
-  // pop the players from the queue
-  game_queue.splice(0, 2);
 
   // create a Game object
   let game = new Game(game_number);
@@ -194,6 +196,4 @@ const queue_players = () => {
   game_array.push(game);
   // increment game_number
   game_number++;
-
-//   console.log(`hamid queued p1: ${player1.id} & p2: ${player2.id}`);
 };

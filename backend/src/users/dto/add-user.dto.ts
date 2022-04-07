@@ -54,4 +54,7 @@ export class UserDto {
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
   // @IsNumber({}, { each: true })
   blockeUsers: number[];
+
+
+  isFirst? : boolean;
 }

@@ -5,6 +5,7 @@
         <Msg />
       </transition>
     </div>
+    <Modal v-if="!signUp && user && logged && !loading" :user="user" />
     <div
       class="w-full mx-auto max-w-7xl flex flex-row items-center justify-between py-2 px-8 h-16"
       style="min-height: 4rem"
@@ -82,9 +83,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import Msg from "./Msg.vue";
+import Modal from  '../components/Modal.vue'
 
 import { computed } from "vue";
 import useStore from "../store";
+
 
 import axios, { AxiosResponse } from "axios";
 import Loading from "./Loading.vue";
@@ -99,10 +102,12 @@ export default defineComponent({
       userData: (e: any) => store.commit("auth/setUser", e),
       logged: computed(() => store.state.auth.logged),
       setLoading: (e: boolean) => store.commit("config/setLoading", e),
+      user : {},
+      signUp: true,
       store,
     };
   },
-  components: { Msg, Loading },
+  components: { Msg, Loading, Modal },
   methods: {
     async logout() {
     window.location.href = 'http://10.12.1.6:9000/api/login/logout'
@@ -127,7 +132,9 @@ export default defineComponent({
       )
       .then((resp: AxiosResponse) => {
         this.login(true);
-        this.userData(resp.data);
+        this.userData(resp.data.user);
+        this.user = resp.data.user
+        this.signUp = resp.data.sign
         this.setLoading(false);
       })
       .catch((err) => {

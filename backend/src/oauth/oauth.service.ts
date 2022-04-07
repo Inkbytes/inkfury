@@ -34,10 +34,10 @@ export class OauthService {
   }
 
   async GetUserData(data, access_token) {
-    const user = await this.repo.findOne({'token': access_token}).then((res) => {return res});
+    const user = await this.repo.findOne({'token': access_token});
     if (user === undefined)
       return this.CreateUser(data, access_token);
-    return this.repo.findOne({'token': access_token})
+    return {'user': user, 'signin': true};
   }
 
   // Create user and save it to database
@@ -55,7 +55,9 @@ export class OauthService {
         'token': token,
         'blockedUsers': [],
     }
-    console.log(user);
-    return this.repo.save(user);
+    const userd = await this.repo.save(user).then((sg) => {
+      return sg;
+    });
+    return {'user': userd, "signin": false};
   }
 }

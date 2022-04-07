@@ -11,6 +11,7 @@ export interface GlobalMsg {
   error: boolean;
 }
 
+
 export const key: InjectionKey<Store<GlobalConfig>> = Symbol()
 
 // Create a new store instance.
@@ -21,7 +22,8 @@ export default {
       isLoading: true,
       msgState: false,
       msg: '',
-      error: false
+      error: false,
+      signUp: false
     }
   },
   mutations: {
@@ -37,6 +39,9 @@ export default {
     },
     setState(state: GlobalMsg, payload: boolean){
       state.msgState = payload;
+    },
+    setSingup(state: GlobalSign, payload: boolean) {
+      state.signUp = payload;
     }
   },
   actions: {}

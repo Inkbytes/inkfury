@@ -17,6 +17,7 @@ export default defineComponent({
     const store = useStore();
     return {
       currentUser: computed(() => store.state.auth.user),
+      loading: computed(() => store.state.config.isLoading),
       users: [],
       games: []
     };
@@ -32,7 +33,6 @@ export default defineComponent({
             .then(res => res.json())
             .then(data =>  data && (this.games = data) )
             .catch(err => console.log(err.message))
-      this.loading = false
   }
 });
 </script>

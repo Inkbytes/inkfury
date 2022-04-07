@@ -1,6 +1,6 @@
 <template>
 	<DefaultLayout >
-		<div  id="p5Canvas" ></div>
+		<div class="m-auto" id="p5Canvas" ></div>
 	</DefaultLayout>
 </template>
 
@@ -22,21 +22,27 @@ export default defineComponent({
         return {
 			game: true,
 			bgClicked: false,
-			logged: computed(() => store.state.auth.logged)
+			logged: computed(() => store.state.auth.logged),
+			gameid : this.$route.params.id
         }
 	},
+	mounted() {
+		this.play();
+	},
 	methods: {
-		play(image : any) {
+		play() {
 			this.bgClicked = true
 
 			const ip_addr = '10.12.1.6';
 
-			const socket = io("http://"+ip_addr+":3000");
+			const socket = io("http://"+ip_addr+":9000");
 
 			socket.on("connect", ()=>{
 				console.log(`connected with id ${socket.id}`);
 				// join correspondant room.
+				socket.emit('addme-event', this.gameid);
 			})
+
 
 			const lobby = Symbol('lobby');
 			const pregame = Symbol('pregame');
@@ -44,7 +50,7 @@ export default defineComponent({
 			const postgame = Symbol('postgame');
 			const quitgame = Symbol('quitgame');
 
-			let game_state = lobby;
+			let game_state = game;
 
 			let player_number = 0;
 			const maxWIDTH = 1200;
@@ -75,18 +81,14 @@ export default defineComponent({
 			// }
 
 				p.setup = () => {
-					if (image !== "none")
-						imag = p.loadImage(image);
-					else
-						imag = 0;
 					p.createCanvas(WIDTH, HEIGHT);
-					p.background(imag);
+					p.background(0);
 				};
 
 
 				let	d_game = () => {
 			// draw game components
-					p.background(imag);
+					p.background(0);
 					p.stroke(1);
 					p.textSize(10);
 					p.text(player_number, 10, 10);
@@ -116,12 +118,12 @@ export default defineComponent({
 
 				let d_postgame = () => {
 			// draw postgame
-					p.background(imag);
+					p.background(0);
 					p.stroke(1);
 					p.textSize(30);
 					p.fill('white');
 					let winner = (p1score > p2score) ? 1 : 2;
-					p.text('Postgame player_number ' + winner +
+					p.text('game finished player_number ' + winner +
 						' won', WIDTH / 2, HEIGHT / 2);
 
 			// reset game and replay
@@ -131,7 +133,7 @@ export default defineComponent({
 				let d_quitgame = () => {
 			// draw quitgame
 					// console.log('d_quitgame');
-					p.background(imag);
+					p.background(0);
 					p.stroke(1);
 					p.textSize(30);
 
@@ -185,7 +187,7 @@ export default defineComponent({
 					HEIGHT = (window.innerHeight < maxHEIGHT) ? window.innerHeight : maxHEIGHT;
 					WIDTH = (window.innerWidth < maxWIDTH) ? window.innerWidth : maxWIDTH;
 					p.resizeCanvas(WIDTH, HEIGHT);
-					p.background(imag);
+					p.background(0);
 				};
 
 				p.draw = function (){
@@ -207,36 +209,3 @@ export default defineComponent({
 	}
 });
 </script>
-
-<style scoped>
-#p5Canvas , #choose-bg{
-	max-width: 1200px;
-	margin: 0 auto 50px;
-}
-#swiper img {
-	cursor: pointer;
-}
-button {
-	color: white;
-	background: #0069FF;
-	border: none;
-	border-radius: 15px;
-	padding: 10px 15px;
-	font-family: 'Inter';
-	font-style: normal;
-	font-weight: bold;
-	font-size: 18px;
-	line-height: 40px;
-	text-align: center;
-	cursor: pointer;
-}
-h1 {
-	margin: 20px 0;
-	font-family: "Inter";
-  font-style: normal;
-  font-weight: bold;
-  font-size: 24px;
-  line-height: 29px;
-  color: #0a2a42;
-}
-</style>
