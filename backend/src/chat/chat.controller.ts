@@ -9,9 +9,11 @@ import {
   Put,
   UseGuards,
   UnauthorizedException,
+  Patch,
+  ForbiddenException,
 } from '@nestjs/common';
 import { User } from '../users/interfaces/user.interface';
-import { RoomDto } from './dto/chat.dto';
+import { RoomDto, PasswordDto } from './dto/chat.dto';
 import { ChatService } from './chat.service';
 import { Request } from 'express';
 import { UsersService } from '../users/users.service';
@@ -26,49 +28,52 @@ export class ChatController {
     private jwtService : JwtService
   ) {}
 
+  private async checkToken(req : Request) {
+    const cookie = req.cookies['jwt'];
+    const data = await this.jwtService.verifyAsync(cookie);
+    if (!cookie || !data) { throw new UnauthorizedException(); }
+    return (await this.userService.getUserById(data['id']));
+  }
+
   @Get()
-  async getRooms() {
+  async getRooms(@Req() req : Request) {
+    const currentUser = await this.checkToken(req);
+    if (!currentUser) throw new ForbiddenException();
     return this.chatService.getRooms();
   }
   
   @Get(':id')
-  async getRoom(@Param('id') id: number) {
+  async getRoom(@Req() req : Request, @Param('id') id: number) {
+    const currentUser = await this.checkToken(req);
+    if (!currentUser) throw new ForbiddenException();
     return this.chatService.getRoom(id);
   }
 
-  @Get(':id/members')
-  async getRoomMembers(@Param('id') id: number) {
-    return this.chatService.getRoomMembers(id);
-  }
-
-  @Get(':id/blocked_members')
-  async getRoomBlockedMembers(@Param('id') id: number) {
-    return this.chatService.getRoomBlockedMembers(id);
-  }
-
-  @Get(':id/muted_members')
-  async getRoomMutedMembers(@Param('id') id: number) {
-    return this.chatService.getRoomMutedMembers(id);
-  }
-
   @Post()
-  async createRoom(@Body() room: RoomDto) {
-    console.log(room);
+  async createRoom(@Req() req : Request, @Body() room: RoomDto) {
+    const currentUser = await this.checkToken(req);
+    if (!currentUser) throw new ForbiddenException();
     return this.chatService.createRoom(room);
+  }
+
+  @Post(':id/join')
+  async checkPassword(@Req() req : Request, @Param('id') id: number, @Body() pwToCheck: PasswordDto) : Promise<boolean> {
+    const currentUser = await this.checkToken(req);
+    if (!currentUser) throw new ForbiddenException();
+    return this.chatService.checkPasswordValidation(id, pwToCheck);
   }
 
   @Post(':id')
   async updateRoom(@Req() req : Request, @Param('id') id: number, @Body() roomData: RoomDto) {
-    const cookie = req.cookies['jwt'];
-    const data = await this.jwtService.verifyAsync(cookie);
-    if (!cookie || !data) { throw new UnauthorizedException(); }
-    const currentUser = await this.userService.getUserById(data['id']);
-    console.log(currentUser);
+    const currentUser = await this.checkToken(req);
+    if (!currentUser) throw new ForbiddenException();
     return this.chatService.updateRoom(id, roomData, currentUser);
   }
 
   @Delete(':id')
-  async deleteRoom(@Param('id') id: number) {
+  async deleteRoom(@Req() req : Request, @Param('id') id: number) {
+    const currentUser = await this.checkToken(req);
+    if (!currentUser) throw new ForbiddenException();
     return this.chatService.deleteRoom(id);
   }
 }
