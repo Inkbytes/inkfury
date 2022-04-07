@@ -6,6 +6,9 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Length,
+  MaxLength,
+  Matches
 } from 'class-validator';
 
 export enum RoomVisibility {
@@ -13,18 +16,13 @@ export enum RoomVisibility {
   PRIVATE = 'private',
 }
 
-// export class RoomDto {
-//   id: number;
-//   name?: string;
-//   owner_id?: number;
-//   password?: string;
-//   visibility?: RoomVisibility;
-//   pw_protected?: boolean;
-//   members?: number[];
-//   admins?: number[];
-//   blocked_members?: number[];
-//   muted_members?: number[];
-// }
+export class PasswordDto {
+  @IsOptional()
+  @IsString()
+  @Length(8, 24)
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, { message: 'Password should have 1 uppercase, lowercase letter along with a number and a special character.' })
+  password?: string;
+}
 
 export class RoomDto {
 
@@ -34,6 +32,7 @@ export class RoomDto {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
+  @Length(4, 10)
   name?: string;
 
   @IsOptional()
@@ -42,6 +41,8 @@ export class RoomDto {
 
   @IsOptional()
   @IsString()
+  @Length(8, 24)
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, { message: 'Password should have 1 uppercase, lowercase letter along with a number and a special character.' })
   password?: string;
 
   @IsOptional()
@@ -68,5 +69,3 @@ export class RoomDto {
   @IsNumber({}, { each: true })
   muted_members?: number[];
 }
-
-// export { RoomDto, RoomVisibility };
