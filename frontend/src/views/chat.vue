@@ -3,8 +3,9 @@
         <DefaultLayout>
 		<div class="w-full max-w-full mx-auto h-full flex flex-row border-x" style="max-height: calc(100vh - 8rem)">
 			<Rooms />
-			<Inbox v-if="showInbox && hasRooms" />
-			<CreateRoom v-else />
+			<Inbox v-if="showInbox && hasRooms && !showCreateForm" />
+			<CreateRoom v-else/>
+			<Loading v-if="!showInbox && hasRooms" />
 			<RoomDetailsWrapper />
 		</div>
         </DefaultLayout>
@@ -21,16 +22,18 @@ import RoomDetailsWrapper from '../components/chat/RoomDetailsWrapper.vue'
 import useStore from '../store'
 import { ChatRoom } from '../store/chat'
 import { io, Socket } from 'socket.io-client'
+import Loading from '../components/Loading.vue'
 
 export default defineComponent({
 	name: 'Chat',
-	components: { DefaultLayout, Rooms, Inbox, CreateRoom, RoomDetailsWrapper },
+	components: { DefaultLayout, Rooms, Inbox, CreateRoom, RoomDetailsWrapper, Loading },
 	data() {
 		const store = useStore();
 		return {
 			store,
 			showInbox: computed(() => store.state.chat.showInbox),
 			hasRooms: computed(() => store.state.chat.hasRoom),
+			showCreateForm: computed(() => store.state.chat.showCreateForm),
 			roomCount: computed(() => store.state.chat.rooms.length),
 			setRooms: (data: ChatRoom[]) => store.commit('chat/userRooms', data),
 			setSocket: (socket: Socket) => store.commit('chat/setSocket', socket),

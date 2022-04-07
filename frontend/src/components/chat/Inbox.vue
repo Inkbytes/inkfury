@@ -28,9 +28,10 @@
 			<!-- <Bubble /> -->
 		</div>
 		<form @submit.prevent="submitMsg" class="w-full py-3 px-3 flex items-center justify-between border-t">
+			<button type="button" class="mx-2 bg-blue-600 font-semibold text-xs text-white py-2 px-6 my-2 rounded-lg" @click="toggleShowCreateForm">Create Room</button>
 			<input placeholder="Type your message here..." class="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100 outline-none focus:text-gray-700" v-model="msg" @input="typing" >
 			<button class="outline-none focus:outline-none bg-green-600 font-semibold text-sm text-white py-2 px-4 my-2 rounded-lg" type="submit">Send</button>
-			<button class="mx-2 bg-red-600 font-semibold text-sm text-white py-2 px-4 my-2 rounded-lg" @click="leaveRoom">Leave</button>
+			<button type="button" class="mx-2 bg-red-600 font-semibold text-sm text-white py-2 px-4 my-2 rounded-lg" @click="leaveRoom">Leave</button>
 		</form>
 	</div>
 </template>
@@ -40,7 +41,7 @@ import { computed, defineComponent } from 'vue'
 import MyBubble from './MyBubble.vue'
 import Bubble from './Bubble.vue'
 import useStore from '../../store'
-import { ChatRoom } from '@/store/chat'
+import { ChatRoom } from '../../store/chat'
 import axios, { AxiosResponse } from 'axios'
 
 export default defineComponent({
@@ -65,8 +66,19 @@ export default defineComponent({
 			currentRoomId: computed(() => store.state.chat.currentRoomId),
 			socket: computed(() => store.state.chat.socket),
 			toggleUsersList: () => store.commit('chat/toggleUsersList'),
+			toggleShowCreateForm: () => store.commit('chat/toggleShowCreateForm'),
 			leaveRoomStore: (data: ChatRoom) => store.commit('chat/leaveRoom', data),
 			chatRooms: computed(() => store.state.chat.rooms)
+		}
+	},
+	watch: {
+		async currentRoomId(newVal) {
+			if(this.currentRoomId !== null) {
+				await fetch('http://10.12.2.4:9000/api/chat/' + this.currentRoomId)
+						.then(res => res.json())
+						.then(data => this.roomData = data)
+						.catch(err => console.log(err));
+			}
 		}
 	},
 	async mounted() {

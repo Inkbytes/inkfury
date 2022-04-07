@@ -17,6 +17,7 @@ export interface ChatRoom {
 
 export interface ChatConfig {
   showInbox: boolean;
+  showCreateForm: boolean;
   showUsers: boolean;
   hasRoom: boolean;
   rooms: ChatRoom[];
@@ -32,6 +33,7 @@ export default {
   state() {
     return {
       showInbox: true,
+      showCreateForm: false,
       showUsers: false,
       hasRoom: false,
       rooms: [],
@@ -42,9 +44,13 @@ export default {
   mutations: {
     refreshInbox(state: ChatConfig) {
       state.showInbox = false;
+      state.showCreateForm = false;
       setTimeout(() => {
         state.showInbox = true;
       }, 100);
+    },
+    toggleShowCreateForm(state: ChatConfig){
+      state.showCreateForm = !state.showCreateForm;
     },
     toggleUsersList(state: ChatConfig) {
       state.showUsers = !state.showUsers;
@@ -60,6 +66,7 @@ export default {
       state.hasRoom = !!state.rooms?.length;
       state.currentRoomId = data?.id || null;
       state.socket.emit('joinRoom', data?.name);
+      state.showCreateForm = false;
     },
     leaveRoom(state: ChatConfig, data: ChatRoom) {
       state.rooms = state.rooms?.filter((e) => e.id !== data?.id) || [];

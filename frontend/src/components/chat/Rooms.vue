@@ -37,17 +37,20 @@ export default defineComponent({
 			socket: computed(() => store.state.chat.socket),
 			setRoomId: (id: number) => store.commit('chat/setCurrentRoomId', id),
 			refreshInbox: () => store.commit('chat/refreshInbox'),
+			toggleShowCreateForm: () => store.commit('chat/toggleShowCreateForm'),
 			currentRoomId: computed(() => store.state.chat.currentRoomId),
 			roomSearchInput: ''
 		}
 	},
 	methods: {
 		roomClick(id: number, name: string) {
+			if (id === this.currentRoomId) return;
 			this.currentRoomName = this.rooms.find((room) => room.id === this.currentRoomId)?.name;
 			this.socket.emit('leaveRoom', this.currentRoomName);
 			this.currentRoomName = name;
 			this.setRoomId(id);
 			this.socket.emit('joinRoom', name);
+			// this.toggleShowCreateForm();
 			this.refreshInbox();
 		},
 		searchRoom() {
