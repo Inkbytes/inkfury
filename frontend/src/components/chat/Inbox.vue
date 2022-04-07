@@ -19,7 +19,7 @@
 				</div>
 			</div>
    </div>
-		<div class="w-full h-full p-4 overflow-y-scroll hide-scroll">
+		<div ref="message_area" class="w-full h-full p-4 overflow-y-scroll hide-scroll">
 			<!-- <div v-for="(msg, idx) in msgs" :key="idx">
 				<MyBubble v-if="msg.id == userId" :msgs="msgs" />
 				<Bubble v-else />
@@ -40,7 +40,6 @@ import { computed, defineComponent } from 'vue'
 import MyBubble from './MyBubble.vue'
 import Bubble from './Bubble.vue'
 import useStore from '../../store'
-import { io } from 'socket.io-client'
 import { ChatRoom } from '@/store/chat'
 import axios, { AxiosResponse } from 'axios'
 
@@ -66,6 +65,8 @@ export default defineComponent({
 			currentRoomId: computed(() => store.state.chat.currentRoomId),
 			socket: computed(() => store.state.chat.socket),
 			toggleUsersList: () => store.commit('chat/toggleUsersList'),
+			leaveRoomStore: (data: ChatRoom) => store.commit('chat/leaveRoom', data),
+			chatRooms: computed(() => store.state.chat.rooms)
 		}
 	},
 	async mounted() {
@@ -78,6 +79,10 @@ export default defineComponent({
 			this.socket.on('chatToClient', (payload: any) => {
 				console.log(payload);
 				this.msgs.push(payload.message);
+				this.$nextTick(() => {
+					const message_area = this.$refs.message_area as HTMLElement;
+					message_area.scrollTo(0, message_area.scrollHeight);
+				});
 			})
 			this.socket.on('typing', () => {
 				const time = Date.now();
@@ -92,13 +97,9 @@ export default defineComponent({
 			})
 			
 	},
-	watch: {
-		async currentRoomId(newVal){
-			await fetch('http://10.12.2.4:9000/api/chat/' + newVal)
-						.then(res => res.json())
-						.then(data => this.roomData = data)
-						.catch(err => console.log(err));
-		}
+	async beforeUnmount() {
+		this.socket.removeListener('chatToClient');
+		this.socket.removeListener('typing');
 	},
 	methods: {
 		submitMsg() {
@@ -118,14 +119,17 @@ export default defineComponent({
 			}
 		},
 		async leaveRoom() {
-			await axios.delete('http://localhost:9000/api/chat/' + this.currentRoomId)
-			.then((res: AxiosResponse) => {
-				console.log(this.roomData.name + ' deleted');
-				this.$forceUpdate();
-			})
-			.catch(err => {
-				console.error(err); 
-			})
+			if (this.currentRoomId !== null)
+				await axios.delete('http://localhost:9000/api/chat/' + this.currentRoomId)
+				.then((res: AxiosResponse) => {
+					console.log(this.roomData.name + ' deleted');
+					this.leaveRoomStore(this.roomData);
+					this.roomData = {} as any;
+					this.$forceUpdate();
+				})
+				.catch(err => {
+					console.error(err); 
+				})
 		}
 	}
 })

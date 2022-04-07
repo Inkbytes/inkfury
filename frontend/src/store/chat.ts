@@ -16,7 +16,9 @@ export interface ChatRoom {
 }
 
 export interface ChatConfig {
+  showInbox: boolean;
   showUsers: boolean;
+  hasRoom: boolean;
   rooms: ChatRoom[];
   currentRoomId: number | null;
   socket: Socket;
@@ -29,13 +31,21 @@ export default {
   namespaced: true,
   state() {
     return {
+      showInbox: true,
       showUsers: false,
+      hasRoom: false,
       rooms: [],
       currentRoomId: null,
       socket: null
     }
   },
   mutations: {
+    refreshInbox(state: ChatConfig) {
+      state.showInbox = false;
+      setTimeout(() => {
+        state.showInbox = true;
+      }, 100);
+    },
     toggleUsersList(state: ChatConfig) {
       state.showUsers = !state.showUsers;
     },
@@ -43,6 +53,20 @@ export default {
       console.log(data)
       state.currentRoomId = data?.[0]?.id || null;
       state.rooms = data;
+      state.hasRoom = !!data?.length;
+    },
+    addRoom(state: ChatConfig, data: ChatRoom) {
+      state.rooms = [...state.rooms, data];
+      state.hasRoom = !!state.rooms?.length;
+      state.currentRoomId = data?.id || null;
+      state.socket.emit('joinRoom', data?.name);
+    },
+    leaveRoom(state: ChatConfig, data: ChatRoom) {
+      state.rooms = state.rooms?.filter((e) => e.id !== data?.id) || [];
+      state.hasRoom = !!state.rooms?.length;
+      state.currentRoomId = state.rooms?.length > 0 ? state.rooms[0].id : null;
+      state.socket.emit('leaveRoom', data?.name);
+      state.socket.emit('joinRoom', state.rooms[0]?.name);
     },
     setCurrentRoomId(state: ChatConfig, id: number){
       state.currentRoomId = id;

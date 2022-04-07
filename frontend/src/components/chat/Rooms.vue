@@ -10,7 +10,7 @@
     </div>
 		<ul class="flex flex-col h-full w-full overflow-y-scroll hide-scroll">
 			<li class="w-full flex flow-row items-center border-b hover:border-0 rounded-2xl" v-for="room in rooms" :key="room.id">
-				<a style="min-height: 4rem;" class="hover:bg-gray-400 rounded-2xl w-full px-3 h-20 cursor-pointer flex items-center text-sm focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out text-gray-600 hover:text-white" @click="roomClick(room.id, room.name)">
+				<a style="min-height: 4rem;" :class="['rounded-2xl w-full px-3 h-20 cursor-pointer flex items-center mt-1 focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out ', currentRoomId === room.id ? 'text-white bg-green-600' : 'text-gray-600 hover:bg-gray-300 hover:text-black']" @click="roomClick(room.id, room.name)">
 					<img class="h-10 w-10 rounded-full object-cover m-auto lg:m-0" src="../../assets/userIcon.svg">
 					<div class="w-full py-2 group-hover:!flex hidden lg:flex flex-col items-start justify-center ml-2">
 						<div class="flex flex-row font-semibold text-base w-full text-left">
@@ -32,20 +32,23 @@ export default defineComponent({
 		const store = useStore();
 
 		return { 
-			currentRoomName: '',
+			currentRoomName: '' as string | undefined,
 			rooms: computed(() => store.state.chat.rooms),
 			socket: computed(() => store.state.chat.socket),
 			setRoomId: (id: number) => store.commit('chat/setCurrentRoomId', id),
+			refreshInbox: () => store.commit('chat/refreshInbox'),
+			currentRoomId: computed(() => store.state.chat.currentRoomId),
 			roomSearchInput: ''
 		}
 	},
 	methods: {
 		roomClick(id: number, name: string) {
-			if(this.currentRoomName)
-				this.socket.emit('leaveRoom', this.currentRoomName);
+			this.currentRoomName = this.rooms.find((room) => room.id === this.currentRoomId)?.name;
+			this.socket.emit('leaveRoom', this.currentRoomName);
 			this.currentRoomName = name;
 			this.setRoomId(id);
 			this.socket.emit('joinRoom', name);
+			this.refreshInbox();
 		},
 		searchRoom() {
 			console.log(this.roomSearchInput);

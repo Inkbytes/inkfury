@@ -10,6 +10,11 @@
           <div class="w-full">
             <input type="password" placeholder="Password" v-model="roomData.password" class="px-4 py-2 bg-gray-50 w-3/4">
           </div>
+          <div v-if="badPwd" class="w-full">
+            <p class="py-2 px-2 bg-gray-100 text-xs font-semibold text-orange-600 rounded-lg ">
+              Password must contain at least one uppercase, one lowercase, one symbol and be between 8 and 24 characters 
+            </p>
+          </div>
           <div class="w-full font-semibold text-s text-gray-500">Visibility</div>
           <div class="bg-gray-200 rounded-lg flex flex-row w-3/4 mx-auto">
               <div class="inline-flex rounded-lg w-3/4">
@@ -32,6 +37,7 @@
 import { defineComponent, computed } from 'vue'
 import axios, { AxiosResponse } from "axios";
 import useStore from '../../store';
+import { ChatRoom } from '../../store/chat'
 
 export default defineComponent({
   data() {
@@ -42,21 +48,30 @@ export default defineComponent({
         password: '',
         owner_id: computed(() => store.state.auth.user?.id).value,
         visibility: 'public',
-      }
+      },
+      badPwd: false,
+      addRoom: (data: ChatRoom) => store.commit('chat/addRoom', data),
     }
   },
   methods: {
     async createRoom() {
+      //Validation: uppercase, lowercase, special char length 8->24
+      const pwd = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[#?!@$%^&*-]).{8,24}$/;
       const formData = this.roomData;
-      const headers = { 'Content-Type': 'application/json' }
-      await axios
-              .post(`http://10.12.2.4:9000/api/chat`, formData, { headers } )
-              .then((res: AxiosResponse) => {
-                console.log(this.roomData.name + " Created");
-              })
-              .catch(err => {
-                console.log(err)
-              })
+      if(!formData.password.length || formData.password.match(pwd)){
+        this.badPwd = false;
+        const headers = { 'Content-Type': 'application/json' }
+        await axios
+                .post(`http://10.12.2.4:9000/api/chat`, formData, { headers } )
+                .then((res: AxiosResponse) => {
+                  this.addRoom(res.data);
+                })
+                .catch(err => {
+                  console.log(err)
+                })
+      }
+      else
+        this.badPwd = true;
     }
   }
 })

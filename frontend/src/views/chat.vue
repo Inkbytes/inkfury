@@ -3,7 +3,7 @@
         <DefaultLayout>
 		<div class="w-full max-w-full mx-auto h-full flex flex-row border-x" style="max-height: calc(100vh - 8rem)">
 			<Rooms />
-			<Inbox v-if="hasRooms" />
+			<Inbox v-if="showInbox && hasRooms" />
 			<CreateRoom v-else />
 			<RoomDetailsWrapper />
 		</div>
@@ -29,26 +29,34 @@ export default defineComponent({
 		const store = useStore();
 		return {
 			store,
-			hasRooms: false,
+			showInbox: computed(() => store.state.chat.showInbox),
+			hasRooms: computed(() => store.state.chat.hasRoom),
 			roomCount: computed(() => store.state.chat.rooms.length),
 			setRooms: (data: ChatRoom[]) => store.commit('chat/userRooms', data),
 			setSocket: (socket: Socket) => store.commit('chat/setSocket', socket),
 		}
 	},
 	async mounted() { //fetch current user rooms, public rooms and friends list
+		let roomName = null;
 		await fetch('http://10.12.2.4:9000/api/chat')
 					.then(res => res.json())
-					.then(data => this.setRooms(data))
+					.then(data => {
+						this.setRooms(data);
+						roomName = data?.[0]?.name || null;
+						// TODO: Join default room
+					})
 					.catch(err => console.log(err))
 		const socket = io('http://10.12.2.4:7000/chat');
 		this.setSocket(socket);
-	},
-	watch: {
-		roomCount(newVal, oldVal) {
-			console.log(this.hasRooms + ' ' + newVal)
-			newVal > 0 ? this.hasRooms = true : this.hasRooms = false;
-		}
+		socket.emit('joinRoom', roomName);
 	}
+	// watch: {
+	// 	roomCount(newVal, oldVal) {
+	// 		console.log(this.hasRooms + ' ' + newVal)
+	// 		this.toggleHasRoom(newVal > 0);
+	// 		// newVal > 0 ? this.hasRooms = true : this.hasRooms = false;
+	// 	}
+	// },
 })
 </script>
 
