@@ -1,8 +1,7 @@
 <template>
 <DefaultLayout>
-  <span @log-out="logged = !logged"></span>
-
-  <div id="pong">
+  <div>
+      <div  id="pong">
     <aside id="text">
       <h3>InkFury</h3>
       <p class="bold">Play Ping-Pong with your friends</p>
@@ -72,7 +71,7 @@
         ><div class="ID">
           <img src="../assets/mashad.jpeg" width="50" height="50" />
           <h2>Ashad Mohamed</h2>
-          <p>backend, UI UX and database</p>
+          <p>Bruh</p>
           <a href="https://github.com/f0rkr"
             ><img src="../assets/github.png" width="20"
           /></a></div
@@ -113,16 +112,26 @@
             ><img src="../assets/github.png" width="20"
           /></a></div
       ></swiper-slide>
+      <swiper-slide
+        ><div class="ID">
+          <img src="../assets/carry.jpeg" width="50" height="50" />
+          <h2>Abdessamad El Bahri</h2>
+          <p>Big thanks</p>
+          <a href="https://github.com/ayoubabounakif"
+            ><img src="../assets/github.png" width="20"
+          /></a></div
+      ></swiper-slide>
     </Swiper>
   </div>
-
+  </div>
   </DefaultLayout>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 
 import DefaultLayout from '../layouts/default.vue'
+import Modal from  '../components/Modal.vue'
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/swiper-bundle.min.css";
@@ -134,12 +143,11 @@ SwiperCore.use([Autoplay]);
 
 export default defineComponent({
   name: "Home",
-  components: { Swiper, SwiperSlide, DefaultLayout },
+  components: { Swiper, SwiperSlide, DefaultLayout, Modal },
   setup () {
     const store = useStore();
 
     return {
-      user: null,
       msg: false
     };
   }

@@ -3,6 +3,7 @@ import { createStore, Store, StoreOptions } from 'vuex'
 
 export interface User42Profile {
   logged: boolean;
+  signUp: boolean;
   user: {
     id: number;
     email: string;
@@ -20,12 +21,16 @@ export default {
   state() {
     return {
       logged: false,
-      user: null
+      user: null,
+      signUp: false
     }
   },
   mutations: {
     setLogged(state: User42Profile, payload: boolean) {
       state.logged = payload;
+    },
+    setSignup(state: User42Profile, payload: boolean) {
+      state.signUp = payload;
     },
     setUser(state: User42Profile, payload:any){
       state.user = payload

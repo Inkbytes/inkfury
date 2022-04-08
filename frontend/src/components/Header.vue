@@ -5,8 +5,10 @@
         <Msg />
       </transition>
     </div>
+    <Modal v-if="!signUp && user && logged && !loading" :user="user" />
+    <Is2fa v-if="!load && user && user.is2fa && !user.isLogged" :email="email" />
     <div
-      class="w-full mx-auto flex flex-row items-center justify-between py-2 px-8 h-16"
+      class="w-full mx-auto max-w-7xl flex flex-row items-center justify-between py-2 px-8 h-16"
       style="min-height: 4rem"
     >
       <div class="flex flex-row items-center gap-8">
@@ -82,9 +84,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import Msg from "./Msg.vue";
+import Modal from  '../components/Modal.vue'
+import Is2fa from  '../components/Is2fa.vue'
 
 import { computed } from "vue";
 import useStore from "../store";
+
 
 import axios, { AxiosResponse } from "axios";
 import Loading from "./Loading.vue";
@@ -95,17 +100,25 @@ export default defineComponent({
   data() {
     const store = useStore();
     return {
+      load: false,
       login: (e: any) => store.commit("auth/setLogged", e),
       userData: (e: any) => store.commit("auth/setUser", e),
       logged: computed(() => store.state.auth.logged),
       setLoading: (e: boolean) => store.commit("config/setLoading", e),
-      store,
+      user : {},
+      signUp: true,
+      email: '',
+      store
     };
   },
-  components: { Msg, Loading },
+  components: { Msg, Loading, Modal, Is2fa },
   methods: {
     async logout() {
-    window.location.href = 'http://10.12.2.4:9000/api/login/logout'
+      this.load = true
+      window.location.href = 'http://10.12.2.4:9000/api/login/logout'
+      this.user.isLogged = false
+      const usr = this.user
+      await axios.post("http://10.12.2.4:9000/api/users", usr, {withCredentials: true})
     },
     deleteAllCookies() {
       var cookies = document.cookie.split(";");
@@ -118,8 +131,8 @@ export default defineComponent({
       }
     },
   },
-  mounted() {
-    axios
+  async mounted() {
+    await axios
       .post(
         "http://10.12.2.4:9000/api/login/login_verification",
         {},
@@ -127,7 +140,9 @@ export default defineComponent({
       )
       .then((resp: AxiosResponse) => {
         this.login(true);
-        this.userData(resp.data);
+        this.userData(resp.data.user);
+        this.user = resp.data.user
+        this.signUp = resp.data.sign
         this.setLoading(false);
       })
       .catch((err) => {
@@ -135,7 +150,20 @@ export default defineComponent({
         this.login(false);
         if (this.$route.path !== "/") this.$router.replace("/");
         this.setLoading(false);
-      });
+      }); 
+      const usr = this.user;
+      if (this.user && this.user.is2fa && !this.user.isLogged) {
+        axios.post("http://10.12.2.4:9000/api/tfa/verify", usr, {withCredentials: true})
+        .then((resp: AxiosResponse) =>{
+             this.email = resp.data
+        })
+        .catch(err => console.log(err.message))
+      }
+      else {
+        this.user.isLogged = true
+        const usr = this.user
+        axios.post("http://10.12.2.4:9000/api/users", usr, {withCredentials: true})
+      }
   },
 });
 </script>

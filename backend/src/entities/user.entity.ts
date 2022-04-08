@@ -1,11 +1,13 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class UserEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({type: 'text', default: ''})
+  email: string;
+
   @Column({ type: 'text' })
   fullname: string;
 
@@ -37,6 +39,20 @@ export class UserEntity {
   @Column({ type: 'varchar', default: '' })
   token: string;
 
+  @Column({ type: 'boolean', default: false})
+  isFirst: boolean;
+
   @Column('int', { array: true, default: [] })
   blockedUsers: number[];
+
+  // in_game: boolean 
+  @Column({ default: false})
+  inGame: boolean;
+
+// logged: boolean
+  @Column({ default: false})
+  isLogged: boolean;
+
+  @Column({select: false, nullable: true})
+  authConfirmToken: string
 }

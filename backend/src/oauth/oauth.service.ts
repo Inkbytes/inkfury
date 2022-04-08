@@ -1,9 +1,8 @@
-import { ConsoleLogger, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios from 'axios';
 import { UserEntity } from '../entities/user.entity';
-import { UserDto } from '../users/dto/add-user.dto';
 
 @Injectable()
 export class OauthService {
@@ -34,16 +33,17 @@ export class OauthService {
   }
 
   async GetUserData(data, access_token) {
-    const user = await this.repo.findOne({'token': access_token}).then((res) => {return res});
+    const user = await this.repo.findOne({'token': access_token});
     if (user === undefined)
       return this.CreateUser(data, access_token);
-    return this.repo.findOne({'token': access_token})
+    return {'user': user, 'signin': true};
   }
 
   // Create user and save it to database
   public async CreateUser(data, token : string) {
     const user = {
         'id': Number.parseInt(data.id),
+        'email': data.email,
         'fullname': data.displayname,
         'login': data.login,
         'avatar': data.image_url,
@@ -54,8 +54,12 @@ export class OauthService {
         'is2fa': false,
         'token': token,
         'blockedUsers': [],
+        'inGame': false,
+        'logged': true,
     }
-    console.log(user);
-    return this.repo.save(user);
+    const userd = await this.repo.save(user).then((sg) => {
+      return sg;
+    });
+    return {'user': userd, "signin": false};
   }
 }

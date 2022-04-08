@@ -2,14 +2,14 @@ import { InjectionKey } from 'vue'
 import { createStore, useStore as useBaseStore, Store } from 'vuex'
 
 import AuthModule, { User42Profile } from './auth'
+import ChatModule, { ChatConfig } from './chat';
 import GlobalModule, { GlobalConfig, GlobalMsg } from './global'
-import ChatModule, { ChatConfig } from './chat'
 
 export interface StoreInterface {
   auth: User42Profile;
   config: GlobalConfig;
   msg: GlobalMsg;
-  chat: ChatConfig
+  chat: ChatConfig;
 }
 
 export const key: InjectionKey<Store<StoreInterface>> = Symbol()
@@ -20,7 +20,7 @@ export const store = createStore({
     auth: AuthModule,
     config: GlobalModule,
     msg: GlobalModule,
-    chat: ChatModule
+    chat: ChatModule,
   }
 })
 

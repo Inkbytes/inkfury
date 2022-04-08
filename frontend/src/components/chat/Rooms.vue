@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { ChatRoom } from '@/store/chat';
+import { ChatRoom } from '../../store/chat';
 import { computed, defineComponent } from 'vue'
 import useStore from '../../store'
 

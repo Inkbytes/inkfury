@@ -1,16 +1,15 @@
-FROM node:12.19.0-alpine3.12
+FROM node:latest
 
-ARG NEST_ENV=production
-ENV NODE_ENV=${NODE_ENV}
+WORKDIR /app
 
-WORKDIR /usr/src/app
+RUN npm install -g @nestjs/cli
 
-COPY package*.json ./
-
-RUN npm install --only=production
+COPY package.json .
 
 COPY . .
 
-COPY /usr/src/app/dist .
+RUN npm install
 
-CMD ["node", "dist/main"]
+EXPOSE 9000
+
+CMD ["npm", "run", "start:dev"]

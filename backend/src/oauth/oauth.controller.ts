@@ -8,10 +8,13 @@ import { OauthService } from './oauth.service';
 
 @Controller('login')
 export class OauthController {
+  private sign;
+
   constructor(
     private readonly authService: OauthService,
     private jwtService : JwtService
     ) {
+      this.sign = false;
   }
 
 
@@ -47,10 +50,12 @@ export class OauthController {
     if (!result) {
       throw new UnauthorizedException();
     }
-
-    const jwt = await this.jwtService.signAsync({id : result.id});
+    // console.log(result);
+    const jwt = await this.jwtService.signAsync({id : result.user.id});
 
     res.cookie('jwt', jwt , {httpOnly: true});
+    //
+    //
     return res.redirect(`http://10.12.2.4:8081/?auth=true`);
   }
 
@@ -81,8 +86,11 @@ export class OauthController {
     if (!data) {throw new UnauthorizedException();}
 
     const user = await this.authService.findOne({id: data['id']});
-
-    return res.json(user);
+    let sign;
+    if (user !== undefined){
+      sign = user.isFirst;
+    }
+    return res.json({user, sign});
   }
 }
 

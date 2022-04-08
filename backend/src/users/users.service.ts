@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../../src/entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserDto } from './dto/add-user.dto';
-import { User } from './interfaces/user.interface';
+import { JwtService } from '@nestjs/jwt';
+import { Console } from 'console';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity) private readonly repo: Repository<UserEntity>,
+    private jwtService : JwtService
   ) {}
 
   public async getAll() {
@@ -28,12 +30,31 @@ export class UsersService {
     return await this.repo.delete({ login: username });
   }
 
-  public async update(user: UserDto) {
-    const userd = await this.repo.findOne({login : user.login}).then((user) => {
+  public async update(user) {
+    console.log(user);
+    const userd = await this.repo.findOne({id : user.id}).then((user) => {
       return user;
     });
+    console.log(userd);
     if ((userd !== undefined && userd.id === user.id) || userd === undefined)
-    return await this.repo.update({ id: user.id }, user);
+      return await this.repo.update({ id: userd.id }, user);
     return {"Error": "Login already exist."};
   }
+
+  public async verify(cookie: string) {
+    const data = await this.jwtService.verifyAsync(cookie).then((data) => {
+        return data;
+    })
+
+    if (!data) 
+        return false;
+    
+    const user = await this.repo.findOne({id: data['id']}).then((user) => {
+        return user;
+    });
+
+    if (!user)
+        return false;
+    return true;
+}
 }

@@ -4,13 +4,16 @@
     <h3>user not found</h3>
   </div>
   <div v-else-if="isLoaded" class="bg-slate-50">
-    <div class="profile rounded shadow-md bg-white">
+    <div class="profile relative rounded shadow-md bg-white">
       <img :src="getImage(user.avatar)" width="100" height="100" />
+      <div v-if="!user.isLogged" class="absolute bottom-5 left-24 w-5 h-5 bg-red-600 rounded-full"></div>
+      <div v-else class="absolute bottom-5 left-24 w-5 h-5 bg-green-600 rounded-full"></div>
       <div id="details">
         <h1>{{ user.fullname }}</h1>
         <p>@{{ user.login }}</p>
         <img v-if="valid" @click="toggleError" src="../assets/add-friend.svg" width="35" height="35"/>
         <img v-else  src="../assets/friends.svg" width="35" height="35"/>
+        <p v-if="user.inGame" class="ml-10 pt-2 text-red-800">In game</p>
       </div>
     </div>
     <div id="content">
@@ -18,218 +21,56 @@
         <div id="fr">
           <h1>Friends</h1>
           <div id="pics">
-            <div class="pic">
-              <img
-                src="../assets/aabounak.jpeg"
-                alt=""
-                width="36"
-                height="36"
-              /><span></span>
-            </div>
-            <div class="pic">
-              <img
-                src="../assets/abiari.jpeg"
-                alt=""
-                width="36"
-                height="36"
-              /><span></span>
-            </div>
-            <div class="pic">
-              <img
-                src="../assets/ztaouil.jpeg"
-                alt=""
-                width="36"
-                height="36"
-              /><span></span>
-            </div>
-            <div class="pic">
-              <img
-                src="../assets/mashad.jpeg"
-                alt=""
-                width="36"
-                height="36"
-              /><span></span>
-            </div>
-            <div class="pic">
-              <img
-                src="../assets/oel-yous.jpeg"
-                alt=""
-                width="36"
-                height="36"
-              /><span></span>
-            </div>
-            <div class="pic">
-              <img
-                src="../assets/mgrissen.jpeg"
-                alt=""
-                width="36"
-                height="36"
-              /><span></span>
-            </div>
+            <router-link :to="{name : 'Users', params: {login : friend.login}}" v-for="friend in  getInfo()" :key="friend.id"><img :src="getImage(friend.avatar)" width="35" height="35" /></router-link>
           </div>
         </div>
         <div id="achiv">
-          <h1>Achievements</h1>
-          <div class="ach">
-            <div>
-              <h4>its's a rich man's world 3</h4>
-              <p>Collected 500 wallet points.</p>
+                <h1>Achievements</h1>
+                <div class="ach" v-for="achiv in getAchiv()" :key="achiv">
+                    <div>
+                        <h4>{{ achiv.title }}</h4> 
+                        <p>{{ achiv.msg }}</p>
+                    </div>
+                   <img src="../assets/achiv.png" width="50" height="54">
+                </div>
             </div>
-            <img src="../assets/achiv.png" width="50" height="54" />
-          </div>
-          <div class="ach">
-            <div>
-              <h4>its's a rich man's world 3</h4>
-              <p>Collected 500 wallet points.</p>
-            </div>
-            <img src="../assets/achiv.png" width="50" height="54" />
-          </div>
-          <div class="ach">
-            <div>
-              <h4>its's a rich man's world 3</h4>
-              <p>Collected 500 wallet points.</p>
-            </div>
-            <img src="../assets/achiv.png" width="50" height="54" />
-          </div>
-        </div>
       </aside>
-      <aside id="matchs" class="shadow-md">
-        <h1>Matching History</h1>
-        <div class="match">
-          <div class="data">
-            <img :src="getImage(user.avatar)" width="46" height="45" />
-            <div class="info">
-              <p>{{ user.fullname }}</p>
-              <p>@{{ user.login }}</p>
-            </div>
-          </div>
-          <div class="score">
-            <p>Match score</p>
-            <p>5 - 3</p>
-          </div>
-          <div class="result">
-            <p>Results</p>
-            <p>WIN</p>
-          </div>
-        </div>
-        <div class="match">
-          <div class="data">
-            <img :src="getImage(user.avatar)" width="46" height="45" />
-            <div class="info">
-              <p>{{ user.fullname }}</p>
-              <p>@{{ user.login }}</p>
-            </div>
-          </div>
-          <div class="score">
-            <p>Match score</p>
-            <p>5 - 3</p>
-          </div>
-          <div class="result">
-            <p>Results</p>
-            <p>WIN</p>
-          </div>
-        </div>
-        <div class="match">
-          <div class="data">
-            <img :src="getImage(user.avatar)" width="46" height="45" />
-            <div class="info">
-              <p>{{ user.fullname }}</p>
-              <p>@{{ user.login }}</p>
-            </div>
-          </div>
-          <div class="score">
-            <p>Match score</p>
-            <p>5 - 3</p>
-          </div>
-          <div class="result">
-            <p>Results</p>
-            <p>WIN</p>
-          </div>
-        </div>
-        <div class="match">
-          <div class="data">
-            <img :src="getImage(user.avatar)" width="46" height="45" />
-            <div class="info">
-              <p>{{ user.fullname }}</p>
-              <p>@{{ user.login }}</p>
-            </div>
-          </div>
-          <div class="score">
-            <p>Match score</p>
-            <p>5 - 3</p>
-          </div>
-          <div class="result">
-            <p>Results</p>
-            <p>WIN</p>
-          </div>
-        </div>
-        <div class="match">
-          <div class="data">
-            <img :src="getImage(user.avatar)" width="46" height="45" />
-            <div class="info">
-              <p>{{ user.fullname }}</p>
-              <p>@{{ user.login }}</p>
-            </div>
-          </div>
-          <div class="score">
-            <p>Match score</p>
-            <p>5 - 3</p>
-          </div>
-          <div class="result">
-            <p>Results</p>
-            <p>WIN</p>
-          </div>
-        </div>
-        <div class="match">
-          <div class="data">
-            <img :src="getImage(user.avatar)" width="46" height="45" />
-            <div class="info">
-              <p>{{ user.fullname }}</p>
-              <p>@{{ user.login }}</p>
-            </div>
-          </div>
-          <div class="score">
-            <p>Match score</p>
-            <p>5 - 3</p>
-          </div>
-          <div class="result">
-            <p>Results</p>
-            <p>WIN</p>
-          </div>
-        </div>
-        <div class="match">
-          <div class="data">
-            <img :src="getImage(user.avatar)" width="46" height="45" />
-            <div class="info">
-              <p>{{ user.fullname }}</p>
-              <p>@{{ user.login }}</p>
-            </div>
-          </div>
-          <div class="score">
-            <p>Match score</p>
-            <p>5 - 3</p>
-          </div>
-          <div class="result">
-            <p>Results</p>
-            <p>WIN</p>
-          </div>
-        </div>
-      </aside>
+      <aside id="matchs" class="shadow-md rounded">
+            <h1>Matching History</h1>
+            <div class="match" v-for="game in getGameInfo()" :key="game">
+                    <div class="data ">
+                        <img :src="getImage(getUserData(game.opId).avatar)" width="46" height="45">
+                        <div class="info">
+                            <p class="line-clamp-1">{{getUserData(game.opId).fullname}}</p>
+                            <p class="line-clamp-1">@{{ getUserData(game.opId).login }}</p>
+                        </div>
+                    </div>
+                    <div class="score">
+                        <p>Match score</p>
+                        <p>{{game.opScore}} - {{ game.myScore }}</p>
+                    </div>
+                    <div class="result">
+                        <p>Results</p>
+                        <p v-if="game.win">Win</p>
+                        <p v-else >Lose</p>
+                    </div>
+                </div>
+        </aside>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, watch } from "vue";
 import { onMounted, reactive } from "vue";
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 import axios, { AxiosResponse } from "axios";
 import useStore from "../store";
 
 export default defineComponent({
   name: "UserProfile",
-  props: ["login"],
+  props: ["login", "users", "games"],
   setup(props) {
     const data = reactive({
       user: {},
@@ -238,10 +79,37 @@ export default defineComponent({
       currentUser: computed(() => store.state.auth.user),
       setLoading: (e: boolean) => store.commit("config/setLoading", e),
       setMsg: (e: boolean) => store.commit('msg/setMsg', e),
-      setState: (e: boolean) => store.commit('msg/setState', e)
+      setState: (e: boolean) => store.commit('msg/setState', e),
+      error : false,
+      wins: 0
     });
+    const route = useRoute();
+    watch(
+      () => route.params.login,
+      async newLogin => {
+        await fetch("http://10.12.2.4:9000/api/users/" + newLogin)
+        .then((res) => res.json())
+        .then((userData) => {
+          data.user = userData;
+          if ((store.state.auth.user as any)?.friendList.includes((data.user as any)?.id))
+            data.valid = false;
+          if(userData === undefined)
+            data.error = true;
+          if (store.state.auth.user.login === (data.user as any)?.login) {
+            router.replace("/profile");
+          }
+        })
+        .catch((err) => data.error = true);
+        await(fetch("http://10.12.2.4:9000/api/game/score/"+ (data.user as any)?.id))
+        .then(res => res.json())
+        .then(gameData =>  gameData && (data.wins = gameData.wins) )
+        .catch(err => console.log(err.message))
+        data.isLoaded = true;
+      }
+    )
     const store = useStore();
     const router = useRouter();
+
 
     onMounted(async () => {
       await fetch("http://10.12.2.4:9000/api/users/" + props.login)
@@ -250,12 +118,18 @@ export default defineComponent({
           data.user = userData;
           if ((store.state.auth.user as any)?.friendList.includes((data.user as any)?.id))
             data.valid = false;
+          if(userData === undefined)
+            data.error = true;
           if (store.state.auth.user.login === (data.user as any)?.login) {
             router.replace("/profile");
           }
-          data.isLoaded = true;
         })
-        .catch((err) => console.log(err.message));
+        .catch((err) => data.error = true);
+        await(fetch("http://10.12.2.4:9000/api/game/score/"+ (data.user as any)?.id))
+        .then(res => res.json())
+        .then(gameData =>  gameData && (data.wins = gameData.wins) )
+        .catch(err => console.log(err.message))
+        data.isLoaded = true;
     });
 
     return data;
@@ -263,15 +137,7 @@ export default defineComponent({
   methods: {
     async toggleError() {
       this.currentUser.friendList.push(this.user.id);
-      this.user.friendList.push(this.currentUser.id);
-      const usr = this.user;
       const curUsr = this.currentUser;
-      axios
-        .put("http://10.12.2.4:9000/api/users", usr, {})
-        .then((resp: AxiosResponse) => {})
-        .catch((err) => {
-          console.log(err);
-        });
       axios
         .put("http://10.12.2.4:9000/api/users", curUsr, {})
         .then((resp: AxiosResponse) => {})
@@ -286,9 +152,58 @@ export default defineComponent({
     },
     getImage(pic: string) {
       if (pic.startsWith("https://cdn.intra.42.fr/users/"))
-        return this.user.avatar;
-      else return "../assets/" + this.user.avatar;
+        return pic;
+      else return "../assets/" + pic;
     },
+    getInfo(){
+        let arr = [];
+        this.user.friendList.forEach(element => {
+            arr.push(this.users.find((user) => user.id === element))
+        })
+        return arr;
+    },
+    getUserData(id: number) {
+            return this.users.find((user: any) => user.id === id)
+        },
+        getGameInfo() {
+            let arr = [];
+            let i  = 0;
+            this.games.forEach(element => {
+                if ((element.p1id == this.user.id || element.p2id == this.user.id ) && i<6)
+                {
+                    i++;
+                    let tmp = {gameId: 0,opId: 0, myScore: 0, opScore: 0, win: false};
+                    tmp.gameId = element.gameId;
+                    if ( element.p1id == this.user.id )
+                    {
+                        tmp.myScore = element.p1Score;
+                        tmp.opId = element.p2id;
+                        tmp.opScore = element.p2Score;
+                    }
+                    else if ( element.p2id == this.user.id )
+                    {
+                        tmp.myScore = element.p2Score;
+                        tmp.opId = element.p1id;
+                        tmp.opScore = element.p1Score;
+                    }
+                    if (tmp.myScore > tmp.opScore)
+                        tmp.win = true
+                    arr.push(tmp);
+                }
+            })
+            arr = arr.reverse();
+            return arr;
+        },
+        getAchiv(){
+          let tab = [1, 3, 5, 10, 50];
+          let arr = [];
+
+          for (let i: number = 1; i <= this.wins; i++){
+              if (tab.find(e => e === i) != undefined)
+                  arr.push({title: 'Game achievement ' + i, msg: 'winner winner chicken dinner stage '+i});
+          }
+          return arr ;
+        }
   },
 });
 </script>
@@ -365,7 +280,7 @@ export default defineComponent({
 }
 #content {
   padding: 6px;
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto 50px;
   text-align: left;
   display: flex;
@@ -388,10 +303,16 @@ export default defineComponent({
   line-height: 29px;
   color: #000000;
 }
+#pics {
+    margin: 0 8px;
+    display: flex;
+}
 #pics img {
-  border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  box-sizing: border-box;
+    margin-right: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    box-sizing: border-box;
+    height: 35px;
 }
 .pic:last-child img {
   filter: blur(2px);
@@ -460,8 +381,8 @@ export default defineComponent({
   border-radius: 7px;
 }
 #matchs {
-  width: 58%;
-  margin-left: 1%;
+  width: 55%;
+  margin-left: 4%;
   background: #ffffff;
   border-radius: 6px;
 }
@@ -489,11 +410,13 @@ export default defineComponent({
   display: flex;
   padding-left: 5px;
   padding-right: 25px;
+  width: 50%;
 }
 .data img {
   border: 1px solid rgba(0, 0, 0, 0.14);
   box-sizing: border-box;
   border-radius: 8px;
+  height: 45px;
 }
 .match p {
   margin: 0;
@@ -522,6 +445,7 @@ export default defineComponent({
   padding-top: 7px;
 }
 .score {
+  width: 30%;
   padding-right: 50px;
 }
 .score p:first-child {
@@ -533,6 +457,9 @@ export default defineComponent({
   line-height: 17px;
   text-align: center;
   color: #ffffff;
+}
+.result {
+  width: 20%;
 }
 .score p:last-child {
   font-family: "Inter";
