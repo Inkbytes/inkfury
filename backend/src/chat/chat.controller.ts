@@ -49,18 +49,13 @@ export class ChatController {
     return this.chatService.getRoom(id);
   }
 
+
+  
   @Post()
-  async createRoom(@Req() req : Request, @Body() room: RoomDto) {
+  async createRoom(@Req() req : Request, @Body() room: RoomDto) : Promise<RoomDto> {
     const currentUser = await this.checkToken(req);
     if (!currentUser) throw new ForbiddenException();
     return this.chatService.createRoom(room);
-  }
-
-  @Post(':id/join')
-  async checkPassword(@Req() req : Request, @Param('id') id: number, @Body() pwToCheck: PasswordDto) : Promise<boolean> {
-    const currentUser = await this.checkToken(req);
-    if (!currentUser) throw new ForbiddenException();
-    return this.chatService.checkPasswordValidation(id, pwToCheck);
   }
 
   @Post(':id')
@@ -70,10 +65,40 @@ export class ChatController {
     return this.chatService.updateRoom(id, roomData, currentUser);
   }
 
+  @Post(':room_id/join/:user_id')
+  async joinRoomMembers(@Req() req: Request, @Param('room_id') roomId: number, @Param('user_id') userToAdd: number, @Body() pwToCheck: PasswordDto) : Promise<boolean> {
+    const currentUser = await this.checkToken(req);
+    if (!currentUser) throw new ForbiddenException();
+    return this.chatService.joinRoomMembers(roomId, userToAdd, pwToCheck, currentUser);
+  }
+
+  @Post(':id/leave')
+  async leaveRoom(@Req() req : Request, @Param('id') id: number) {
+    const currentUser = await this.checkToken(req);
+    if (!currentUser) throw new ForbiddenException();
+    return this.chatService.leaveRoom(id, currentUser);
+  }
+
+  @Post(':room_id/mute/:user_id')
+  async muteUser(@Req() req : Request, @Param('room_id') roomId: number, @Param('user_id') userToMute: number) {
+    const currentUser = await this.checkToken(req);
+    if (!currentUser) throw new ForbiddenException();
+    return this.chatService.muteUser(roomId, userToMute, currentUser);
+  }
+
+  @Post(':room_id/block/:user_id')
+  async blockUser(@Req() req : Request, @Param('room_id') roomId: number, @Param('user_id') userToBlock: number) {
+    const currentUser = await this.checkToken(req);
+    if (!currentUser) throw new ForbiddenException();
+    return this.chatService.blockUser(roomId, userToBlock, currentUser);
+  }
+
+
+
   @Delete(':id')
   async deleteRoom(@Req() req : Request, @Param('id') id: number) {
     const currentUser = await this.checkToken(req);
     if (!currentUser) throw new ForbiddenException();
-    return this.chatService.deleteRoom(id);
+    return this.chatService.deleteRoom(id, currentUser);
   }
 }

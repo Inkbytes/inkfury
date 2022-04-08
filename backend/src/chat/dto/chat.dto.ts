@@ -29,13 +29,11 @@ export class RoomDto {
   // @IsNumber()
   // id: number;
 
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @Length(4, 10)
   name?: string;
 
-  @IsOptional()
   @IsNumber()
   owner_id?: number;
 
