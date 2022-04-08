@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { CurrentGameDto, GameDto, ScoreGameDto } from './dto/game.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
-import { UserEntity } from 'src/entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class GameService {
