@@ -44,6 +44,7 @@ export class OauthService {
   public async CreateUser(data, token : string) {
     const user = {
         'id': Number.parseInt(data.id),
+        'email': data.email,
         'fullname': data.displayname,
         'login': data.login,
         'avatar': data.image_url,
@@ -54,6 +55,8 @@ export class OauthService {
         'is2fa': false,
         'token': token,
         'blockedUsers': [],
+        'inGame': false,
+        'logged': true,
     }
     const userd = await this.repo.save(user).then((sg) => {
       return sg;

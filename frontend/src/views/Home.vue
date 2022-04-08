@@ -71,7 +71,7 @@
         ><div class="ID">
           <img src="../assets/mashad.jpeg" width="50" height="50" />
           <h2>Ashad Mohamed</h2>
-          <p>backend, UI UX and database</p>
+          <p>Bruh</p>
           <a href="https://github.com/f0rkr"
             ><img src="../assets/github.png" width="20"
           /></a></div

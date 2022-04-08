@@ -3,21 +3,14 @@ import {
   Get,
   Post,
   Put,
-  Delete,
   Param,
   Body,
   UseInterceptors,
   UploadedFile,
-  Req
 } from '@nestjs/common';
 import * as fs from 'fs';
 import {FileInterceptor} from '@nestjs/platform-express';
-import { Request, response } from 'express';
-import { IncomingMessage } from 'http';
-import { UserEntity } from 'src/entities/user.entity';
-import { Stream } from 'stream';
 import { UserDto } from './dto/add-user.dto';
-import { User } from './interfaces/user.interface';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -28,10 +21,7 @@ export class UsersController {
   getUsers() {
     return this.userService.getAll();
   }
-  @Post()
-  showdata(@Body() user : UserDto) {
-    console.log(user);
-  }
+
   @Get(':login')
   getUser(@Param('login') login : string) {
       return this.userService.getUser(login);
@@ -48,7 +38,6 @@ export class UsersController {
 
   @Put()
   updateUser(@Body() user: UserDto) {
-    console.log(user);
     return this.userService.update(user);
   }
   
@@ -59,5 +48,3 @@ export class UsersController {
     return "OK";
   }
 }
-
-// add to friendList I will send id1 and id2 --oel-ouar

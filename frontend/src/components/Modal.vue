@@ -70,6 +70,7 @@ export default defineComponent({
         save() {
             this.user.login = this.login
             this.user.is2fa = this.is2fa
+            
             if (this.imgError === false)
             {
                 const formData = new FormData();
@@ -129,6 +130,6 @@ export default defineComponent({
         background: rgba(0,0,0,0.5);
         width: 100%;
         height: 100%;
-        z-index: 1;
+        z-index: 4;
     }
 </style>

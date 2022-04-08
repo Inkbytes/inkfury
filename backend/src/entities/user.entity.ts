@@ -5,6 +5,9 @@ export class UserEntity {
   @PrimaryColumn()
   id: number;
 
+  @Column({type: 'text'})
+  email: string;
+
   @Column({ type: 'text' })
   fullname: string;
 
@@ -48,5 +51,8 @@ export class UserEntity {
 
 // logged: boolean
   @Column({ default: false})
-  logged: boolean;
+  isLogged: boolean;
+
+  @Column({select: false, nullable: true})
+  authConfirmToken: string
 }

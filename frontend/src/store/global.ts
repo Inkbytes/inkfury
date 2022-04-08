@@ -23,7 +23,7 @@ export default {
       msgState: false,
       msg: '',
       error: false,
-      signUp: false
+      signUp: false,
     }
   },
   mutations: {
@@ -39,9 +39,6 @@ export default {
     },
     setState(state: GlobalMsg, payload: boolean){
       state.msgState = payload;
-    },
-    setSingup(state: GlobalSign, payload: boolean) {
-      state.signUp = payload;
     }
   },
   actions: {}

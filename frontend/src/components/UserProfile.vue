@@ -4,13 +4,16 @@
     <h3>user not found</h3>
   </div>
   <div v-else-if="isLoaded" class="bg-slate-50">
-    <div class="profile rounded shadow-md bg-white">
+    <div class="profile relative rounded shadow-md bg-white">
       <img :src="getImage(user.avatar)" width="100" height="100" />
+      <div v-if="!user.isLogged" class="absolute bottom-5 left-24 w-5 h-5 bg-red-600 rounded-full"></div>
+      <div v-else class="absolute bottom-5 left-24 w-5 h-5 bg-green-600 rounded-full"></div>
       <div id="details">
         <h1>{{ user.fullname }}</h1>
         <p>@{{ user.login }}</p>
         <img v-if="valid" @click="toggleError" src="../assets/add-friend.svg" width="35" height="35"/>
         <img v-else  src="../assets/friends.svg" width="35" height="35"/>
+        <p v-if="user.inGame" class="ml-10 pt-2 text-red-800">In game</p>
       </div>
     </div>
     <div id="content">

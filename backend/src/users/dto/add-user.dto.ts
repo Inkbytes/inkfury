@@ -15,6 +15,7 @@ export class UserDto {
   // @IsString()
   fullname: string;
 
+  email: string;
   // @IsNotEmpty({ message: 'The user should have a login!' })
   // @IsString()
   login: string;
@@ -55,6 +56,9 @@ export class UserDto {
   // @IsNumber({}, { each: true })
   blockeUsers: number[];
 
+  authConfirmToken: string;
 
-  isFirst? : boolean;
+  isLogged: boolean;
+
+  inGame: boolean;
 }

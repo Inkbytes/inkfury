@@ -7,8 +7,7 @@ import { OauthService } from './oauth.service';
 
 @Module({    
     imports: [TypeOrmModule.forFeature([UserEntity]), JwtModule.register({
-        secret: 'secret',
-        signOptions: {expiresIn: '1d'}
+        secret: 'secret'
     })],
     controllers: [OauthController],
     providers: [OauthService],
