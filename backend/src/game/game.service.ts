@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CurrentGameEntity, GameEntity, ScoreGameEntity } from '../entities/game.entity';
 import { Repository } from 'typeorm';
 import { CurrentGameDto, GameDto, ScoreGameDto } from './dto/game.dto';
+import { JwtService } from '@nestjs/jwt';
+import { UsersService } from 'src/users/users.service';
+import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class GameService {
@@ -12,7 +15,9 @@ export class GameService {
     @InjectRepository(CurrentGameEntity)
     private readonly currentGameRepo: Repository<CurrentGameEntity>,
 	@InjectRepository(ScoreGameEntity)
-	private readonly scoreGameRepo: Repository<ScoreGameEntity>
+	private readonly scoreGameRepo: Repository<ScoreGameEntity>,
+  @InjectRepository(UserEntity) private readonly repo : Repository<UserEntity>,
+  private jwtService : JwtService
   ) {}
 
   // List completed Games
@@ -105,5 +110,20 @@ export class GameService {
   public async ModifyScore(id: number, score: ScoreGameEntity){
 	  return await this.scoreGameRepo.update({ userId: id}, score);
   }
+  public async verify(cookie: string) {
+    const data = await this.jwtService.verifyAsync(cookie).then((data) => {
+        return data;
+    })
 
+    if (!data) 
+        return false;
+    
+    const user = await this.repo.findOne({id: data['id']}).then((user) => {
+        return user;
+    });
+
+    if (!user)
+        return false;
+    return true;
+}
 }
