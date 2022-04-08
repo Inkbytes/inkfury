@@ -31,7 +31,7 @@ export class RoomDto {
 
   @IsString()
   @IsNotEmpty()
-  @Length(4, 10)
+  @Length(1, 10)
   name?: string;
 
   @IsNumber()

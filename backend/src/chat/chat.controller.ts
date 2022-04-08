@@ -126,8 +126,7 @@ export class ChatController {
       currentUser = await this.checkToken(req);
     } catch (e) {
         console.error(e);
-    }
-    if (!currentUser) throw new ForbiddenException();
+    }    if (!currentUser) throw new ForbiddenException();
     return this.chatService.blockUser(roomId, userToBlock, currentUser);
   }
 
