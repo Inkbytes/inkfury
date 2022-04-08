@@ -180,8 +180,8 @@ const queue_players = () => {
   player1.gameId = game_number;
   player2.gameId = game_number;
 
-  axios.put('http://10.12.1.6:9000/api/users', {id: current_game.p1Id, inGame: true});
-  axios.put('http://10.12.1.6:9000/api/users', {id: current_game.p2Id, inGame: true});
+  // axios.put('http://10.12.1.6:9000/api/users', {id: current_game.p1Id, inGame: true});
+  // axios.put('http://10.12.1.6:9000/api/users', {id: current_game.p2Id, inGame: true});
 
   // emit to 1or2-event
   player1.emit('1or2-event', 1);
