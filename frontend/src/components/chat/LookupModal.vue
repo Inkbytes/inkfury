@@ -42,12 +42,9 @@ export default defineComponent({
     closeModal() {
       this.toggleLookup();
     },
-    joinRoom(room: ChatRoom){
+    async joinRoom(room: ChatRoom){
       const currentRoom = this.rooms.find(e => e.id === this.currentRoomId);
-      if(room?.members.find((id) => id === this.currentUser?.id)
-        || room?.admins.find((id) => id === this.currentUser?.id)
-        || room?.owner_id === this.currentUser?.id
-      ) {
+      if(room?.members.find((id) => id === this.currentUser?.id)) {
         this.refreshInbox();
         this.socket.emit('leaveRoom', currentRoom?.name);
         this.socket.emit('joinRoom', room.name);
@@ -55,10 +52,15 @@ export default defineComponent({
         this.toggleLookup();
       }
       else {
-        
-        this.refreshInbox();
-        this.socket.emit('leaveRoom', currentRoom?.name);
-        this.addRoom(room);
+        await axios
+                .post(`http://10.12.2.4:9000/api/chat/${room.id}/join/${this.currentUser?.id}`, {}, { withCredentials: true })
+                .then(() => {
+                  this.refreshInbox();
+                  this.socket.emit('leaveRoom', currentRoom?.name);
+                  this.addRoom(room);
+                  this.$router.go('/chat')
+                })
+                .catch(err => console.log(err));
       }
       // console.log(currentRoom);
 

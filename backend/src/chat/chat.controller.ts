@@ -72,7 +72,7 @@ export class ChatController {
     return this.chatService.joinRoomMembers(roomId, userToAdd, pwToCheck, currentUser);
   }
 
-  @Post(':id/leave')
+  @Post(':id/leave') //Check if user is last member, if yes delete room from db
   async leaveRoom(@Req() req : Request, @Param('id') id: number) {
     const currentUser = await this.checkToken(req);
     if (!currentUser) throw new ForbiddenException();

@@ -38,8 +38,11 @@ export default defineComponent({
 			showInbox: computed(() => store.state.chat.showInbox),
 			hasRooms: computed(() => store.state.chat.hasRoom),
 			showCreateForm: computed(() => store.state.chat.showCreateForm),
-			roomCount: computed(() => store.state.chat.rooms.length),
+			currentUserId: computed(() => store.state.auth.user?.id),
+			rooms: computed(() => store.state.chat.rooms),
+			// roomCount: computed(() => store.state.chat.rooms.length),
 			setRooms: (data: ChatRoom[]) => store.commit('chat/userRooms', data),
+			setHasRoom: (data: boolean) => store.commit('chat/setHasRoom', data),
 			setSocket: (socket: Socket) => store.commit('chat/setSocket', socket),
 		}
 	},
@@ -52,6 +55,12 @@ export default defineComponent({
 						roomName = data.data?.[0]?.name || null;
 					})
 					.catch(err => console.log(err));
+		this.rooms.forEach(room => {
+				if ( room.members.find(e => e === this.currentUserId) !== undefined){
+					this.setHasRoom(true);
+					return;
+				}
+		})
 		// await fetch('http://10.12.2.4:9000/api/chat')
 		// 			.then(res => res.json())
 		// 			.then(data => {

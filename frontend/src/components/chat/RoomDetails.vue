@@ -5,8 +5,8 @@
     </div>
     <div class="w-full h-screen max-h p-4 overflow-y-scroll hide-scroll bg-gray-200" >
       Members
-      <div v-for="user in room.members" :key="user" >
-        <MemberBubble :userId="getUserData(user)"/>
+      <div v-for="member in members" :key="member" >
+        <MemberBubble :user="getUserData(member)" :isAdmin="isAdmin()"/>
       </div>
     </div>
   </div>
@@ -16,16 +16,17 @@
 import { computed } from '@vue/runtime-core';
 import useStore from '../../store'
 import MemberBubble from './MemberBubble.vue'
-import { ChatRoom } from '../../store/chat'
-import { User42Profile } from '@/store/auth';
+import { User42Profile } from '../../store/auth';
 export default {
   components: { MemberBubble },
   data() {
     const store = useStore();
     return {
       currentRoomId: computed(() => store.state.chat.currentRoomId),
+      currentUserId: computed(() => store.state.auth.user?.id), 
       rooms: computed(() => store.state.chat.rooms),
-      room: {} as ChatRoom | undefined,
+      members: [] as number[] | undefined,
+      admins: [] as number[] | undefined,
       users: []
     }    
   },
@@ -34,11 +35,15 @@ export default {
             .then(res => res.json())
             .then(data =>  data && (this.users = data) )
             .catch(err => console.log(err.message));
-    this.room = this.rooms.find((e) => e.id == this.currentRoomId);
+    this.members = this.rooms.find((e) => e.id === this.currentRoomId)?.members;
+    this.admins = this.rooms.find((e) => e.id === this.currentRoomId)?.admins;
   },
   methods: {
     getUserData(id: number) {
-      return this.users.find((e: User42Profile) => e.user?.id === id)
+      return this.users.find(user => user?.id === id)
+    },
+    isAdmin(){
+      return this.admins?.find(admin => admin === this.currentUserId);
     }
   }
 }

@@ -28,7 +28,7 @@
 			<!-- <Bubble /> -->
 		</div>
 		<form @submit.prevent="submitMsg" class="w-full py-3 px-3 flex items-center justify-between border-t">
-			<button type="button" class="mx-2 bg-sky-600 font-semibold text-xs text-white py-2 px-6 my-2 rounded-lg" @click="toggleLookup">Lookup Rooms</button>
+			<button type="button" class="mx-2 bg-sky-600 font-semibold text-xs text-white py-2 px-6 my-2 rounded-lg" @click="toggleLookup">Find Room</button>
 			<button type="button" class="mx-2 bg-blue-600 font-semibold text-xs text-white py-2 px-6 my-2 rounded-lg" @click="toggleShowCreateForm">Create Room</button>
 			<input placeholder="Type your message here..." class="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100 outline-none focus:text-gray-700" v-model="msg" @input="typing" >
 			<button class="outline-none focus:outline-none bg-green-600 font-semibold text-sm text-white py-2 px-4 my-2 rounded-lg" type="submit">Send</button>
@@ -143,12 +143,12 @@ export default defineComponent({
 		async leaveRoom() {
 			if (this.currentRoomId !== null)
 				await axios
-							.delete('http://10.12.2.4:9000/api/chat/' + this.currentRoomId, { withCredentials: true })
+							.post(`http://10.12.2.4:9000/api/chat/${this.currentRoomId}/leave`, {}, { withCredentials: true })
 							.then((res: AxiosResponse) => {
 								console.log(this.roomData.name + ' deleted');
 								this.leaveRoomStore(this.roomData);
 								this.roomData = {} as any;
-								this.$forceUpdate();
+								this.$router.go('/chat');
 							})
 							.catch(err => {
 								console.error(err); 
