@@ -23,6 +23,7 @@ export interface ChatConfig {
   rooms: ChatRoom[];
   currentRoomId: number | null;
   socket: Socket;
+  showLookup: boolean
 }
 
 export const key: InjectionKey<Store<ChatConfig>> = Symbol()
@@ -38,7 +39,8 @@ export default {
       hasRoom: false,
       rooms: [],
       currentRoomId: null,
-      socket: null
+      socket: null,
+      showLookup: false
     }
   },
   mutations: {
@@ -55,6 +57,9 @@ export default {
     toggleUsersList(state: ChatConfig) {
       state.showUsers = !state.showUsers;
     },
+    toggleLookup(state: ChatConfig){
+      state.showLookup = !state.showLookup
+    },
     userRooms(state: ChatConfig, data: ChatRoom[]){
       console.log(data)
       state.currentRoomId = data?.[0]?.id || null;
@@ -67,6 +72,7 @@ export default {
       state.currentRoomId = data?.id || null;
       state.socket.emit('joinRoom', data?.name);
       state.showCreateForm = false;
+      state.showLookup = false
     },
     leaveRoom(state: ChatConfig, data: ChatRoom) {
       state.rooms = state.rooms?.filter((e) => e.id !== data?.id) || [];
@@ -76,6 +82,7 @@ export default {
       state.socket.emit('joinRoom', state.rooms[0]?.name);
     },
     setCurrentRoomId(state: ChatConfig, id: number){
+      console.log(id)
       state.currentRoomId = id;
     },
     setSocket(state: ChatConfig, socket: Socket){

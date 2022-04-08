@@ -6,6 +6,7 @@
 			<Inbox v-if="showInbox && hasRooms && !showCreateForm" />
 			<CreateRoom v-else/>
 			<Loading v-if="!showInbox && hasRooms" />
+			<LookupModal v-if="showLookupModal"/>
 			<RoomDetailsWrapper />
 		</div>
         </DefaultLayout>
@@ -23,14 +24,17 @@ import useStore from '../store'
 import { ChatRoom } from '../store/chat'
 import { io, Socket } from 'socket.io-client'
 import Loading from '../components/Loading.vue'
+import axios, { AxiosResponse } from 'axios'
+import LookupModal from '../components/chat/LookupModal.vue'
 
 export default defineComponent({
 	name: 'Chat',
-	components: { DefaultLayout, Rooms, Inbox, CreateRoom, RoomDetailsWrapper, Loading },
+	components: { DefaultLayout, Rooms, Inbox, CreateRoom, RoomDetailsWrapper, Loading, LookupModal },
 	data() {
 		const store = useStore();
 		return {
 			store,
+			showLookupModal: computed(() => store.state.chat.showLookup),
 			showInbox: computed(() => store.state.chat.showInbox),
 			hasRooms: computed(() => store.state.chat.hasRoom),
 			showCreateForm: computed(() => store.state.chat.showCreateForm),
@@ -41,14 +45,21 @@ export default defineComponent({
 	},
 	async mounted() { //fetch current user rooms, public rooms and friends list
 		let roomName = null;
-		await fetch('http://10.12.2.4:9000/api/chat')
-					.then(res => res.json())
-					.then(data => {
-						this.setRooms(data);
-						roomName = data?.[0]?.name || null;
-						// TODO: Join default room
+		await axios
+					.get('http://10.12.2.4:9000/api/chat', { withCredentials: true })
+					.then((data: AxiosResponse) => {
+						this.setRooms(data.data);
+						roomName = data.data?.[0]?.name || null;
 					})
-					.catch(err => console.log(err))
+					.catch(err => console.log(err));
+		// await fetch('http://10.12.2.4:9000/api/chat')
+		// 			.then(res => res.json())
+		// 			.then(data => {
+		// 				this.setRooms(data);
+		// 				roomName = data?.[0]?.name || null;
+		// 				// TODO: Join default room
+		// 			})
+		// 			.catch(err => console.log(err))
 		const socket = io('http://10.12.2.4:7000/chat');
 		this.setSocket(socket);
 		socket.emit('joinRoom', roomName);

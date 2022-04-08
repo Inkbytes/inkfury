@@ -1,124 +1,49 @@
 <template>
-  <div class="flex flex-col">
-    <div class="font-semibold text-xl py-4">Admins</div>
-    <Menu as="div" class="relative inline-block text-left">
-      <div>
-        <MenuButton
-          class="flex flex-row justify-center items-center w-full"
-        >
-          <img class="inline-block h-10 w-10 rounded-full object-cover" src="https://images.pexels.com/photos/3777931/pexels-photo-3777931.jpeg?auto=compress&amp;cs=tinysrgb&amp;h=750&amp;w=1260" alt="username">
-          <span class="ml-2 font-bold text-2xl text-gray-600">Ali</span>
-          <span class="inline-block connected text-green-500 ml-2">
-            <svg width="6" height="6">
-              <circle cx="3" cy="3" r="3" fill="currentColor"></circle>
-            </svg>
-          </span>
-        </MenuButton>
+  <div class="w-full flex flex-col justify-between" style="max-height: calc(100vh - 8rem)">
+    <div class="flex items-center bg-gray-100 justify-center pl-3 h-20">
+      <span class="block ml-2 font-bold text-2xl text-gray-600">Room Details</span>
+    </div>
+    <div class="w-full h-screen max-h p-4 overflow-y-scroll hide-scroll bg-gray-200" >
+      Members
+      <div v-for="user in room.members" :key="user" >
+        <MemberBubble :userId="getUserData(user)"/>
       </div>
-
-      <transition
-        enter-active-class="transition duration-100 ease-out"
-        enter-from-class="transform scale-95 opacity-0"
-        enter-to-class="transform scale-100 opacity-100"
-        leave-active-class="transition duration-75 ease-in"
-        leave-from-class="transform scale-100 opacity-100"
-        leave-to-class="transform scale-95 opacity-0"
-      >
-        <MenuItems
-          class="absolute w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-        >
-          <div class="px-1 py-1">
-            <MenuItem v-slot="{ active }">
-              <button
-                :class="[
-                  active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                  'group flex rounded-md items-center w-full px-2 py-2 text-sm',
-                ]"
-              >
-                <EditIcon
-                  :active="active"
-                  class="w-5 h-5 mr-2 text-violet-400"
-                  aria-hidden="true"
-                />
-                Edit
-              </button>
-            </MenuItem>
-            <MenuItem v-slot="{ active }">
-              <button
-                :class="[
-                  active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                  'group flex rounded-md items-center w-full px-2 py-2 text-sm',
-                ]"
-              >
-                <DuplicateIcon
-                  :active="active"
-                  class="w-5 h-5 mr-2 text-violet-400"
-                  aria-hidden="true"
-                />
-                Duplicate
-              </button>
-            </MenuItem>
-          </div>
-          <div class="px-1 py-1">
-            <MenuItem v-slot="{ active }">
-              <button
-                :class="[
-                  active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                  'group flex rounded-md items-center w-full px-2 py-2 text-sm',
-                ]"
-              >
-                <ArchiveIcon
-                  :active="active"
-                  class="w-5 h-5 mr-2 text-violet-400"
-                  aria-hidden="true"
-                />
-                Archive
-              </button>
-            </MenuItem>
-            <MenuItem v-slot="{ active }">
-              <button
-                :class="[
-                  active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                  'group flex rounded-md items-center w-full px-2 py-2 text-sm',
-                ]"
-              >
-                <MoveIcon
-                  :active="active"
-                  class="w-5 h-5 mr-2 text-violet-400"
-                  aria-hidden="true"
-                />
-                Move
-              </button>
-            </MenuItem>
-          </div>
-
-          <div class="px-1 py-1">
-            <MenuItem v-slot="{ active }">
-              <button
-                :class="[
-                  active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                  'group flex rounded-md items-center w-full px-2 py-2 text-sm',
-                ]"
-              >
-                <DeleteIcon
-                  :active="active"
-                  class="w-5 h-5 mr-2 text-violet-400"
-                  aria-hidden="true"
-                />
-                Delete
-              </button>
-            </MenuItem>
-          </div>
-        </MenuItems>
-      </transition>
-    </Menu>
+    </div>
   </div>
 </template>
 
-<script setup>
-  import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-  // import { defineComponent } from 'vue'
-  // export default defineComponent({
-  //   components: { Menu, MenuButton, MenuItems, MenuItem }
-  // })
+<script lang="ts">
+import { computed } from '@vue/runtime-core';
+import useStore from '../../store'
+import MemberBubble from './MemberBubble.vue'
+import { ChatRoom } from '../../store/chat'
+import { User42Profile } from '@/store/auth';
+export default {
+  components: { MemberBubble },
+  data() {
+    const store = useStore();
+    return {
+      currentRoomId: computed(() => store.state.chat.currentRoomId),
+      rooms: computed(() => store.state.chat.rooms),
+      room: {} as ChatRoom | undefined,
+      users: []
+    }    
+  },
+  async mounted() {
+    await fetch("http://10.12.2.4:9000/api/users")
+            .then(res => res.json())
+            .then(data =>  data && (this.users = data) )
+            .catch(err => console.log(err.message));
+    this.room = this.rooms.find((e) => e.id == this.currentRoomId);
+  },
+  methods: {
+    getUserData(id: number) {
+      return this.users.find((e: User42Profile) => e.user?.id === id)
+    }
+  }
+}
 </script>
+
+<style>
+
+</style>

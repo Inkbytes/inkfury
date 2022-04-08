@@ -45,10 +45,13 @@ export default defineComponent({
     return {
       roomData: {
         name: '',
-        password: '',
+        password: null as string | null,
         owner_id: computed(() => store.state.auth.user?.id).value,
         visibility: 'public',
+        members: [computed(() => store.state.auth.user?.id).value],
+        admins: [computed(() => store.state.auth.user?.id).value],
       },
+      errMsg: '',
       badPwd: false,
       addRoom: (data: ChatRoom) => store.commit('chat/addRoom', data),
     }
@@ -58,16 +61,18 @@ export default defineComponent({
       //Validation: uppercase, lowercase, special char length 8->24
       const pwd = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[#?!@$%^&*-]).{8,24}$/;
       const formData = this.roomData;
-      if(!formData.password.length || formData.password.match(pwd)){
+      if( formData.password === null || (formData.password !== null && formData.password.match(pwd))){
         this.badPwd = false;
+        this.errMsg = '';
         const headers = { 'Content-Type': 'application/json' }
         await axios
-                .post(`http://10.12.2.4:9000/api/chat`, formData, { headers } )
+                .post(`http://10.12.2.4:9000/api/chat`, formData, { headers, withCredentials: true } )
                 .then((res: AxiosResponse) => {
                   this.addRoom(res.data);
                 })
-                .catch(err => {
-                  console.log(err)
+                .catch((err: AxiosResponse) => {
+                  // this.errMsg = err
+                  console.log(err.data)
                 })
       }
       else
