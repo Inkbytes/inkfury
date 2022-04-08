@@ -8,7 +8,8 @@ import {
   Body,
   UseInterceptors,
   UploadedFile,
-  Req
+  Req,
+  UnauthorizedException
 } from '@nestjs/common';
 import * as fs from 'fs';
 import {FileInterceptor} from '@nestjs/platform-express';
@@ -25,30 +26,47 @@ export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   @Get()
-  getUsers() {
+  getUsers(@Req() req : Request) {
+    const cookie = req.cookies['jwt'];
+
+    if (!cookie || !this.userService.verify(cookie))
+        throw new UnauthorizedException();
     return this.userService.getAll();
   }
-  @Post()
-  showdata(@Body() user : UserDto) {
-    console.log(user);
-  }
+
   @Get(':login')
-  getUser(@Param('login') login : string) {
-      return this.userService.getUser(login);
+  getUser(@Param('login') login : string, @Req() req : Request) {
+    const cookie = req.cookies['jwt'];
+
+    if (!cookie || !this.userService.verify(cookie))
+        throw new UnauthorizedException();
+    return this.userService.getUser(login);
   }
+
   @Get(':id')
-  getUserById(@Param('id') id : number) {
-      return this.userService.getUserById(id);
+  getUserById(@Param('id') id : number, @Req() req : Request) {
+    const cookie = req.cookies['jwt'];
+
+    if (!cookie || !this.userService.verify(cookie))
+        throw new UnauthorizedException();
+    return this.userService.getUserById(id);
   }
 
   @Post('')
-  add(@Body() adduser: UserDto) {
+  add(@Body() adduser: UserDto, @Req() req : Request) {
+    const cookie = req.cookies['jwt'];
+
+    if (!cookie || !this.userService.verify(cookie))
+        throw new UnauthorizedException();
     return this.userService.create(adduser);
   }
 
   @Put()
-  updateUser(@Body() user: UserDto) {
-    console.log(user);
+  updateUser(@Body() user: UserDto, @Req() req : Request) {
+    const cookie = req.cookies['jwt'];
+
+    if (!cookie || !this.userService.verify(cookie))
+        throw new UnauthorizedException();
     return this.userService.update(user);
   }
   

@@ -3,11 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../../src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserDto } from './dto/add-user.dto';
-import { User } from './interfaces/user.interface';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity) private readonly repo: Repository<UserEntity>,
+    private jwtService : JwtService
   ) {}
 
   public async getAll() {
@@ -36,4 +37,21 @@ export class UsersService {
     return await this.repo.update({ id: user.id }, user);
     return {"Error": "Login already exist."};
   }
+
+  public async verify(cookie: string) {
+    const data = await this.jwtService.verifyAsync(cookie).then((data) => {
+        return data;
+    })
+
+    if (!data) 
+        return false;
+    
+    const user = await this.repo.findOne({id: data['id']}).then((user) => {
+        return user;
+    });
+
+    if (!user)
+        return false;
+    return true;
+}
 }
