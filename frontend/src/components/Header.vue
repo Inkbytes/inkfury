@@ -58,7 +58,7 @@
           hover:bg-green-400
           duration-300
         "
-        href="http://10.12.2.4:9000/api/login"
+        href="http://10.12.1.4:9000/api/login"
         >login</a
       >
       <a
@@ -115,10 +115,10 @@ export default defineComponent({
   methods: {
     async logout() {
       this.load = true
-      window.location.href = 'http://10.12.2.4:9000/api/login/logout'
+      window.location.href = 'http://10.12.1.4:9000/api/login/logout'
       this.user.isLogged = false
       const usr = this.user
-      await axios.post("http://10.12.2.4:9000/api/users", usr, {withCredentials: true})
+      await axios.post("http://10.12.1.4:9000/api/users", usr, {withCredentials: true})
     },
     deleteAllCookies() {
       var cookies = document.cookie.split(";");
@@ -134,7 +134,7 @@ export default defineComponent({
   async mounted() {
     await axios
       .post(
-        "http://10.12.2.4:9000/api/login/login_verification",
+        "http://10.12.1.4:9000/api/login/login_verification",
         {},
         { withCredentials: true }
       )
@@ -153,7 +153,7 @@ export default defineComponent({
       }); 
       const usr = this.user;
       if (this.user && this.user.is2fa && !this.user.isLogged) {
-        axios.post("http://10.12.2.4:9000/api/tfa/verify", usr, {withCredentials: true})
+        axios.post("http://10.12.1.4:9000/api/tfa/verify", usr, {withCredentials: true})
         .then((resp: AxiosResponse) =>{
              this.email = resp.data
         })
@@ -162,7 +162,7 @@ export default defineComponent({
       else {
         this.user.isLogged = true
         const usr = this.user
-        axios.post("http://10.12.2.4:9000/api/users", usr, {withCredentials: true})
+        axios.post("http://10.12.1.4:9000/api/users", usr, {withCredentials: true})
       }
   },
 });

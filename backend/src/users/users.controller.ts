@@ -23,46 +23,45 @@ export class UsersController {
 
   @Get()
   getUsers(@Req() req : Request) {
-    const cookie = req.cookies['jwt'];
-    if (!cookie || !this.userService.verify(cookie))
-        throw new UnauthorizedException();
+    // const cookie = req.cookies['jwt'];
+    // if (!cookie || !this.userService.verify(cookie))
+    //     throw new UnauthorizedException();
     return this.userService.getAll();
   }
 
+
   @Get(':login')
   getUser(@Param('login') login : string, @Req() req : Request) {
-    const cookie = req.cookies['jwt'];
+    // const cookie = req.cookies['jwt'];
 
-    if (!cookie || !this.userService.verify(cookie))
-        throw new UnauthorizedException();
+    // if (!cookie || !this.userService.verify(cookie))
+    //     throw new UnauthorizedException();
     return this.userService.getUser(login);
   }
 
   @Get(':id')
   getUserById(@Param('id') id : number, @Req() req : Request) {
-    const cookie = req.cookies['jwt'];
+    // const cookie = req.cookies['jwt'];
 
-    if (!cookie || !this.userService.verify(cookie))
-        throw new UnauthorizedException();
+    // if (!cookie || !this.userService.verify(cookie))
+    //     throw new UnauthorizedException();
     return this.userService.getUserById(id);
   }
 
   @Post('')
   add(@Body() adduser , @Req() req : Request) {
-    const cookie = req.cookies['jwt'];
+    // const cookie = req.cookies['jwt'];
 
-    if (!cookie || !this.userService.verify(cookie))
-        throw new UnauthorizedException();
+    // if (!cookie || !this.userService.verify(cookie))
+    //     throw new UnauthorizedException();
     return this.userService.create(adduser);
   }
 
   @Put()
   updateUser(@Body() user, @Req() req : Request) {
     const cookie = req.cookies['jwt'];
-    console.log(user);
     // if (!cookie || !this.userService.verify(cookie))
     //     throw new UnauthorizedException();
-
     return this.userService.update(user);
   }
   

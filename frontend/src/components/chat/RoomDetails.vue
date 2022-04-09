@@ -29,7 +29,7 @@ export default {
     }    
   },
   async mounted() {
-    await fetch("http://10.12.2.4:9000/api/users", {credentials: 'include'})
+    await fetch("http://10.12.1.4:9000/api/users", {credentials: 'include'})
             .then(res => res.json())
             .then(data =>  data && (this.users = data) )
             .catch(err => console.log(err.message));

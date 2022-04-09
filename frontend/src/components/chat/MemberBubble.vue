@@ -68,20 +68,20 @@ export default {
     async block(){
       console.log(this.room)
       await axios
-              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/block/${this.user.id}`, {}, { withCredentials: true })
+              .post(`http://10.12.1.4:9000/api/chat/${this.room.id}/block/${this.user.id}`, {}, { withCredentials: true })
               .then()
               .catch(err => console.log(err));
     },
     async mute(){
       await axios
-              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/mute/${this.user.id}`, {}, { withCredentials: true })
+              .post(`http://10.12.1.4:9000/api/chat/${this.room.id}/mute/${this.user.id}`, {}, { withCredentials: true })
               .then()
               .catch(err => console.log(err));
       this.$router.go("/chat");
     },
     async unmute(){
       await axios
-              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/unmute/${this.user.id}`, {}, { withCredentials: true })
+              .post(`http://10.12.1.4:9000/api/chat/${this.room.id}/unmute/${this.user.id}`, {}, { withCredentials: true })
               .then()
               .catch(err => console.log(err));
       this.$router.go("/chat");
@@ -90,7 +90,7 @@ export default {
       this.$router.push('/profile/' + this.user.login)
     },
     startGame(){
-
+		// this.socket.emit()
     },
   }
 }

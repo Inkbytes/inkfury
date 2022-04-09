@@ -1,16 +1,5 @@
 <template>
 	<DefaultLayout>
-		<div v-if="!bgClicked" id="swiper">
-			<h1>Choose your game background</h1>
-			<Swiper id="choose-bg" :slides-per-view="2" :space-between="0" :autoplay="{ delay: 1500, disableOnInteraction: false }">
-				<SwiperSlide><img src="https://i.imgur.com/eWtfMME.png" width="500" height="400" @click="play('https://i.imgur.com/eWtfMME.png')"></SwiperSlide>
-				<SwiperSlide><img src="https://i.imgur.com/0HztdXb.jpeg" width="500" height="400" @click="play('https://i.imgur.com/0HztdXb.jpeg')"></SwiperSlide>
-				<SwiperSlide><img src="https://i.imgur.com/M7YCfZS.jpeg" width="500" height="400" @click="play('https://i.imgur.com/M7YCfZS.jpeg')"></SwiperSlide>
-				<SwiperSlide><img src="https://i.imgur.com/njI0p7U.jpeg" width="500" height="400" @click="play('https://i.imgur.com/njI0p7U.jpeg')"></SwiperSlide>
-			</Swiper>
-			<button class="m-5" @click="play('none')">continue with Default</button>
-			<router-link :to="{name: 'Games'}"><button>Watch games</button></router-link>
-		</div>
 		<div id="p5Canvas"></div>
 	</DefaultLayout>
 </template>
@@ -33,7 +22,7 @@
 
 	SwiperCore.use([Autoplay]);
 	export default defineComponent({
-		name: 'Game',
+		name: 'customGame',
 		components: { DefaultLayout, Swiper, SwiperSlide },
 		data() {
 			const store = useStore();
@@ -50,8 +39,13 @@
 				this.socket.disconnect();
 			}
 		},
+		mounted() {
+			play();
+		},
 		methods: {
-			play(image: any) {
+			play() {
+				const gameId = this.$route.params.gameid;
+
 				this.bgClicked = true;
 				let put_flag = false;
 				let current_game_delete_flag = false;
@@ -64,7 +58,8 @@
 				console.log(my_user);
 				let socket: any = io("http://" + ip_addr + ":9000");
 				this.socket = socket;
-				socket.player = 1;
+				socket.gameId = gameId;	
+				socket.userId = this.user.userId;			
 
 				const lobby = Symbol('lobby');
 				const pregame = Symbol('pregame');
@@ -103,12 +98,8 @@
 					// }
 
 					p.setup = () => {
-						if (image !== "none")
-							imag = p.loadImage(image);
-						else
-							imag = 0;
 						p.createCanvas(WIDTH, HEIGHT);
-						p.background(imag);
+						p.background(0);
 					};
 
 					let key_event = () => {
@@ -376,8 +367,8 @@
 						}
 					});
 					setTimeout(() => {
-
-						socket.emit('registerme-event', my_user.id);
+						// private queuee
+						socket.emit('privatequeuee-event', {gameId: gameId, userId: my_user.id});
 						console.log(`connected with id ${socket.id}`);
 					}, 2000)
 				})
@@ -393,38 +384,8 @@
 </script>
 
 <style scoped>
-	#p5Canvas,
-	#choose-bg {
+	#p5Canvas{
 		max-width: 1200px;
 		margin: 0 auto 50px;
-	}
-
-	#swiper img {
-		cursor: pointer;
-	}
-
-	button {
-		color: white;
-		background: #0069FF;
-		border: none;
-		border-radius: 15px;
-		padding: 10px 15px;
-		font-family: 'Inter';
-		font-style: normal;
-		font-weight: bold;
-		font-size: 18px;
-		line-height: 40px;
-		text-align: center;
-		cursor: pointer;
-	}
-
-	h1 {
-		margin: 20px 0;
-		font-family: "Inter";
-		font-style: normal;
-		font-weight: bold;
-		font-size: 24px;
-		line-height: 29px;
-		color: #0a2a42;
 	}
 </style>

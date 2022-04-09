@@ -6,6 +6,7 @@ import Chat from '../views/chat.vue'
 import Users from '../views/profiles/Users.vue'
 import Games from '../views/games.vue'
 import spectateGame from '../views/spectateGame.vue'
+import customGame from '../views/customgamePage.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -44,6 +45,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'spectateGame',
     component: spectateGame,
     props: true
+  },
+  {
+	  path: '/custom-game/:gameid',
+	  name: 'customGame',
+	  component: customGame,
+	  props: true
   }
 ]
 

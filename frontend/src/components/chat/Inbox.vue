@@ -79,10 +79,10 @@ export default defineComponent({
 		async currentRoomId(newVal) {
 			if(this.currentRoomId !== null) {
 				await axios	
-							.get('http://10.12.2.4:9000/api/chat/' + this.currentRoomId, { withCredentials: true })
+							.get('http://10.12.1.4:9000/api/chat/' + this.currentRoomId, { withCredentials: true })
 							.then((data: AxiosResponse) => this.roomData = data.data)
 							.catch(err => console.log(err));
-				// await fetch('http://10.12.2.4:9000/api/chat/' + this.currentRoomId)
+				// await fetch('http://10.12.1.4:9000/api/chat/' + this.currentRoomId)
 				// 		.then(res => res.json())
 				// 		.then(data => this.roomData = data)
 				// 		.catch(err => console.log(err));
@@ -92,10 +92,10 @@ export default defineComponent({
 	async mounted() {
 			if(this.currentRoomId !== null) {
 				await axios	
-							.get('http://10.12.2.4:9000/api/chat/' + this.currentRoomId, { withCredentials: true })
+							.get('http://10.12.1.4:9000/api/chat/' + this.currentRoomId, { withCredentials: true })
 							.then((data: AxiosResponse) => this.roomData = data.data)
 							.catch(err => console.log(err));
-				// await fetch('http://10.12.2.4:9000/api/chat/' + this.currentRoomId)
+				// await fetch('http://10.12.1.4:9000/api/chat/' + this.currentRoomId)
 				// 		.then(res => res.json())
 				// 		.then(data => this.roomData = data)
 				// 		.catch(err => console.log(err));
@@ -128,7 +128,7 @@ export default defineComponent({
 	},
 	methods: {
 		// async checkMuted(){
-		// 	await fetch('http://10.12.2.4:9000/api/chat/' + this.currentUser?.id, {credentials: 'include'})
+		// 	await fetch('http://10.12.1.4:9000/api/chat/' + this.currentUser?.id, {credentials: 'include'})
 		// 					.then(res => res.json())
     //         	.then(data =>  data && (this.roomData = data) )
     //         	.catch(err => console.log(err.message));
@@ -154,7 +154,7 @@ export default defineComponent({
 		async leaveRoom() {
 			if (this.currentRoomId !== null)
 				await axios
-							.post(`http://10.12.2.4:9000/api/chat/${this.currentRoomId}/leave`, {}, { withCredentials: true })
+							.post(`http://10.12.1.4:9000/api/chat/${this.currentRoomId}/leave`, {}, { withCredentials: true })
 							.then((res: AxiosResponse) => {
 								console.log(this.roomData.name + ' deleted');
 								this.leaveRoomStore(this.roomData);

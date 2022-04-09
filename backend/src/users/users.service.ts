@@ -31,30 +31,30 @@ export class UsersService {
   }
 
   public async update(user) {
-    console.log(user);
+    // console.log(user);
     const userd = await this.repo.findOne({id : user.id}).then((user) => {
       return user;
     });
-    console.log(userd);
+    // console.log(userd);
     if ((userd !== undefined && userd.id === user.id) || userd === undefined)
       return await this.repo.update({ id: userd.id }, user);
     return {"Error": "Login already exist."};
   }
 
-  public async verify(cookie: string) {
-    const data = await this.jwtService.verifyAsync(cookie).then((data) => {
-        return data;
-    })
+//   public async verify(cookie: string) {
+//     const data = await this.jwtService.verifyAsync(cookie).then((data) => {
+//         return data;
+//     })
 
-    if (!data) 
-        return false;
+//     if (!data) 
+//         return false;
     
-    const user = await this.repo.findOne({id: data['id']}).then((user) => {
-        return user;
-    });
+//     const user = await this.repo.findOne({id: data['id']}).then((user) => {
+//         return user;
+//     });
 
-    if (!user)
-        return false;
-    return true;
-}
+//     if (!user)
+//         return false;
+//     return true;
+// }
 }
