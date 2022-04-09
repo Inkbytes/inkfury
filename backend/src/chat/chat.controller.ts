@@ -37,59 +37,96 @@ export class ChatController {
 
   @Get()
   async getRooms(@Req() req : Request) {
-    const currentUser = await this.checkToken(req);
+    let currentUser;
+    try {
+      currentUser = await this.checkToken(req);
+    } catch (e) {
+        console.error(e);
+    }
     if (!currentUser) throw new ForbiddenException();
     return this.chatService.getRooms();
   }
   
   @Get(':id')
   async getRoom(@Req() req : Request, @Param('id') id: number) {
-    const currentUser = await this.checkToken(req);
+    let currentUser;
+    try {
+      currentUser = await this.checkToken(req);
+    } catch (e) {
+        console.error(e);
+    }
     if (!currentUser) throw new ForbiddenException();
     return this.chatService.getRoom(id);
   }
-
-
   
   @Post()
   async createRoom(@Req() req : Request, @Body() room: RoomDto) : Promise<RoomDto> {
-    const currentUser = await this.checkToken(req);
+    let currentUser;
+    try {
+      currentUser = await this.checkToken(req);
+    } catch (e) {
+        console.error(e);
+    }
     if (!currentUser) throw new ForbiddenException();
     return this.chatService.createRoom(room);
   }
 
   @Post(':id')
   async updateRoom(@Req() req : Request, @Param('id') id: number, @Body() roomData: RoomDto) {
-    const currentUser = await this.checkToken(req);
+    let currentUser;
+    try {
+      currentUser = await this.checkToken(req);
+    } catch (e) {
+        console.error(e);
+    }
     if (!currentUser) throw new ForbiddenException();
     return this.chatService.updateRoom(id, roomData, currentUser);
   }
 
   @Post(':room_id/join/:user_id')
   async joinRoomMembers(@Req() req: Request, @Param('room_id') roomId: number, @Param('user_id') userToAdd: number, @Body() pwToCheck: PasswordDto) : Promise<boolean> {
-    const currentUser = await this.checkToken(req);
+    let currentUser;
+    try {
+      currentUser = await this.checkToken(req);
+    } catch (e) {
+        console.error(e);
+    }
     if (!currentUser) throw new ForbiddenException();
     return this.chatService.joinRoomMembers(roomId, userToAdd, pwToCheck, currentUser);
   }
 
   @Post(':id/leave') //Check if user is last member, if yes delete room from db
   async leaveRoom(@Req() req : Request, @Param('id') id: number) {
-    const currentUser = await this.checkToken(req);
+    let currentUser;
+    try {
+      currentUser = await this.checkToken(req);
+    } catch (e) {
+        console.error(e);
+    }
     if (!currentUser) throw new ForbiddenException();
     return this.chatService.leaveRoom(id, currentUser);
   }
 
   @Post(':room_id/mute/:user_id')
   async muteUser(@Req() req : Request, @Param('room_id') roomId: number, @Param('user_id') userToMute: number) {
-    const currentUser = await this.checkToken(req);
+    let currentUser;
+    try {
+      currentUser = await this.checkToken(req);
+    } catch (e) {
+        console.error(e);
+    }
     if (!currentUser) throw new ForbiddenException();
     return this.chatService.muteUser(roomId, userToMute, currentUser);
   }
 
   @Post(':room_id/block/:user_id')
   async blockUser(@Req() req : Request, @Param('room_id') roomId: number, @Param('user_id') userToBlock: number) {
-    const currentUser = await this.checkToken(req);
-    if (!currentUser) throw new ForbiddenException();
+    let currentUser;
+    try {
+      currentUser = await this.checkToken(req);
+    } catch (e) {
+        console.error(e);
+    }    if (!currentUser) throw new ForbiddenException();
     return this.chatService.blockUser(roomId, userToBlock, currentUser);
   }
 
@@ -97,7 +134,12 @@ export class ChatController {
 
   @Delete(':id')
   async deleteRoom(@Req() req : Request, @Param('id') id: number) {
-    const currentUser = await this.checkToken(req);
+    let currentUser;
+    try {
+      currentUser = await this.checkToken(req);
+    } catch (e) {
+        console.error(e);
+    }
     if (!currentUser) throw new ForbiddenException();
     return this.chatService.deleteRoom(id, currentUser);
   }

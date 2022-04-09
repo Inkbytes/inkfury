@@ -21,6 +21,8 @@ export class ChatService {
   constructor(
     @InjectRepository(RoomEntity)
     private readonly roomRepo: Repository<RoomEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepo : Repository<UserEntity>,
     private jwtService : JwtService,
   ) {}
 
@@ -41,12 +43,6 @@ export class ChatService {
   /*-----------------|
   |--- UPDATE -------|
   |---------------- */
-  private async checkPasswordValidation(pwToCheck: PasswordDto, roomPw: string) {
-    const isMatch = await bcrypt.compare(pwToCheck.password, roomPw);
-    return (isMatch);
-  }
-
-
   public async updateRoom(id: number, roomData: RoomDto, currentUser : UserEntity) {
     const room = await this.roomRepo.findOne(id);
     if (!room) throw new NotFoundException();
@@ -63,22 +59,30 @@ export class ChatService {
     return await this.roomRepo.update(id, roomData);
   }
 
+  private async addUser(roomd: RoomDto, roomId: number, userToAdd: number, userd: UserEntity) {
+    roomd.members.push(userToAdd);
+    userd.roomList.push(roomId);
+    await this.roomRepo.update(roomId, roomd);
+    await this.userRepo.update(userd.id, userd);
+    return true;
+  }
+
   public async joinRoomMembers(roomId: number, userToAdd: number, pwToCheck: PasswordDto, currentUser: UserEntity) : Promise<boolean> {
     const roomd = await this.roomRepo.findOne(roomId);
-    if (!roomd) throw new NotFoundException("Room was not found");
+    const userd = await this.userRepo.findOne(currentUser.id);
+    if (!roomd || !userd) throw new NotFoundException();
+    if (roomd.blocked_members?.includes(parseInt(userToAdd.toString()))) {
+      throw new UnauthorizedException("User blocked from room!");
+    }
     if (roomd.members?.includes(parseInt(userToAdd.toString())))
       return true;
     if (!roomd.pw_protected) {
-      roomd.members.push(userToAdd);
-      await this.roomRepo.update(roomId, roomd);
-      return true;
+      return this.addUser(roomd, roomId, userToAdd, userd);
     }
     if (roomd.pw_protected && pwToCheck.password) {
       if (!await bcrypt.compare(pwToCheck.password, roomd.password))
         throw new UnauthorizedException("Wrong password");
-      roomd.members.push(userToAdd);
-      await this.roomRepo.update(roomId, roomd);
-      return true;
+      return this.addUser(roomd, roomId, userToAdd, userd);
     }
     else {
       throw new BadRequestException("Body required");
@@ -92,6 +96,9 @@ export class ChatService {
       if (roomd.members[i] === currentUser.id) { 
           roomd.members.splice(i, 1);
           await this.roomRepo.update(id, roomd);
+          if (roomd.members.length == 0) {
+            await this.roomRepo.delete({ id: id });
+          }
           return true;
       }
     }
@@ -122,7 +129,13 @@ export class ChatService {
       return true;
     if (roomd.members?.includes(parseInt(userToBlock.toString()))) {
         roomd.blocked_members.push(userToBlock);
-        await this.roomRepo.update(roomId, roomd);
+        for (var i = 0; i < roomd.members.length; i++) {
+          if (roomd.members[i] === parseInt(userToBlock.toString())) {
+            roomd.members.splice(i, 1);
+            await this.roomRepo.update(roomId, roomd);
+            break ;
+          }
+        }
         return true;
     }
     throw new NotFoundException("User was not found");
