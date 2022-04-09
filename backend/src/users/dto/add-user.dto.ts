@@ -13,28 +13,28 @@ export class UserDto {
 
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
   // @IsString()
-  fullname: string;
+  fullname?: string;
 
-  email: string;
+  email?: string;
   // @IsNotEmpty({ message: 'The user should have a login!' })
   // @IsString()
-  login: string;
+  login?: string;
 
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
   // @IsString()
-  avatar: string;
+  avatar?: string;
 
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
   // @IsNumber({}, { each: true })
-  friendList: number[];
+  friendList?: number[];
 
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
   // @IsNumber({}, { each: true })
-  roomList: number[];
+  roomList?: number[];
 
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
   // @IsBoolean()
-  status: boolean;
+  status?: boolean;
 
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
   // @IsInt()
@@ -46,23 +46,21 @@ export class UserDto {
 
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
   // @IsBoolean()
-  is2fa: boolean;
+  is2fa?: boolean;
 
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
   // @IsString()
-  token: string;
+  token?: string;
 
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
   // @IsNumber({}, { each: true })
-  blockeUsers: number[];
+  blockeUsers?: number[];
 
-  authConfirmToken: string;
+  authConfirmToken?: string;
 
-  isLogged: boolean;
+  isLogged?: boolean;
 
-  inGame: boolean;
+  inGame?: boolean;
 
-  isFirst: boolean;
-
-
+  isFirst?: boolean;
 }

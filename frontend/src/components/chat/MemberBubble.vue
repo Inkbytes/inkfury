@@ -74,20 +74,20 @@ export default {
       if(this.user?.id === this.room.owner_id)
         return;
       await axios
-              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/block/${this.user.id}`, {}, { withCredentials: true })
+              .post(`http://10.12.1.4:9000/api/chat/${this.room.id}/block/${this.user.id}`, {}, { withCredentials: true })
               .then()
               .catch(err => console.log(err));
     },
     async mute(){
       await axios
-              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/mute/${this.user.id}`, {}, { withCredentials: true })
+              .post(`http://10.12.1.4:9000/api/chat/${this.room.id}/mute/${this.user.id}`, {}, { withCredentials: true })
               .then()
               .catch(err => console.log(err));
       this.$router.go("/chat");
     },
     async unmute(){
       await axios
-              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/unmute/${this.user.id}`, {}, { withCredentials: true })
+              .post(`http://10.12.1.4:9000/api/chat/${this.room.id}/unmute/${this.user.id}`, {}, { withCredentials: true })
               .then()
               .catch(err => console.log(err));
       this.$router.go("/chat");
@@ -99,7 +99,7 @@ export default {
       
     },
     startGame(){
-
+		// this.socket.emit()
     },
   }
 }

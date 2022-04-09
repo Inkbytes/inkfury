@@ -49,7 +49,7 @@ export default defineComponent({
 	async mounted() { //fetch current user rooms, public rooms and friends list
 		let roomName = null;
 		await axios
-					.get('http://10.12.2.4:9000/api/chat', { withCredentials: true })
+					.get('http://10.12.1.4:9000/api/chat', { withCredentials: true })
 					.then((data: AxiosResponse) => {
 						this.setRooms(data.data);
 						roomName = data.data?.[0]?.name || null;
@@ -61,7 +61,7 @@ export default defineComponent({
 					return;
 				}
 		});
-		// await fetch('http://10.12.2.4:9000/api/chat')
+		// await fetch('http://10.12.1.4:9000/api/chat')
 		// 			.then(res => res.json())
 		// 			.then(data => {
 		// 				this.setRooms(data);
@@ -69,7 +69,7 @@ export default defineComponent({
 		// 				// TODO: Join default room
 		// 			})
 		// 			.catch(err => console.log(err))
-		const socket = io('http://10.12.2.4:7000/chat');
+		const socket = io('http://10.12.1.4:7000/chat');
 		this.setSocket(socket);
 		// socket.emit('joinRoom', roomName);
 	}
