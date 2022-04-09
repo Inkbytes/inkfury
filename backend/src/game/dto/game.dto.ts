@@ -1,17 +1,38 @@
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+  MaxLength,
+  Matches
+} from 'class-validator';
+
 class GameDto {
+  @IsNumber()
   gameId: number;
+  @IsOptional()
+  @IsNumber()
   p1id: number;
+  @IsOptional()
+  @IsNumber()
   p2id: number;
+  @IsOptional()
+  @IsNumber()
   p1Score: number;
+  @IsOptional()
+  @IsNumber()
   p2Score: number;
 }
-class CurrentGameDto {
-  gameId: number;
-  p1id?: number;
-  p2id?: number;
-}
+
 class ScoreGameDto{
+  @IsNumber()
 	userId: number;
+  @IsOptional()
+  @IsNumber()
 	wins: number;
 }
-export { GameDto, CurrentGameDto, ScoreGameDto };
+export { GameDto, ScoreGameDto };

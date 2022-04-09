@@ -4,65 +4,81 @@ import {
   IsString,
   IsNumber,
   IsBoolean,
+  IsOptional,
+  IsEmail,
 } from 'class-validator';
 
 export class UserDto {
-  // @IsNotEmpty({ message: 'The user should have an id!' })
-  // @IsInt()
+  @IsNumber()
   id: number;
 
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
-  // @IsString()
-  fullname: string;
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  fullname?: string;
 
-  email: string;
-  // @IsNotEmpty({ message: 'The user should have a login!' })
-  // @IsString()
-  login: string;
+  @IsOptional()
+  @IsEmail()
+  email?: string;
 
-  // @IsNotEmpty({ message: 'The user should have a fullname!' })
-  // @IsString()
-  avatar: string;
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  login?: string;
 
-  // @IsNotEmpty({ message: 'The user should have a fullname!' })
-  // @IsNumber({}, { each: true })
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  avatar?: string;
+
+  @IsOptional()
+  @IsNumber({}, { each: true })
   friendList: number[];
 
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
-  // @IsNumber({}, { each: true })
-  roomList: number[];
+  @IsOptional()
+  @IsNumber({}, { each: true })
+  roomList?: number[];
 
-  // @IsNotEmpty({ message: 'The user should have a fullname!' })
-  // @IsBoolean()
+  @IsOptional()
+  @IsBoolean()
   status: boolean;
 
   // @IsNotEmpty({ message: 'The user should have a fullname!' })
-  // @IsInt()
+  @IsOptional()
+  @IsNumber()
   statsId?: number;
 
-  // @IsNotEmpty({ message: 'The user should have a fullname!' })
-  // @IsInt()
+  @IsOptional()
+  @IsNumber()
   matchHistoryId?: number;
 
-  // @IsNotEmpty({ message: 'The user should have a fullname!' })
-  // @IsBoolean()
-  is2fa: boolean;
+  @IsOptional()
+  @IsBoolean()
+  is2fa?: boolean;
 
-  // @IsNotEmpty({ message: 'The user should have a fullname!' })
-  // @IsString()
-  token: string;
+  @IsOptional()
+  @IsNumber()
+  token?: string;
 
-  // @IsNotEmpty({ message: 'The user should have a fullname!' })
-  // @IsNumber({}, { each: true })
-  blockeUsers: number[];
+  @IsOptional()
+  @IsNumber({}, { each: true })
+  blockeUsers?: number[];
 
-  authConfirmToken: string;
+  @IsOptional()
+  @IsString()
+  authConfirmToken?: string;
 
-  isLogged: boolean;
+  @IsOptional()
+  @IsBoolean()
+  isLogged?: boolean;
 
-  inGame: boolean;
+  @IsOptional()
+  @IsBoolean()
+  inGame?: boolean;
 
-  isFirst: boolean;
-
-
+  @IsOptional()
+  @IsBoolean()
+  isFirst?: boolean;
 }
