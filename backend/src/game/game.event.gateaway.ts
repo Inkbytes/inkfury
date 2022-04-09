@@ -65,8 +65,8 @@ export class GameGateway
 	  let current_game = game_array.find(e => e.gameId === client.gameId);
     if (!clients) return;
     if (current_game){  
-      axios.put('http://10.12.1.4:9000/api/users', {id: current_game.p1Id, inGame: false}, {withCredentials: true});
-      axios.put('http://10.12.1.4:9000/api/users', {id: current_game.p2Id, inGame: false}, {withCredentials: true});
+      axios.put('http://10.12.2.4:9000/api/users', {id: current_game.p1Id, inGame: false}, {withCredentials: true});
+      axios.put('http://10.12.2.4:9000/api/users', {id: current_game.p2Id, inGame: false}, {withCredentials: true});
       let idx = game_array.indexOf(current_game);
       game_array.splice(idx, 1);
     }
@@ -124,7 +124,7 @@ export class GameGateway
 	  if (current_game != undefined && current_game.posted === 0){
 		  // post
 		  axios
-		  .post('http://10.12.1.4:9000/api/game/completed', {
+		  .post('http://10.12.2.4:9000/api/game/completed', {
 			  gameId: current_game.gameId,
 			  p1id: current_game.p1Id,
 			  p2id: current_game.p2Id,
@@ -136,10 +136,10 @@ export class GameGateway
 
 		let winnerId = (current_game.p1Score > current_game.p2Score) ? current_game.p1Id : current_game.p2Id;
 	
-		const res =  await axios.get('http://10.12.1.4:9000/api/game/score/'+winnerId);
+		const res =  await axios.get('http://10.12.2.4:9000/api/game/score/'+winnerId);
 		if (res.data.userId === undefined){
 			axios
-			.post('http://10.12.1.4:9000/api/game/score', {
+			.post('http://10.12.2.4:9000/api/game/score', {
 				userId: winnerId,
 				wins: 1,
 			})
@@ -147,15 +147,15 @@ export class GameGateway
 			.catch( err => { console.log(err)})
 		}else{
 			axios
-			.put('http://10.12.1.4:9000/api/game/score/'+res.data.userId,
+			.put('http://10.12.2.4:9000/api/game/score/'+res.data.userId,
 			{
 				wins: res.data.wins + 1,
 			})
 			.then ( (resp) => console.log('gut-2'))
 			.catch (err => {console.log(err)})
 		}
-    axios.put('http://10.12.1.4:9000/api/users', {id: current_game.p1Id, inGame: false}, {withCredentials: true});
-	  axios.put('http://10.12.1.4:9000/api/users', {id: current_game.p2Id, inGame: false}, {withCredentials: true});
+    axios.put('http://10.12.2.4:9000/api/users', {id: current_game.p1Id, inGame: false}, {withCredentials: true});
+	  axios.put('http://10.12.2.4:9000/api/users', {id: current_game.p2Id, inGame: false}, {withCredentials: true});
 		let idx = game_array.indexOf(current_game);
 		game_array.splice(idx, 1);
 		// console.log(game_array);
@@ -198,9 +198,9 @@ export class GameGateway
 		game_array.push(current_game);
 		private_queue.splice(private_queue.findIndex(e => e.gameId === client.gameId), 1);
 
-		axios.put('http://10.12.1.4:9000/api/users', {id: p1sock.userId, inGame: true})
+		axios.put('http://10.12.2.4:9000/api/users', {id: p1sock.userId, inGame: true})
 		.catch( err => console.log(err));
-		axios.put('http://10.12.1.4:9000/api/users', {id: client.userId, inGame: true})
+		axios.put('http://10.12.2.4:9000/api/users', {id: client.userId, inGame: true})
 		.catch( err => console.log(err));   
 
 		p1sock.emit('1or2-event', 1);
@@ -221,9 +221,9 @@ const queue_players = () => {
   player1.gameId = game_number;
   player2.gameId = game_number;
 
-  axios.put('http://10.12.1.4:9000/api/users', {id: player1.userId, inGame: true})
+  axios.put('http://10.12.2.4:9000/api/users', {id: player1.userId, inGame: true})
   .catch( err => console.log(err));
-  axios.put('http://10.12.1.4:9000/api/users', {id: player2.userId, inGame: true})
+  axios.put('http://10.12.2.4:9000/api/users', {id: player2.userId, inGame: true})
   .catch( err => console.log(err));                                                                                                                                                                                            
 
   // emit to 1or2-event

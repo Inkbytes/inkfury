@@ -33,7 +33,7 @@ export default defineComponent({
 		play() {
 			this.bgClicked = true
 
-			const ip_addr = '10.12.1.4';
+			const ip_addr = '10.12.2.4';
 
 			const socket = io("http://"+ip_addr+":9000");
 

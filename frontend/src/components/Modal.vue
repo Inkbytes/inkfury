@@ -78,7 +78,7 @@ export default defineComponent({
                 formData.append('file' , this.images)
                 const headers = { 'Content-Type': 'multipart/form-data' };
                 axios
-                    .post(`http://10.12.1.4:9000/api/users/image/${imageName}`, formData, { headers })
+                    .post(`http://10.12.2.4:9000/api/users/image/${imageName}`, formData, { headers })
                     .then(() => {
                         
                         });
@@ -87,7 +87,7 @@ export default defineComponent({
             this.user.isFirst = true;
             const usr = this.user
             axios
-                .put("http://10.12.1.4:9000/api/users", usr, { withCredentials: true })
+                .put("http://10.12.2.4:9000/api/users", usr, { withCredentials: true })
                 .then(async (resp:AxiosResponse) => {
                     if (resp.data.Error !== undefined) {
                         this.login = this.currLogin

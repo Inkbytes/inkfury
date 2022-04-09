@@ -74,7 +74,7 @@ export default defineComponent({
         this.errMsg = '';
         const headers = { 'Content-Type': 'application/json' }
         await axios
-                .post(`http://10.12.1.4:9000/api/chat`, formData, { headers, withCredentials: true } )
+                .post(`http://10.12.2.4:9000/api/chat`, formData, { headers, withCredentials: true } )
                 .then((res: AxiosResponse) => {
                   this.addRoom(res.data);
                   this.setHasRoom(true);

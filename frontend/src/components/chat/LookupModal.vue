@@ -2,7 +2,7 @@
   <div id="backdrop" class="w-screen h-screen" @click.self="closeModal">
     <div class="modal h-screen w-1/6 overflow-y-scroll hide-scroll" style="max-height: calc(100vh - 8rem - 100px)">
       <div v-if="showPwdInput">
-        <input type="password" placeholder="Enter password..." v-model="password" @keyup.enter="checkPwd">
+        <input class="border-2 rounded-lg border-gray-500 py-3 px-3" type="password" placeholder="Enter password..." v-model="password" @keyup.enter="checkPwd">
       </div>
       <ul v-else class="flex flex-col w-full">
 			  <li class="w-full flex flow-row items-center border-b hover:border-0 rounded-2xl" v-for="room in rooms" :key="room.id">
@@ -53,7 +53,7 @@ export default defineComponent({
       const currentRoom = this.rooms.find(e => e.id === this.currentRoomId);
       const pwd = this.password
       await axios
-              .post(`http://10.12.1.4:9000/api/chat/${this.room.id}/join/${this.currentUser?.id}`, { password: pwd }, { withCredentials: true })
+              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/join/${this.currentUser?.id}`, { password: pwd }, { withCredentials: true })
               .then(async () => {
                 this.refreshInbox();
                 if(currentRoom?.name !== undefined)
@@ -94,7 +94,7 @@ export default defineComponent({
         }
         else {
           await axios
-                .post(`http://10.12.1.4:9000/api/chat/${room.id}/join/${this.currentUser?.id}`, {}, { withCredentials: true })
+                .post(`http://10.12.2.4:9000/api/chat/${room.id}/join/${this.currentUser?.id}`, {}, { withCredentials: true })
                 .then(() => {
                   this.refreshInbox();
                   if(currentRoom?.name !== undefined)

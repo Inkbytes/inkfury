@@ -15,6 +15,7 @@ import { PasswordDto, RoomDto } from './dto/chat.dto';
 import { Request } from "express";
 import { UserEntity } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { emit } from 'process';
 
 @Injectable()
 export class ChatService {
@@ -135,6 +136,20 @@ export class ChatService {
       }
     }
     throw new NotFoundException("User was not found");
+  }
+
+  public async makeAdmin(roomId: number, user: number, currentUser: UserEntity) {
+    const roomd = await this.roomRepo.findOne(roomId);
+    if (!roomd) throw new NotFoundException("Room was not found");
+    if (currentUser.id !== roomd.owner_id)
+      throw new UnauthorizedException("User not owner");
+    if (roomd.admins.find(e => e === user) === undefined) {
+      roomd.admins.push(user);
+      await this.roomRepo.update(roomId, roomd);
+      return true;
+    }
+      
+    throw new NotFoundException("User already an admin");
   }
 
   public async blockUser(roomId: number, userToBlock: number, currentUser: UserEntity) {

@@ -34,12 +34,12 @@ export default defineComponent({
             this.user.isLogged = true
             const pin = this.code
             const usr = this.user
-            axios.post("http://10.12.1.4:9000/api/tfa", {code : pin}, {withCredentials: true})
+            axios.post("http://10.12.2.4:9000/api/tfa", {code : pin}, {withCredentials: true})
             .then(async (resp : AxiosResponse) => {
                 if (resp.data) {
                     this.setMsg('verification successful!');
                     this.setState(true);
-                    axios.post("http://10.12.1.4:9000/api/users", usr, {withCredentials: true})
+                    axios.post("http://10.12.2.4:9000/api/users", usr, {withCredentials: true})
                     this.closeModal();
                     await new Promise(r => setTimeout(r, 2000));
                     this.setState(false)
@@ -50,7 +50,7 @@ export default defineComponent({
                     this.setError(true)
                     await new Promise(r => setTimeout(r, 2000));
                     this.setState(false)
-                    window.location.href = 'http://10.12.1.4:9000/api/login/logout'
+                    window.location.href = 'http://10.12.2.4:9000/api/login/logout'
                 }
             })
         }    

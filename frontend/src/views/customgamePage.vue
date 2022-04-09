@@ -54,7 +54,7 @@
 
 
 				const my_user = this.user;
-				const ip_addr = '10.12.1.4';
+				const ip_addr = '10.12.2.4';
 				console.log(my_user);
 				let socket: any = io("http://" + ip_addr + ":9000");
 				this.socket = socket;

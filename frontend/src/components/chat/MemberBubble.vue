@@ -26,8 +26,8 @@
             <MenuItem v-slot="{ active }">
               <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block w-full text-left px-4 py-2 text-sm cursor-pointer']">Start Game</a>
             </MenuItem>
-            <MenuItem v-slot="{ active }" v-if="isOwner">
-              <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block w-full text-left px-4 py-2 text-sm cursor-pointer']">Set As Admin</a>
+            <MenuItem v-slot="{ active }" v-if="isOwner && !isSetAdmin()">
+              <a @click="setAsAdmin()" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block w-full text-left px-4 py-2 text-sm cursor-pointer']">Set As Admin</a>
             </MenuItem>
           </div>
         </MenuItems>
@@ -65,6 +65,9 @@ export default {
         return;
       return this.room.muted_members.find((id: number) => id === this.user.id) !== undefined;
     },
+    isSetAdmin() {
+      return this.room.admins.find((id: number) => id === this.user.id) !== undefined;
+    },
     getImage(pic: string) {
       if (pic?.startsWith("https://cdn.intra.42.fr/users/"))
         return pic;
@@ -74,20 +77,20 @@ export default {
       if(this.user?.id === this.room.owner_id)
         return;
       await axios
-              .post(`http://10.12.1.4:9000/api/chat/${this.room.id}/block/${this.user.id}`, {}, { withCredentials: true })
+              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/block/${this.user.id}`, {}, { withCredentials: true })
               .then()
               .catch(err => console.log(err));
     },
     async mute(){
       await axios
-              .post(`http://10.12.1.4:9000/api/chat/${this.room.id}/mute/${this.user.id}`, {}, { withCredentials: true })
+              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/mute/${this.user.id}`, {}, { withCredentials: true })
               .then()
               .catch(err => console.log(err));
       this.$router.go("/chat");
     },
     async unmute(){
       await axios
-              .post(`http://10.12.1.4:9000/api/chat/${this.room.id}/unmute/${this.user.id}`, {}, { withCredentials: true })
+              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/unmute/${this.user.id}`, {}, { withCredentials: true })
               .then()
               .catch(err => console.log(err));
       this.$router.go("/chat");
@@ -95,8 +98,12 @@ export default {
     visitProfile(){
       this.$router.push('/profile/' + this.user.login)
     },
-    setAsAdmin(){
-      
+    async setAsAdmin(){
+      await axios
+              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/make_admin/${this.user.id}`, {}, { withCredentials: true })
+              .then()
+              .catch(err => console.log(err));
+      this.$router.go("/chat");
     },
     startGame(){
 		// this.socket.emit()

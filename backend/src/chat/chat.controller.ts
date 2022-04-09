@@ -131,6 +131,18 @@ export class ChatController {
     return this.chatService.unmuteUser(roomId, userToUnmute, currentUser);
   }
 
+  @Post(':room_id/make_admin/:user_id')
+  async makeAdmin(@Req() req : Request, @Param('room_id') roomId: number, @Param('user_id') user: number) {
+    let currentUser;
+    try {
+      currentUser = await this.checkToken(req);
+    } catch (e) {
+        console.error(e);
+    }
+    if (!currentUser) throw new ForbiddenException();
+    return this.chatService.makeAdmin(roomId, user, currentUser);
+  }
+
   @Post(':room_id/block/:user_id')
   async blockUser(@Req() req : Request, @Param('room_id') roomId: number, @Param('user_id') userToBlock: number) {
     let currentUser;
