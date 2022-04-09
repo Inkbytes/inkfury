@@ -86,6 +86,11 @@ export class ChatGateway
   }
   @SubscribeMessage('logId')
   logId(client: Socket, id: number) {
-    mapper.push({userId: id, socketId: client.id});
+    let found = mapper.find(e => e.userId === id);
+
+	if (!found)
+		mapper.push({userId: id, socketId: client.id});
+	else
+		found.socketId = client.id;
   }
 }

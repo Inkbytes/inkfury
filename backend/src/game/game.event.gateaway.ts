@@ -25,6 +25,8 @@ let game_array: any[] = [];
 
 let mapper: any[] = [];
 
+let quickie: number = 0;
+
 @WebSocketGateway({ cors: true })
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -65,8 +67,8 @@ export class GameGateway
 	  let current_game = game_array.find(e => e.gameId === client.gameId);
     if (!clients) return;
     if (current_game){  
-      axios.put('http://10.12.2.4:9000/api/users', {id: current_game.p1Id, inGame: false}, {withCredentials: true});
-      axios.put('http://10.12.2.4:9000/api/users', {id: current_game.p2Id, inGame: false}, {withCredentials: true});
+      axios.put('http://10.12.1.4:9000/api/users', {id: current_game.p1Id, inGame: false}, {withCredentials: true});
+      axios.put('http://10.12.1.4:9000/api/users', {id: current_game.p2Id, inGame: false}, {withCredentials: true});
       let idx = game_array.indexOf(current_game);
       game_array.splice(idx, 1);
     }
@@ -124,7 +126,7 @@ export class GameGateway
 	  if (current_game != undefined && current_game.posted === 0){
 		  // post
 		  axios
-		  .post('http://10.12.2.4:9000/api/game/completed', {
+		  .post('http://10.12.1.4:9000/api/game/completed', {
 			  gameId: current_game.gameId,
 			  p1id: current_game.p1Id,
 			  p2id: current_game.p2Id,
@@ -136,10 +138,10 @@ export class GameGateway
 
 		let winnerId = (current_game.p1Score > current_game.p2Score) ? current_game.p1Id : current_game.p2Id;
 	
-		const res =  await axios.get('http://10.12.2.4:9000/api/game/score/'+winnerId);
+		const res =  await axios.get('http://10.12.1.4:9000/api/game/score/'+winnerId);
 		if (res.data.userId === undefined){
 			axios
-			.post('http://10.12.2.4:9000/api/game/score', {
+			.post('http://10.12.1.4:9000/api/game/score', {
 				userId: winnerId,
 				wins: 1,
 			})
@@ -147,15 +149,15 @@ export class GameGateway
 			.catch( err => { console.log(err)})
 		}else{
 			axios
-			.put('http://10.12.2.4:9000/api/game/score/'+res.data.userId,
+			.put('http://10.12.1.4:9000/api/game/score/'+res.data.userId,
 			{
 				wins: res.data.wins + 1,
 			})
 			.then ( (resp) => console.log('gut-2'))
 			.catch (err => {console.log(err)})
 		}
-    axios.put('http://10.12.2.4:9000/api/users', {id: current_game.p1Id, inGame: false}, {withCredentials: true});
-	  axios.put('http://10.12.2.4:9000/api/users', {id: current_game.p2Id, inGame: false}, {withCredentials: true});
+    axios.put('http://10.12.1.4:9000/api/users', {id: current_game.p1Id, inGame: false}, {withCredentials: true});
+	  axios.put('http://10.12.1.4:9000/api/users', {id: current_game.p2Id, inGame: false}, {withCredentials: true});
 		let idx = game_array.indexOf(current_game);
 		game_array.splice(idx, 1);
 		// console.log(game_array);
@@ -176,20 +178,22 @@ export class GameGateway
   @SubscribeMessage('privatequeuee-event')
   privatequeueeHandler(client: any, data: any): void{
 	//
+	quickie += 1;
 	client.gameId = data.gameId;
 	client.userId = data.userId;
 	
 	client.join('room-'+client.gameId);
-	const clients = io.sockets.adapter.rooms.get('room-' + client.gameId);
+	// const clients = io.sockets.adapter.rooms.get('room-' + client.gameId);
 
-	if (clients.length === 1){
+	console.log(quickie);
+	if (quickie === 1){
 		let current_game = new Game(client.gameId);
 		current_game.p1Id = client.userId;
 		private_queue.push(current_game);
 		mapper.push(client);
 	}
 
-	if (clients.length === 2){
+	if (quickie === 2){
 // queue them mfs
 		let current_game = private_queue.find(e => e.gameId === client.gameId);
 		current_game.p2Id = client.userId;
@@ -198,13 +202,15 @@ export class GameGateway
 		game_array.push(current_game);
 		private_queue.splice(private_queue.findIndex(e => e.gameId === client.gameId), 1);
 
-		axios.put('http://10.12.2.4:9000/api/users', {id: p1sock.userId, inGame: true})
+		axios.put('http://10.12.1.4:9000/api/users', {id: p1sock.userId, inGame: true})
 		.catch( err => console.log(err));
-		axios.put('http://10.12.2.4:9000/api/users', {id: client.userId, inGame: true})
+		axios.put('http://10.12.1.4:9000/api/users', {id: client.userId, inGame: true})
 		.catch( err => console.log(err));   
 
 		p1sock.emit('1or2-event', 1);
 		client.emit('1or2-event', 2);
+
+		quickie = 0;
 	}
   }
 }
@@ -221,9 +227,9 @@ const queue_players = () => {
   player1.gameId = game_number;
   player2.gameId = game_number;
 
-  axios.put('http://10.12.2.4:9000/api/users', {id: player1.userId, inGame: true})
+  axios.put('http://10.12.1.4:9000/api/users', {id: player1.userId, inGame: true})
   .catch( err => console.log(err));
-  axios.put('http://10.12.2.4:9000/api/users', {id: player2.userId, inGame: true})
+  axios.put('http://10.12.1.4:9000/api/users', {id: player2.userId, inGame: true})
   .catch( err => console.log(err));                                                                                                                                                                                            
 
   // emit to 1or2-event

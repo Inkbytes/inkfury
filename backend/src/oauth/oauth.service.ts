@@ -16,10 +16,10 @@ export class OauthService {
       method: "POST",
       data: {
         "grant_type": "authorization_code",
-        "client_id": "bcf55a604c8a500225dcade725cb60dd33b9487917ee2688696f8ca6dbb6d600",
-        "client_secret": "cc95c0ab85b2f2e47fd977db9f90f589531857dd7d938e5c84f589feca729da8",
+        "client_id": "1d7e497d8b0a14becedd483d22da705fcc45f4f654abe411fde8e63bf3d38cc7",
+        "client_secret": "f6f01052d3bc27f01d83b0f2edbe99d2196ddac6f9b1714760cb9de889403f27",
         "code": `${code}`,
-        "redirect_uri": "http://10.12.2.4:9000/api/login/intra/redirect",
+        "redirect_uri": "http://10.12.1.4:9000/api/login/intra/redirect",
       }
     }).then((resp) => {
       return resp.data["access_token"];

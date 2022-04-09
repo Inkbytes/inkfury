@@ -53,7 +53,7 @@ export default defineComponent({
       const currentRoom = this.rooms.find(e => e.id === this.currentRoomId);
       const pwd = this.password
       await axios
-              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/join/${this.currentUser?.id}`, { password: pwd }, { withCredentials: true })
+              .post(`http://10.12.1.4:9000/api/chat/${this.room.id}/join/${this.currentUser?.id}`, { password: pwd }, { withCredentials: true })
               .then(async () => {
                 this.refreshInbox();
                 if(currentRoom?.name !== undefined)
@@ -94,7 +94,7 @@ export default defineComponent({
         }
         else {
           await axios
-                .post(`http://10.12.2.4:9000/api/chat/${room.id}/join/${this.currentUser?.id}`, {}, { withCredentials: true })
+                .post(`http://10.12.1.4:9000/api/chat/${room.id}/join/${this.currentUser?.id}`, {}, { withCredentials: true })
                 .then(() => {
                   this.refreshInbox();
                   if(currentRoom?.name !== undefined)

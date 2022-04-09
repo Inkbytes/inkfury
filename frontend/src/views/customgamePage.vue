@@ -54,7 +54,7 @@
 
 
 				const my_user = this.user;
-				const ip_addr = '10.12.2.4';
+				const ip_addr = '10.12.1.4';
 				console.log(my_user);
 				let socket: any = io("http://" + ip_addr + ":9000");
 				this.socket = socket;
@@ -67,7 +67,7 @@
 				const postgame = Symbol('postgame');
 				const quitgame = Symbol('quitgame');
 
-				let game_state = pregame;
+				let game_state = lobby;
 
 				let player_number = 0;
 				const maxWIDTH = 1200;
@@ -122,9 +122,25 @@
 						}
 					}
 
+					let d_lobby = () => {
+						// draw lobby
+						g_tmp_flag = false;
+						quitflag = 0;
+						put_flag = false;
+						current_game_delete_flag = false;
+						game_post_flag = false;
+						postdb_flag = false;
+
+						p.background(0);
+						p.stroke(1);
+						p.textSize(30);
+						p.fill('white');
+						p.text('Lobby', WIDTH / 2, HEIGHT / 2);
+					}
+
 					let d_pregame = () => {
 						// draw pregame
-						p.background(imag);
+						p.background(0);
 						p.stroke(1);
 						p.textSize(30);
 						p.fill('white');
@@ -142,7 +158,7 @@
 
 					let d_game = () => {
 						// draw game components
-						p.background(imag);
+						p.background(0);
 						p.stroke(1);
 						p.textSize(10);
 						p.text(player_number, 10, 10);
@@ -170,7 +186,7 @@
 
 					let d_postgame = () => {
 						// draw postgame
-						p.background(imag);
+						p.background(0);
 						p.stroke(1);
 						p.textSize(30);
 						p.fill('white');
@@ -193,7 +209,7 @@
 					let d_quitgame = () => {
 						// draw quitgame
 						// console.log('d_quitgame');
-						p.background(imag);
+						p.background(0);
 						p.stroke(1);
 						p.textSize(30);
 
@@ -289,11 +305,13 @@
 						HEIGHT = (window.innerHeight < maxHEIGHT) ? window.innerHeight : maxHEIGHT;
 						WIDTH = (window.innerWidth < maxWIDTH) ? window.innerWidth : maxWIDTH;
 						p.resizeCanvas(WIDTH, HEIGHT);
-						p.background(imag);
+						p.background(0);
 					};
 
 					p.draw = function () {
-						if (game_state === pregame)
+						if (game_state === lobby)
+							d_lobby();
+						else if (game_state === pregame)
 							d_pregame();
 						else if (game_state === game)
 							d_game();
