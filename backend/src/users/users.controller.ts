@@ -59,7 +59,8 @@ export class UsersController {
 
   @Put()
   updateUser(@Body() user, @Req() req : Request) {
-    const cookie = req.cookies['jwt'];
+	console.log(user);
+    // const cookie = req.cookies['jwt'];
     // if (!cookie || !this.userService.verify(cookie))
     //     throw new UnauthorizedException();
     return this.userService.update(user);
@@ -68,7 +69,7 @@ export class UsersController {
   @Post('/image/:imageName')
   @UseInterceptors(FileInterceptor('file'))
   getImage(@Param('imageName') imageName : string, @UploadedFile() file: Express.Multer.File) {
-    fs.writeFileSync("/Users/oel-ouar/Desktop/hamid/frontend/public/assets/"+imageName, file.buffer);
+    fs.writeFileSync(`${process.cwd()}/../frontend/public/assets/`+imageName, file.buffer);
     return "OK";
   }
 }

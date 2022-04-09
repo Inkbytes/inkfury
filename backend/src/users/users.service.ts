@@ -31,11 +31,9 @@ export class UsersService {
   }
 
   public async update(user) {
-    // console.log(user);
     const userd = await this.repo.findOne({id : user.id}).then((user) => {
       return user;
     });
-    // console.log(userd);
     if ((userd !== undefined && userd.id === user.id) || userd === undefined)
       return await this.repo.update({ id: userd.id }, user);
     return {"Error": "Login already exist."};

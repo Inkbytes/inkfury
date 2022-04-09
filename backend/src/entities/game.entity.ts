@@ -6,16 +6,16 @@ class GameEntity {
   gameId: number;
 
   @Column({ type: 'int'})
-  p1id: number;
+  p1id?: number;
 
   @Column()
-  p2id: number;
+  p2id?: number;
 
   @Column()
-  p1Score: number;
+  p1Score?: number;
 
   @Column()
-  p2Score: number;
+  p2Score?: number;
 }
 
 
@@ -24,8 +24,8 @@ class ScoreGameEntity{
   @PrimaryColumn()
   userId: number;
 
-  @Column()
-  wins: number;
+  @Column({default: 0})
+  wins?: number;
 }
 
 export { GameEntity, ScoreGameEntity };

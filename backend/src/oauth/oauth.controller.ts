@@ -72,8 +72,8 @@ export class OauthController {
     } catch (e) {
       throw new UnauthorizedException();
     }
-  
   }
+  
   @Post('/login_verification')
   async loginVerification(@Req() req : Request, @Res() res : Response, @Headers() headers) : Promise<any> {
     const cookie = req.cookies['jwt'];

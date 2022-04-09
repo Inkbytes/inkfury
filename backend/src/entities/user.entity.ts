@@ -6,53 +6,53 @@ export class UserEntity {
   id: number;
 
   @Column({type: 'text', default: ''})
-  email: string;
+  email?: string;
 
   @Column({ type: 'text' })
-  fullname: string;
+  fullname?: string;
 
   @Column({ type: 'text' })
-  login: string;
+  login?: string;
 
   @Column({ type: 'text', default: '' })
-  avatar: string;
+  avatar?: string;
 
   @Column('int', { array: true, default: [] })
-  friendList: number[];
+  friendList?: number[];
 
   @Column('int', { array: true, default: [] })
-  roomList: number[];
+  roomList?: number[];
 
   // Change this to enum type maybe
   @Column({ default: false })
-  status: boolean;
+  status?: boolean;
 
   @Column()
-  statsId: number;
+  statsId?: number;
 
   @Column({ default: 0 })
-  matchHistoryId: number;
+  matchHistoryId?: number;
 
   @Column({ default: false })
-  is2fa: boolean;
+  is2fa?: boolean;
 
   @Column({ type: 'varchar', default: '' })
-  token: string;
+  token?: string;
 
   @Column({ type: 'boolean', default: false})
-  isFirst: boolean;
+  isFirst?: boolean;
 
   @Column('int', { array: true, default: [] })
-  blockedUsers: number[];
+  blockedUsers?: number[];
 
   // in_game: boolean 
   @Column({ default: false})
-  inGame: boolean;
+  inGame?: boolean;
 
 // logged: boolean
   @Column({ default: false})
-  isLogged: boolean;
+  isLogged?: boolean;
 
   @Column({select: false, nullable: true})
-  authConfirmToken: string
+  authConfirmToken?: string
 }

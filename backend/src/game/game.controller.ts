@@ -56,6 +56,9 @@ export class GameController {
 	  @Body() score: ScoreGameDto,
 	  @Param('id') id: number,
   ){
+	  console.log("**********");
+	  console.log(score);
+	  console.log("**********");
 	  return await this.gameService.ModifyScore(id, score);
   }
 
