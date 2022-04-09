@@ -56,7 +56,7 @@ export default defineComponent({
 					})
 					.catch(err => console.log(err));
 		this.rooms.forEach(room => {
-				if ( room.members.find(e => e === this.currentUserId) !== undefined){
+				if ( room.members.find(e => e === this.currentUserId) !== undefined) {
 					this.setHasRoom(true);
 					return;
 				}
@@ -71,7 +71,7 @@ export default defineComponent({
 		// 			.catch(err => console.log(err))
 		const socket = io('http://10.12.2.4:7000/chat');
 		this.setSocket(socket);
-		socket.emit('joinRoom', roomName);
+		// socket.emit('joinRoom', roomName);
 	}
 	// watch: {
 	// 	roomCount(newVal, oldVal) {

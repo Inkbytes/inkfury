@@ -57,7 +57,8 @@ export default defineComponent({
 			if (id === this.currentRoomId && !this.showCreateForm) return;
 			const clickedRoom = this.rooms.find((room) => room.id === id);
 			this.currentRoomName = this.rooms.find((room) => room.id === this.currentRoomId)?.name;
-			this.socket.emit('leaveRoom', this.currentRoomName);
+			if(this.currentRoomName !== undefined)
+				this.socket.emit('leaveRoom', this.currentRoomName);
 			this.currentRoomName = name;
 			if(clickedRoom?.muted_members.length && clickedRoom?.muted_members.find(id => id === this.currentUserId) !== undefined)
 				this.toggleMute(true);

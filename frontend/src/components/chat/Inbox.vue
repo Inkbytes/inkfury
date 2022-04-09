@@ -95,12 +95,8 @@ export default defineComponent({
 							.get('http://10.12.2.4:9000/api/chat/' + this.currentRoomId, { withCredentials: true })
 							.then((data: AxiosResponse) => this.roomData = data.data)
 							.catch(err => console.log(err));
-				// await fetch('http://10.12.2.4:9000/api/chat/' + this.currentRoomId)
-				// 		.then(res => res.json())
-				// 		.then(data => this.roomData = data)
-				// 		.catch(err => console.log(err));
 			}
-			this.socket.on('chatToClient', (payload: any) => {
+			this.socket?.on('chatToClient', (payload: any) => {
 				console.log(payload);
 				this.msgs.push({message: payload.message, senderId: payload.senderId});
 				this.payload = payload;
@@ -109,7 +105,7 @@ export default defineComponent({
 					message_area.scrollTo(0, message_area.scrollHeight);
 				});
 			})
-			this.socket.on('typing', () => {
+			this.socket?.on('typing', () => {
 				const time = Date.now();
 				this.isTyping = true;
 				this.lastTyped = time;

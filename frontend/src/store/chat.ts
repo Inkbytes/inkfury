@@ -68,7 +68,7 @@ export default {
     userRooms(state: ChatConfig, data: ChatRoom[]){
       state.currentRoomId = null;
       state.rooms = data;
-      // state.hasRoom = !!data?.length;
+      state.hasRoom = !!data?.length;
     },
     addRoom(state: ChatConfig, data: ChatRoom) {
       state.rooms = [...state.rooms, data];

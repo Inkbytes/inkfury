@@ -6,7 +6,7 @@
     <div class="w-full h-screen max-h p-4 overflow-y-scroll hide-scroll" >
       <span class="text-lg font-semibold">Members:</span>
       <div v-for="member in getMembers()" :key="member">
-        <MemberBubble :user="getUserData(member)" :isAdmin="isAdmin()" :room="getRoom()" v-if="member !== currentUserId"/>
+        <MemberBubble :user="getUserData(member)" :isAdmin="isAdmin()" :room="getRoom()" :isOwner="isOwner()" v-if="member !== currentUserId"/>
       </div>
     </div>
   </div>
@@ -47,6 +47,11 @@ export default {
     isAdmin(){
       const admins = this.rooms.find((e) => e.id === this.currentRoomId)?.admins;
       if(admins?.find(admin => admin === this.currentUserId) !== undefined)
+        return true;
+      return false;
+    },
+    isOwner() {
+      if (this.rooms.find(e => e.id === this.currentRoomId)?.owner_id === this.currentUserId)
         return true;
       return false;
     }

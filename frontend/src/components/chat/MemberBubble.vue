@@ -26,6 +26,9 @@
             <MenuItem v-slot="{ active }">
               <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block w-full text-left px-4 py-2 text-sm cursor-pointer']">Start Game</a>
             </MenuItem>
+            <MenuItem v-slot="{ active }" v-if="isOwner">
+              <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block w-full text-left px-4 py-2 text-sm cursor-pointer']">Set As Admin</a>
+            </MenuItem>
           </div>
         </MenuItems>
       </transition>
@@ -41,7 +44,7 @@ import useStore from '../../store'
 import { ChatRoom } from '../../store/chat'
 
 export default {
-  props: ['user', 'isAdmin', 'room'],
+  props: ['user', 'isAdmin', 'room', 'isOwner'],
   components: {
     Menu,
     MenuButton,
@@ -58,6 +61,8 @@ export default {
   ,
   methods: {
     isMuted() {
+      if(this.user?.id === this.room.owner_id)
+        return;
       return this.room.muted_members.find((id: number) => id === this.user.id) !== undefined;
     },
     getImage(pic: string) {
@@ -66,7 +71,8 @@ export default {
       else return "../assets/" + pic;
     },
     async block(){
-      console.log(this.room)
+      if(this.user?.id === this.room.owner_id)
+        return;
       await axios
               .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/block/${this.user.id}`, {}, { withCredentials: true })
               .then()
@@ -88,6 +94,9 @@ export default {
     },
     visitProfile(){
       this.$router.push('/profile/' + this.user.login)
+    },
+    setAsAdmin(){
+      
     },
     startGame(){
 

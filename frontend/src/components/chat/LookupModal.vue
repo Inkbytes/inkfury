@@ -56,7 +56,8 @@ export default defineComponent({
               .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/join/${this.currentUser?.id}`, { password: pwd }, { withCredentials: true })
               .then(async () => {
                 this.refreshInbox();
-                this.socket.emit('leaveRoom', currentRoom?.name);
+                if(currentRoom?.name !== undefined)
+                  this.socket.emit('leaveRoom', currentRoom?.name);
                 this.addRoom(this.room);
                 this.$router.go('/chat');
                 this.setState(true)
@@ -80,7 +81,8 @@ export default defineComponent({
       const currentRoom = this.rooms.find(e => e.id === this.currentRoomId);
       if(room?.members.find((id) => id === this.currentUser?.id)) {
         this.refreshInbox();
-        this.socket.emit('leaveRoom', currentRoom?.name);
+        if(currentRoom?.name !== undefined)
+          this.socket.emit('leaveRoom', currentRoom?.name);
         this.socket.emit('joinRoom', room.name);
         this.setCurrenRoomId(room.id);
         this.toggleLookup();
@@ -95,7 +97,8 @@ export default defineComponent({
                 .post(`http://10.12.2.4:9000/api/chat/${room.id}/join/${this.currentUser?.id}`, {}, { withCredentials: true })
                 .then(() => {
                   this.refreshInbox();
-                  this.socket.emit('leaveRoom', currentRoom?.name);
+                  if(currentRoom?.name !== undefined)
+                    this.socket.emit('leaveRoom', currentRoom?.name);
                   this.addRoom(room);
                   this.$router.go('/chat')
                 })
