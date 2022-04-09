@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {GameEntity, ScoreGameEntity } from '../entities/game.entity';
+import { CurrentGameEntity, GameEntity, ScoreGameEntity } from '../entities/game.entity';
 import { Repository } from 'typeorm';
-import {GameDto, ScoreGameDto } from './dto/game.dto';
+import { CurrentGameDto, GameDto, ScoreGameDto } from './dto/game.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '../entities/user.entity';
 
@@ -11,7 +11,9 @@ export class GameService {
   constructor(
     @InjectRepository(GameEntity)
     private readonly gamerepo: Repository<GameEntity>,
-    @InjectRepository(ScoreGameEntity)
+    @InjectRepository(CurrentGameEntity)
+    private readonly currentGameRepo: Repository<CurrentGameEntity>,
+	@InjectRepository(ScoreGameEntity)
 	private readonly scoreGameRepo: Repository<ScoreGameEntity>,
   @InjectRepository(UserEntity) private readonly repo : Repository<UserEntity>,
   private jwtService : JwtService
@@ -22,9 +24,21 @@ export class GameService {
     return this.gamerepo.find();
   }
 
-
+  // List Current games
+  public async GetCurrentGames() {
+    return this.currentGameRepo.find();
+  }
 
   // save game
+  public async CreateCurrentMatch(
+    game: CurrentGameDto,
+  ): Promise<CurrentGameDto> {
+    const Game = await this.GameCurrentSearch(game).then((r) => {
+      return r;
+    });
+    if (!Game) return this.currentGameRepo.save(game);
+    return this.currentGameRepo.findOne(game);
+  }
 
   public async CreateCompletedGame(game: GameDto): Promise<GameDto> {
     const completeGame = await this.GameSearch(game).then((r) => {
@@ -62,6 +76,30 @@ export class GameService {
 	  .then( (score) => {
 		  return score;
 	  });
+  }
+  public async GameCurrentSearch(game: CurrentGameEntity): Promise<boolean> {
+    const CurrentGame = await this.currentGameRepo.findOne(game).then((r) => {
+      return r;
+    });
+    return !!CurrentGame;
+  }
+
+  // delete curentgame by gameId
+  public async DeleteCurrentGameById(gameId: number) {
+    return await this.currentGameRepo.delete({ gameId: gameId });
+  }
+  // search currentgame by playernick
+  public async FindCurrentGameByNickname(playerId: number) {
+    return await this.currentGameRepo
+      .findOne({ p1id: playerId })
+      .then((currentGame) => {
+        if (!currentGame)
+          return this.currentGameRepo.findOne({ p2id: playerId });
+        return currentGame;
+      });
+  }
+  public async ModifieCurrentGame(gameId: number, game: CurrentGameEntity) {
+    return await this.currentGameRepo.update({ gameId: gameId }, game);
   }
 
   public async ModifieCompletedGame(gameId: number, game: GameEntity) {

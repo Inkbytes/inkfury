@@ -38,7 +38,6 @@ export class UsersController {
     return this.userService.getUser(login);
   }
 
-
   @Get(':id')
   getUserById(@Param('id') id : number, @Req() req : Request) {
     const cookie = req.cookies['jwt'];
