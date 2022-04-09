@@ -22,8 +22,8 @@ export class GameController {
   async GetCompletedGames(@Req() req : Request) {
     const cookie = req.cookies['jwt'];
 
-    if (!cookie || !this.gameService.verify(cookie))
-        throw new UnauthorizedException();
+    // if (!cookie || !this.gameService.verify(cookie))
+    //     throw new UnauthorizedException();
     return this.gameService.GetCompletedGames();
   }
 
@@ -31,8 +31,8 @@ export class GameController {
   async CreateCompGame(@Req() req : Request, @Body() game: GameDto) {
     const cookie = req.cookies['jwt'];
 
-    if (!cookie || !this.gameService.verify(cookie))
-        throw new UnauthorizedException();
+    // if (!cookie || !this.gameService.verify(cookie))
+    //     throw new UnauthorizedException();
     // if (!req.rawHeaders.cookies['access_token']) throw new UnauthorizedException();
     return this.gameService.CreateCompletedGame(game);
   }
@@ -41,8 +41,8 @@ export class GameController {
   async CreateScoreGame(@Req() req : Request, @Body() score: ScoreGameDto){
     const cookie = req.cookies['jwt'];
 
-    if (!cookie || !this.gameService.verify(cookie))
-        throw new UnauthorizedException();
+    // if (!cookie || !this.gameService.verify(cookie))
+    //     throw new UnauthorizedException();
 	  return this.gameService.CreateGameScore(score);
   }
 
@@ -50,8 +50,8 @@ export class GameController {
   async getScoreById(@Req() req : Request, @Param('id') id: number){
     const cookie = req.cookies['jwt'];
 
-    if (!cookie || !this.gameService.verify(cookie))
-        throw new UnauthorizedException();
+    // if (!cookie || !this.gameService.verify(cookie))
+    //     throw new UnauthorizedException();
 	  return await this.gameService.FindGameScoreById(id);
   }
 
@@ -88,8 +88,8 @@ export class GameController {
   ){
     const cookie = req.cookies['jwt'];
 
-    if (!cookie || !this.gameService.verify(cookie))
-        throw new UnauthorizedException();
+    // if (!cookie || !this.gameService.verify(cookie))
+    //     throw new UnauthorizedException();
 	  return await this.gameService.ModifyScore(id, score);
   }
 
@@ -101,8 +101,8 @@ export class GameController {
   ) {
     const cookie = req.cookies['jwt'];
 
-    if (!cookie || !this.gameService.verify(cookie))
-        throw new UnauthorizedException();
+    // if (!cookie || !this.gameService.verify(cookie))
+    //     throw new UnauthorizedException();
     return await this.gameService.ModifieCurrentGame(gameId, game);
   }
 
@@ -114,8 +114,8 @@ export class GameController {
   ) {
     const cookie = req.cookies['jwt'];
 
-    if (!cookie || !this.gameService.verify(cookie))
-        throw new UnauthorizedException();
+    // if (!cookie || !this.gameService.verify(cookie))
+    //     throw new UnauthorizedException();
     return await this.gameService.ModifieCompletedGame(gameId, game);
   }
 }

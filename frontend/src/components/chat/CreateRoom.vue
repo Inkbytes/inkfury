@@ -2,8 +2,8 @@
   <form class="w-full flex flex-col justify-between" @submit.prevent>
     <div class="flex items-center justify-center h-full w-full bg-gray-100 overflow-y-auto">
       <div class="flex flex-col items-center justify-center bg-white py-8 rounded-md px-12 shadow-lg w-1/4 min-w-[400px] min-h-[600px] h-1/2">
-        <button v-if="!hasRoom" class="w-3/4 mt-5 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 disabled:hover:bg-gray-200 bg-green-600 text-white hover:bg-green-700 hover:text-white py-2 rounded-md font-semibold tracking-tight transition-all duration-300" @click="openModal">Find Room</button>
-        <h1 v-if="!hasRoom" class="text-center text-lg font-bold text-gray-500">OR</h1>
+        <button v-if="!hasRoom" class="w-3/4 my-5 bg-green-600 text-white hover:bg-green-700 hover:text-white py-2 rounded-md font-semibold tracking-tight transition-all duration-300" @click="openModal">Find Room</button>
+        <h1 v-if="!hasRoom" class="text-center text-lg font-bold text-gray-500 my-3">OR</h1>
         <h1 class="text-center text-lg font-bold text-gray-500">Create Room</h1>
         <div class="space-y-8 mt-6 w-full">
           <div class="w-full">

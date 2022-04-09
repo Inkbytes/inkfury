@@ -92,7 +92,7 @@ export class ChatService {
   public async leaveRoom(id: number, currentUser : UserEntity) : Promise<boolean> {
     const roomd = await this.roomRepo.findOne(id);
     if (!roomd) throw new NotFoundException();
-    for (var i = 0; i < roomd.members.length; i++){ 
+    for (let i = 0; i < roomd.members.length; i++){ 
       if (roomd.members[i] === currentUser.id) { 
           roomd.members.splice(i, 1);
           await this.roomRepo.update(id, roomd);
@@ -120,6 +120,23 @@ export class ChatService {
     throw new NotFoundException("User was not found");
   }
 
+  public async unmuteUser(roomId: number, userToUnmute: number, currentUser: UserEntity) {
+    const roomd = await this.roomRepo.findOne(roomId);
+    if (!roomd) throw new NotFoundException("Room was not found");
+    if (currentUser.id !== roomd.owner_id && !roomd.admins?.includes(currentUser.id))
+      throw new UnauthorizedException("User not owner nor administrator");
+    if (roomd.muted_members?.includes(parseInt(userToUnmute.toString()))) {
+      for (let i = 0; i < roomd.muted_members.length; i++) {
+        if (roomd.muted_members[i] === parseInt(userToUnmute.toString())) {
+          roomd.muted_members.splice(i, 1);
+          await this.roomRepo.update(roomId, roomd);
+          return true;
+        }
+      }
+    }
+    throw new NotFoundException("User was not found");
+  }
+
   public async blockUser(roomId: number, userToBlock: number, currentUser: UserEntity) {
     const roomd = await this.roomRepo.findOne(roomId);
     if (!roomd) throw new NotFoundException("Room was not found");
@@ -129,7 +146,7 @@ export class ChatService {
       return true;
     if (roomd.members?.includes(parseInt(userToBlock.toString()))) {
         roomd.blocked_members.push(userToBlock);
-        for (var i = 0; i < roomd.members.length; i++) {
+        for (let i = 0; i < roomd.members.length; i++) {
           if (roomd.members[i] === parseInt(userToBlock.toString())) {
             roomd.members.splice(i, 1);
             await this.roomRepo.update(roomId, roomd);
@@ -152,7 +169,7 @@ export class ChatService {
 
   public async getRooms(): Promise<RoomDto[]> {
     const roomd = await this.roomRepo.find();
-    for (var key of Object.keys(roomd)) {
+    for (let key of Object.keys(roomd)) {
       delete roomd[key].password;
     }
     return roomd;

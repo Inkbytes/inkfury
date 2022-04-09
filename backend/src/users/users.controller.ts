@@ -60,8 +60,8 @@ export class UsersController {
   updateUser(@Body() user, @Req() req : Request) {
     const cookie = req.cookies['jwt'];
     console.log(user);
-    if (!cookie || !this.userService.verify(cookie))
-        throw new UnauthorizedException();
+    // if (!cookie || !this.userService.verify(cookie))
+    //     throw new UnauthorizedException();
 
     return this.userService.update(user);
   }

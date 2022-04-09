@@ -1,12 +1,12 @@
 <template>
   <div class="w-full flex flex-col justify-between" style="max-height: calc(100vh - 8rem)">
-    <div class="flex items-center bg-gray-100 justify-center pl-3 h-20">
+    <div class="flex items-center justify-center pl-3 h-20">
       <span class="block ml-2 font-bold text-2xl text-gray-600">Room Details</span>
     </div>
-    <div class="w-full h-screen max-h p-4 overflow-y-scroll hide-scroll bg-gray-200" >
-      Members
-      <div v-for="member in getMembers()" :key="member" >
-        <MemberBubble :user="getUserData(member)" :isAdmin="isAdmin()" :room="getRoom"/>
+    <div class="w-full h-screen max-h p-4 overflow-y-scroll hide-scroll" >
+      <span class="text-lg font-semibold">Members:</span>
+      <div v-for="member in getMembers()" :key="member">
+        <MemberBubble :user="getUserData(member)" :isAdmin="isAdmin()" :room="getRoom()" v-if="member !== currentUserId"/>
       </div>
     </div>
   </div>
@@ -46,8 +46,6 @@ export default {
     },
     isAdmin(){
       const admins = this.rooms.find((e) => e.id === this.currentRoomId)?.admins;
-      console.log(admins);
-      console.log(this.currentUserId);
       if(admins?.find(admin => admin === this.currentUserId) !== undefined)
         return true;
       return false;

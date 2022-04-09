@@ -30,7 +30,7 @@
 		<form @submit.prevent="submitMsg" class="w-full py-3 px-3 flex items-center justify-between border-t">
 			<button type="button" class="mx-2 bg-sky-600 font-semibold text-xs text-white py-2 px-6 my-2 rounded-lg" @click="toggleLookup">Find Room</button>
 			<button type="button" class="mx-2 bg-blue-600 font-semibold text-xs text-white py-2 px-6 my-2 rounded-lg" @click="toggleShowCreateForm">Create Room</button>
-			<input placeholder="Type your message here..." class="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100 outline-none focus:text-gray-700" v-model="msg" @input="typing" >
+			<input :disabled="mutedInput" placeholder="Type your message here..." class="disabled:cursor-not-allowed py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100 outline-none focus:text-gray-700" v-model="msg" @input="typing" >
 			<button class="outline-none focus:outline-none bg-green-600 font-semibold text-sm text-white py-2 px-4 my-2 rounded-lg" type="submit">Send</button>
 			<button type="button" class="mx-2 bg-red-600 font-semibold text-sm text-white py-2 px-4 my-2 rounded-lg" @click="leaveRoom">Leave</button>
 		</form>
@@ -70,7 +70,9 @@ export default defineComponent({
 			toggleShowCreateForm: () => store.commit('chat/toggleShowCreateForm'),
 			toggleLookup: () => store.commit('chat/toggleLookup'),
 			leaveRoomStore: (data: ChatRoom) => store.commit('chat/leaveRoom', data),
-			chatRooms: computed(() => store.state.chat.rooms)
+			chatRooms: computed(() => store.state.chat.rooms),
+			mutedInput: computed(() => store.state.chat.mutedInput),
+			// inputDisabled: 0,
 		}
 	},
 	watch: {
@@ -125,10 +127,18 @@ export default defineComponent({
 		this.socket.removeListener('typing');
 	},
 	methods: {
+		// async checkMuted(){
+		// 	await fetch('http://10.12.2.4:9000/api/chat/' + this.currentUser?.id, {credentials: 'include'})
+		// 					.then(res => res.json())
+    //         	.then(data =>  data && (this.roomData = data) )
+    //         	.catch(err => console.log(err.message));
+		// 	if(this.roomData.muted_members?.find(id => id !== this.currentUser?.id) !== undefined)
+		// 		this.inputDisabled = 1;
+		// },
 		submitMsg() {
 			this.msg = this.msg.trim()
 			if(!this.msg.length)
-				return false
+				return false;
 			this.payload.senderId = this.currentUser?.id;
 			this.payload.room = this.roomData.name;
 			this.payload.message = this.msg;

@@ -2,7 +2,7 @@
 	<div class="w-full h-screen flex flex-col overflow-hidden">
         <DefaultLayout>
 		<div class="w-full max-w-full mx-auto h-full flex flex-row border-x" style="max-height: calc(100vh - 8rem)">
-			<Rooms />
+			<Rooms/>
 			<Inbox v-if="showInbox && hasRooms && !showCreateForm" />
 			<CreateRoom v-else/>
 			<Loading v-if="!showInbox && hasRooms" />
@@ -55,14 +55,12 @@ export default defineComponent({
 						roomName = data.data?.[0]?.name || null;
 					})
 					.catch(err => console.log(err));
-		// console.log(this.rooms);
 		this.rooms.forEach(room => {
 				if ( room.members.find(e => e === this.currentUserId) !== undefined){
-					console.log('found room')
 					this.setHasRoom(true);
 					return;
 				}
-		})
+		});
 		// await fetch('http://10.12.2.4:9000/api/chat')
 		// 			.then(res => res.json())
 		// 			.then(data => {
