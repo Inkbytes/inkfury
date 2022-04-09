@@ -5,8 +5,8 @@
     </div>
     <div class="w-full h-screen max-h p-4 overflow-y-scroll hide-scroll bg-gray-200" >
       Members
-      <div v-for="member in members" :key="member" >
-        <MemberBubble :user="getUserData(member)" :isAdmin="isAdmin()"/>
+      <div v-for="member in getMembers()" :key="member" >
+        <MemberBubble :user="getUserData(member)" :isAdmin="isAdmin()" :room="getRoom"/>
       </div>
     </div>
   </div>
@@ -25,8 +25,6 @@ export default {
       currentRoomId: computed(() => store.state.chat.currentRoomId),
       currentUserId: computed(() => store.state.auth.user?.id), 
       rooms: computed(() => store.state.chat.rooms),
-      members: [] as number[] | undefined,
-      admins: [] as number[] | undefined,
       users: []
     }    
   },
@@ -35,15 +33,24 @@ export default {
             .then(res => res.json())
             .then(data =>  data && (this.users = data) )
             .catch(err => console.log(err.message));
-    this.members = this.rooms.find((e) => e.id === this.currentRoomId)?.members;
-    this.admins = this.rooms.find((e) => e.id === this.currentRoomId)?.admins;
   },
   methods: {
+    getRoom(){
+      return this.rooms.find((e) => e.id === this.currentRoomId);
+    },
+    getMembers() {
+      return this.rooms.find((e) => e.id === this.currentRoomId)?.members;
+    },
     getUserData(id: number) {
       return this.users.find(user => user?.id === id)
     },
     isAdmin(){
-      return this.admins?.find(admin => admin === this.currentUserId);
+      const admins = this.rooms.find((e) => e.id === this.currentRoomId)?.admins;
+      console.log(admins);
+      console.log(this.currentUserId);
+      if(admins?.find(admin => admin === this.currentUserId) !== undefined)
+        return true;
+      return false;
     }
   }
 }

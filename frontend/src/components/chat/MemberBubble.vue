@@ -15,10 +15,10 @@
               <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Block</a>
             </MenuItem>
             <MenuItem v-slot="{ active }" v-if="isAdmin">
-              <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Mute</a>
+              <a @click="block" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Mute</a>
             </MenuItem>
             <MenuItem v-slot="{ active }">
-              <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Profile</a>
+              <a @click="visitProfile" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm cursor-pointer']">Profile</a>
             </MenuItem>
             <MenuItem v-slot="{ active }">
               <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block w-full text-left px-4 py-2 text-sm']">Start Game</a>
@@ -33,9 +33,10 @@
 <script lang="ts">
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { ChevronDownIcon } from '@heroicons/vue/solid'
+import axios from 'axios'
 
 export default {
-  props: ['user', 'isAdmin'],
+  props: ['user', 'isAdmin', 'room'],
   components: {
     Menu,
     MenuButton,
@@ -43,5 +44,25 @@ export default {
     MenuItems,
     ChevronDownIcon,
   },
+  methods: {
+    async block(){
+      await axios
+              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/block/${this.user.id}`)
+              .then()
+              .catch(err => console.log(err));
+    },
+    async mute(){
+      await axios
+              .post(`http://10.12.2.4:9000/api/chat/${this.room.id}/mute/${this.user.id}`)
+              .then()
+              .catch(err => console.log(err));
+    },
+    visitProfile(){
+      this.$router.push('/profile/' + this.user.login)
+    },
+    startGame(){
+
+    },
+  }
 }
 </script>

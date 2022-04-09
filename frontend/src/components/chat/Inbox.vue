@@ -24,8 +24,8 @@
 				<MyBubble v-if="msg.id == userId" :msgs="msgs" />
 				<Bubble v-else />
 			</div> -->
-			<MyBubble :msgs="msgs" :isTyping="isTyping" />
-			<!-- <Bubble /> -->
+			<MyBubble :msgs="msgs" :isTyping="isTyping"/>
+			<!-- <Bubble :msgs="msgs" :isTyping="isTyping" :user="currentUser" v-else/> -->
 		</div>
 		<form @submit.prevent="submitMsg" class="w-full py-3 px-3 flex items-center justify-between border-t">
 			<button type="button" class="mx-2 bg-sky-600 font-semibold text-xs text-white py-2 px-6 my-2 rounded-lg" @click="toggleLookup">Find Room</button>
@@ -52,17 +52,17 @@ export default defineComponent({
 		const store = useStore();
 		return { 
 			msg: '',
-			msgs: [] as string[],
+			msgs: [],
 			isTyping: false,
 			lastTyped: 0,
 			payload: {
-				senderId: 1,
+				senderId: null,
 				room: '',
 				message: '', // TODO: fetch user data from DB
 			},
 			// payload: '',
 			roomData: {} as ChatRoom,
-			currentUserId: computed(() => store.state.auth.user?.id).value,
+			currentUser: computed(() => store.state.auth.user),
 			showUsers: computed(() => store.state.chat.showUsers),
 			currentRoomId: computed(() => store.state.chat.currentRoomId),
 			socket: computed(() => store.state.chat.socket),
@@ -100,7 +100,8 @@ export default defineComponent({
 			}
 			this.socket.on('chatToClient', (payload: any) => {
 				console.log(payload);
-				this.msgs.push(payload.message);
+				this.msgs.push({message: payload.message, senderId: payload.senderId});
+				this.payload = payload;
 				this.$nextTick(() => {
 					const message_area = this.$refs.message_area as HTMLElement;
 					message_area.scrollTo(0, message_area.scrollHeight);
@@ -128,7 +129,7 @@ export default defineComponent({
 			this.msg = this.msg.trim()
 			if(!this.msg.length)
 				return false
-			this.payload.senderId = this.currentUserId;
+			this.payload.senderId = this.currentUser?.id;
 			this.payload.room = this.roomData.name;
 			this.payload.message = this.msg;
 			console.log(this.payload);

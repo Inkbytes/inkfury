@@ -55,8 +55,10 @@ export default defineComponent({
 						roomName = data.data?.[0]?.name || null;
 					})
 					.catch(err => console.log(err));
+		// console.log(this.rooms);
 		this.rooms.forEach(room => {
 				if ( room.members.find(e => e === this.currentUserId) !== undefined){
+					console.log('found room')
 					this.setHasRoom(true);
 					return;
 				}

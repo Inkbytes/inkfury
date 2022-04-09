@@ -87,7 +87,7 @@ export default defineComponent({
     watch(
       () => route.params.login,
       async newLogin => {
-        await fetch("http://10.12.2.4:9000/api/users/" + newLogin)
+        await fetch("http://10.12.2.4:9000/api/users/" + newLogin, {credentials: 'include'})
         .then((res) => res.json())
         .then((userData) => {
           data.user = userData;
@@ -100,7 +100,7 @@ export default defineComponent({
           }
         })
         .catch((err) => data.error = true);
-        await(fetch("http://10.12.2.4:9000/api/game/score/"+ (data.user as any)?.id))
+        await(fetch("http://10.12.2.4:9000/api/game/score/"+ (data.user as any)?.id, {credentials: 'include'}))
         .then(res => res.json())
         .then(gameData =>  gameData && (data.wins = gameData.wins) )
         .catch(err => console.log(err.message))
@@ -112,7 +112,7 @@ export default defineComponent({
 
 
     onMounted(async () => {
-      await fetch("http://10.12.2.4:9000/api/users/" + props.login)
+      await fetch("http://10.12.2.4:9000/api/users/" + props.login, {credentials: 'include'})
         .then((res) => res.json())
         .then((userData) => {
           data.user = userData;
@@ -125,7 +125,7 @@ export default defineComponent({
           }
         })
         .catch((err) => data.error = true);
-        await(fetch("http://10.12.2.4:9000/api/game/score/"+ (data.user as any)?.id))
+        await(fetch("http://10.12.2.4:9000/api/game/score/"+ (data.user as any)?.id, {credentials: 'include'}))
         .then(res => res.json())
         .then(gameData =>  gameData && (data.wins = gameData.wins) )
         .catch(err => console.log(err.message))
@@ -139,7 +139,7 @@ export default defineComponent({
       this.currentUser.friendList.push(this.user.id);
       const curUsr = this.currentUser;
       axios
-        .put("http://10.12.2.4:9000/api/users", curUsr, {})
+        .put("http://10.12.2.4:9000/api/users", curUsr, { withCredentials: true})
         .then((resp: AxiosResponse) => {})
         .catch((err) => {
           console.log(err);
