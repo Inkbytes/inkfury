@@ -10,11 +10,14 @@ import {
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 
+let mapper: any[] = [];
 // This decorator gives us access to the socket.io functionality.
 @WebSocketGateway(7000, {
   namespace: 'chat',
   cors: true,
 })
+
+
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -31,6 +34,7 @@ export class ChatGateway
   }
   handleDisconnect(client: Socket) {
     this.logger.log(`'Client disconnected: ${client.id}'`);
+    mapper.splice(mapper.findIndex(e => e.socketId === client.id), 1);
   }
 
   /* -- We make use of the instance in here, where we send data to all clients
@@ -71,5 +75,17 @@ export class ChatGateway
   handleLeaveRoom(client: Socket, room: string) {
     client.leave(room);
     client.emit('leftRoom', room);
+  }
+  @SubscribeMessage('startGame')
+  StartGame(client: Socket, obj: any) {
+    // client.leave(room);
+    // client.emit('leftRoom', room);
+    let sockid = mapper.find(e => e.userId === obj.userid);
+    this.logger.log(`sockid found in mapper: ${sockid?.socketId}`);
+    client.to(sockid?.socketId).emit('startGame', obj.gameid);
+  }
+  @SubscribeMessage('logId')
+  logId(client: Socket, id: number) {
+    mapper.push({userId: id, socketId: client.id});
   }
 }

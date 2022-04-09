@@ -97,7 +97,6 @@ export default defineComponent({
 							.catch(err => console.log(err));
 			}
 			this.socket?.on('chatToClient', (payload: any) => {
-				console.log(payload);
 				this.msgs.push({message: payload.message, senderId: payload.senderId});
 				this.payload = payload;
 				this.$nextTick(() => {

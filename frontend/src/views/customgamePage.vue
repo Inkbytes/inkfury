@@ -40,7 +40,7 @@
 			}
 		},
 		mounted() {
-			play();
+			this.play();
 		},
 		methods: {
 			play() {
@@ -67,7 +67,7 @@
 				const postgame = Symbol('postgame');
 				const quitgame = Symbol('quitgame');
 
-				let game_state = lobby;
+				let game_state = pregame;
 
 				let player_number = 0;
 				const maxWIDTH = 1200;
@@ -120,23 +120,6 @@
 							if (p2pos < HEIGHT - paddle_height)
 								p2pos += 10;
 						}
-					}
-					let d_lobby = () => {
-						// draw lobby
-						g_tmp_flag = false;
-						quitflag = 0;
-						put_flag = false;
-						current_game_delete_flag = false;
-						game_post_flag = false;
-						postdb_flag = false;
-
-						p.background(imag);
-						p.stroke(1);
-						p.textSize(30);
-						p.fill('white');
-						p.text('Lobby', WIDTH / 2, HEIGHT / 2);
-
-
 					}
 
 					let d_pregame = () => {
@@ -310,9 +293,7 @@
 					};
 
 					p.draw = function () {
-						if (game_state === lobby)
-							d_lobby();
-						else if (game_state === pregame)
+						if (game_state === pregame)
 							d_pregame();
 						else if (game_state === game)
 							d_game();
@@ -323,7 +304,7 @@
 					};
 
 					socket.on("connect", () => {
-					socket.userId = my_user.id;
+					socket.userId = my_user?.id;
 					// listen to 1or2-event to assign the number of player_number
 					socket.on('1or2-event', (message: any) => {
 						if (game_state === lobby) {

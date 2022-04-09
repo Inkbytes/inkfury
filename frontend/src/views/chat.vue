@@ -70,7 +70,19 @@ export default defineComponent({
 		// 			})
 		// 			.catch(err => console.log(err))
 		const socket = io('http://10.12.2.4:7000/chat');
+		
+		socket.on('connect', () => {
+			console.log(`new user has joined with id: ${socket.id}`);
+			setTimeout ( () => {
+				socket.emit('logId', this.currentUserId);
+			}, 700);
+		});
 		this.setSocket(socket);
+		socket.on('startGame', (payload: number) => {
+			console.log(payload);
+			this.$router.push(`/custom-game/${payload}`);
+		})
+
 		// socket.emit('joinRoom', roomName);
 	}
 	// watch: {

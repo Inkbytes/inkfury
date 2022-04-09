@@ -24,7 +24,7 @@
               <a @click="visitProfile" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm cursor-pointer']">Profile</a>
             </MenuItem>
             <MenuItem v-slot="{ active }">
-              <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block w-full text-left px-4 py-2 text-sm cursor-pointer']">Start Game</a>
+              <a @click="startGame()" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block w-full text-left px-4 py-2 text-sm cursor-pointer']">Start Game</a>
             </MenuItem>
             <MenuItem v-slot="{ active }" v-if="isOwner && !isSetAdmin()">
               <a @click="setAsAdmin()" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block w-full text-left px-4 py-2 text-sm cursor-pointer']">Set As Admin</a>
@@ -42,6 +42,7 @@ import { ChevronDownIcon } from '@heroicons/vue/solid'
 import axios from 'axios'
 import useStore from '../../store'
 import { ChatRoom } from '../../store/chat'
+import { computed } from '@vue/runtime-core'
 
 export default {
   props: ['user', 'isAdmin', 'room', 'isOwner'],
@@ -55,7 +56,7 @@ export default {
   data() {
     const store = useStore();
     return {
-      leaveRoom: (room: ChatRoom) => store.commit('chat/leaveRoom'),
+      socket: computed(() => store.state.chat.socket),
     }
   }
   ,
@@ -106,7 +107,9 @@ export default {
       this.$router.go("/chat");
     },
     startGame(){
-		// this.socket.emit()
+      let gengameid = Math.floor(Math.random() * 5000) + 6000;
+      this.socket.emit('startGame', {userid: this.user?.id, gameid: gengameid });
+      this.$router.push(`/custom-game/${gengameid}`);
     },
   }
 }
